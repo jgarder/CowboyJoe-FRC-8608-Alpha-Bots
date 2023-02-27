@@ -6,10 +6,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import frc.robot.Subsystems.*;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
-import frc.robot.subsystems.*;
+import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,7 +19,7 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
+    private final XboxController driver = new XboxController(0);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -34,6 +34,13 @@ public class RobotContainer {
     private final NavxSubsystem navx = new NavxSubsystem();
     private final Swerve s_Swerve = new Swerve(navx.ahrs);
     
+    public final JoeColorSensor CSensor= new JoeColorSensor();
+    public final Limelight3Subsystem limelight3Subsystem = new Limelight3Subsystem(driver);
+    public final PIDLassoSubsystem PIDLassoSubsystem = new PIDLassoSubsystem(CSensor);
+    public final PIDArmExtensionSubsystem PIDArmExtensionSubsystem = new PIDArmExtensionSubsystem();
+    public final PIDArmLifterSubsystem PIDArmLifterSubsystem = new PIDArmLifterSubsystem();
+
+
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -50,6 +57,9 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
+
+        //on boot might as well start up the camera server
+        CameraServer.startAutomaticCapture();
     }
 
     /**
