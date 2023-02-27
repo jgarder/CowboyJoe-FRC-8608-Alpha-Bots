@@ -21,18 +21,20 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.music.Orchestra;
+
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     //public Pigeon2 gyro;
     public AHRS ahrs;
-    public Swerve() {
-        ahrs = new AHRS(SPI.Port.kMXP); /* Alternatives:  SPI.Port.kMXP, I2C.Port.kMXP or SerialPort.Port.kUSB */
+    public Swerve(AHRS incomingahrs) {
+        ahrs = incomingahrs;
+        //ahrs = new AHRS(SPI.Port.kMXP); /* Alternatives:  SPI.Port.kMXP, I2C.Port.kMXP or SerialPort.Port.kUSB */
 
         //gyro = new Pigeon2(Constants.Swerve.pigeonID);
         //gyro.configFactoryDefault(); //AHRS does not seem to have this? maybe look for one though
-        //zeroGyro();
-        ahrs.zeroYaw();
+        zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -48,6 +50,12 @@ public class Swerve extends SubsystemBase {
         resetModulesToAbsolute();
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
+
+        //booted music time
+        //Orchestra orchestra;
+        //TalonFX[] motors = { new TalonFX(2), new TalonFX(3), new TalonFX(4)}; //, new TalonFX(5), new TalonFX(6), new TalonFX(7) 
+        //String[] songs = new String[] {"Imperial-March.chrp"};
+
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
