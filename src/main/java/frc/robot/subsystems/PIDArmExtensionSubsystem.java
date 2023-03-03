@@ -44,6 +44,7 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
       extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       enable();//enable the pidcontroller of this subsystem
       getController().setTolerance(100);
+      extensionMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo550safelimitAmps);
     }
 
   @Override

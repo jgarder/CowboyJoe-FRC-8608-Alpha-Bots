@@ -13,30 +13,18 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
 
+  public static class NeoBrushless
+  {
+    public static int neo550safelimitAmps = 35;//lasso and arm extension use these
+    public static int neo1650safelimitAmps = 45; //this is the main arm lift motor. 
+  }
+
+    public static class Canivore{
+      public static final String CanivoreBus1Name = "8608ChassisCan";
+    }
+
     public static class XboxControllerMap {
-        public static final int kLeftStickUpDownAxis = 1;
-        public static final int kLeftStickLeftRightAxis = 0;
-        public static final int kLeftStickButton = 9;
-    
-        public static final int kRightStickUpDownAxis = 5;
-        public static final int kRightStickLeftRightAxis = 4;
-        public static final int kRightStickButton = 10;
-    
-        public static final int kLeftTriggerAxis = 2;
-        public static final int kRightTriggerAxis = 3;
-    
-        public static final int kLeftBumperButton = 5;
-        public static final int kRightBumperButton = 6;
-    
-         
-        public static final int kYButton = 4;// Y button, Triangle button or the Top button of the xbox controller
-        public static final int kBButton = 2;// B button, Square button or the Right button of the xbox controller
-        public static final int kXButton = 3;// X button, Left button of the xbox controller
-        public static final int kAButton = 1;// A button, bottom of 4 buttons
-    
-        public static final int kLeftSelectButton = 7;// Middle buttons on the left the View change button the select button on nintendo
-        public static final int kRightStartButton = 8;// middle buttons, right side, menu button or start button on nintendo
-    
+        //THIS MAP EXCEPT POV exist as Xboxcontroller.button.KBack.value or .Axis.kRightY ect ect ect. 
         //these are the pov directional buttons (this had 8 directions but we do not have them mapped.)
         public static final int kPOVDirectionUP = 0;//0 is up on xbox controller POV hat
         public static final int kPOVDirectionDOWN = 180;//180 is down on xbox controller POV hat
@@ -45,6 +33,7 @@ public final class Constants {
     
       }
       public static class OperatorConstants {
+        
         public static final int kDRIVEJoystickPort = 0;
         public static final int kDRIVEforwardReverseAxis = XboxController.Axis.kLeftY.value;
         public static final int kDRIVELeftRightAxis = XboxController.Axis.kLeftX.value;
@@ -52,9 +41,9 @@ public final class Constants {
         public static final int kDRIVERightTriggerAxis = XboxController.Axis.kRightTrigger.value;
         public static final int kDRIVELeftTriggerAxis = XboxController.Axis.kLeftTrigger.value;
         public static final int kArmupButton = XboxController.Button.kRightBumper.value;
-        public static final int kArmdownButton = 8;
-        public static final int kArmoutButton = 7;
-        public static final int kArminButton = 5; 
+        public static final int kArmdownButton = XboxController.Button.kStart.value;
+        public static final int kArmoutButton = XboxController.Button.kBack.value;
+        public static final int kArminButton = XboxController.Button.kLeftBumper.value; 
     
         //public static final int kresetLassoEncoderButton = 9;//#9 is the "select" button in the middle of the joystick
         
@@ -133,7 +122,7 @@ public final class Constants {
 
     public static final class Swerve {
         //public static final int pigeonID = 1;
-        public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+        public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
         public static final COTSFalconSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
             COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L1);
@@ -198,9 +187,9 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = .5;//4.5; //TODO: This must be tuned to specific robot
         /** Radians per Second */
-        public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 2;//10.0; //TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
@@ -212,7 +201,7 @@ public final class Constants {
             public static final int driveMotorID = 19;
             public static final int angleMotorID = 21;
             public static final int canCoderID = 29;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(156.09);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(336.09);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -222,7 +211,7 @@ public final class Constants {
             public static final int driveMotorID = 23;
             public static final int angleMotorID = 18;
             public static final int canCoderID = 28;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(342.50);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(162.5);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -232,7 +221,7 @@ public final class Constants {
             public static final int driveMotorID = 25;
             public static final int angleMotorID = 24;
             public static final int canCoderID = 26;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(51.06);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(231.06);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -242,7 +231,7 @@ public final class Constants {
             public static final int driveMotorID = 22;
             public static final int angleMotorID = 20;
             public static final int canCoderID = 27;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(212.00);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(32);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

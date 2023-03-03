@@ -21,14 +21,35 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.ArrayList;
+
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.music.Orchestra;
 
 public class Swerve extends SubsystemBase {
+
+    //Orchestra orchestra;
+    //String[] songs = new String[] {"Imperial-March.chrp"};
+    //int timeToPlaySong = 10;
+   //ArrayList<TalonFX> instruments = new ArrayList<TalonFX>();
+
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     //public Pigeon2 gyro;
     public AHRS ahrs;
     public Swerve(AHRS incomingahrs) {
+
+        //booted music time
+        // TalonFX[] motors = { new TalonFX(18),new TalonFX(19),new TalonFX(20),new TalonFX(21),new TalonFX(22),new TalonFX(23),new TalonFX(24)};
+
+        // for (int i = 0; i < motors.length; ++i) {
+        //     instruments.add(motors[i]);
+        //     }
+        // orchestra = new Orchestra(instruments);
+
+        // loadSong(0);
+        // orchestra.play(); 
+        // Timer.delay(10.0);
         ahrs = incomingahrs;
         //ahrs = new AHRS(SPI.Port.kMXP); /* Alternatives:  SPI.Port.kMXP, I2C.Port.kMXP or SerialPort.Port.kUSB */
 
@@ -51,12 +72,14 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
 
-        //booted music time
-        //Orchestra orchestra;
-        //TalonFX[] motors = { new TalonFX(2), new TalonFX(3), new TalonFX(4)}; //, new TalonFX(5), new TalonFX(6), new TalonFX(7) 
-        //String[] songs = new String[] {"Imperial-March.chrp"};
+
 
     }
+
+    // private void loadSong(int selection) {
+    //     orchestra.loadMusic(songs[selection]);
+    //     System.out.println("Song selected is: " + songs[selection]);
+    // }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =

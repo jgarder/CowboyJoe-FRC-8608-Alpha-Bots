@@ -47,6 +47,7 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     //armLiftMotor.setOpenLoopRampRate(.1);
     armLiftMotor.setClosedLoopRampRate(.05);
+    armLiftMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo1650safelimitAmps);
     enable();//enable the pidcontroller of this subsystem
   }
 

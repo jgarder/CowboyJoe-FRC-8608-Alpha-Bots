@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PIDLassoSubsystem extends PIDSubsystem {
 
-  static double kP = 0.05;
+  static double kP = 0.030;
   static double kI = 0.0;
   static double kD = 0.0;
     
@@ -44,6 +44,8 @@ public class PIDLassoSubsystem extends PIDSubsystem {
       lassoMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.LassoConstants.kminEncoderValue);
       lassoMotor.setIdleMode(IdleMode.kBrake);
       lassoMotor.setClosedLoopRampRate(.25);
+      
+      lassoMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo550safelimitAmps);
       enable();//enable the pidcontroller of this subsystem
   }
 

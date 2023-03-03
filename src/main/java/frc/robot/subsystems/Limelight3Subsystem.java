@@ -21,7 +21,7 @@ public class Limelight3Subsystem extends SubsystemBase {
   }
 
   XboxController ControllerUsedToScore;
-  private NetworkTable latestInfo;
+  public NetworkTable latestInfo;
 
   public static int kpipelineAprilTags = 0;
   public static int kpipelineRetroflectiveHighRung = 1;
@@ -83,8 +83,9 @@ public class Limelight3Subsystem extends SubsystemBase {
     {
       ControllerUsedToScore.setRumble(RumbleType.kBothRumble, 0);
     }
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
+    //SmartDashboard.putNumber("LimelightX", x);
+    //SmartDashboard.putNumber("LimelightY", y);
+    //SmartDashboard.putNumber("LimelightSkew", getSkew());
   }
   public NetworkTable getdataToDashboard()
   {
@@ -92,9 +93,10 @@ public class Limelight3Subsystem extends SubsystemBase {
     latestInfo = table;
 
     //post to smart dashboard periodically
-    //SmartDashboard.putNumber("LimelightX", getXOffset());
-    //SmartDashboard.putNumber("LimelightY", getYOffset());
+    SmartDashboard.putNumber("LimelightX", getXOffset());
+    SmartDashboard.putNumber("LimelightY", getYOffset());
     SmartDashboard.putNumber("LimelightArea", getArea());
+    SmartDashboard.putNumber("LimelightSkew", getSkew());
     return latestInfo;
   }
   public boolean getHasTarget() {
