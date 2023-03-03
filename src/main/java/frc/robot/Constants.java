@@ -33,7 +33,7 @@ public final class Constants {
     
       }
       public static class OperatorConstants {
-        
+        public static final double kStickDeadband = 0.02;
         public static final int kDRIVEJoystickPort = 0;
         public static final int kDRIVEforwardReverseAxis = XboxController.Axis.kLeftY.value;
         public static final int kDRIVELeftRightAxis = XboxController.Axis.kLeftX.value;
@@ -62,18 +62,24 @@ public final class Constants {
       public static class ArmLifterConstants {
         public static final int kArmLifterSparkMaxCanID = 7;
     
-        public static final double kminEncoderValue = 0; // this should when the arm is vertical and slightly leaning back if not straight.
-        public static final double kmaxEncoderValue = 65;// this is when the arm is horizontal and the arm is extended all the way out.
-        public static final double kmaxEncoderValueCollapsed=65; //this is when the amr is horizontal and the arm is collapsed all the way in
-        public static final double kmaxEncoderValueExtended=60; //this is when the amr is horizontal and the arm is collapsed all the way in
-    
+        public static final double kEncoderValueMin = 0; // this should when the arm is vertical and slightly leaning back if not straight.
+        public static final double kEncoderValueMax = 65;// this is when the arm is horizontal and the arm is extended all the way out.
+        public static final double kEncoderValueMaxCollapsed=65; //this is when the amr is horizontal and the arm is collapsed all the way in
+        public static final double kEncoderValueMaxExtended=60; //this is when the amr is horizontal and the arm is collapsed all the way in
+        public static final double kEncoderValueGoalScoring = 36.7;// this will change the angle we have our head at when we are scoring goals.
+        public static final double kEncoderValueStartingConfig = 0;// arm laying back and collapsed resting against backstop is 0 position
+        public static final double kEncoderValueVerticle = 30; // this is when the arm is veritcal at the 90 degree angle
+        public static final double kEncoderValueGroundPickup = 60;  //this is most likely the same as max encoder value. or prolly can calc using those instead
+
+
+        public static final double kslowretractspeed = -.2;
         public static final double kArmLifterUpSpeed = 0.5;
         public static final double kArmLifterDownSpeed = -0.5;
         
         public static final int kArmLifterSlewRate =8;
         public static int kslewrate = 10;//will be the input slew rate for the arm lifter motor
     
-        public static final double kGoalScoringEncoderValue = 36.7;
+  
     
       }
     
@@ -252,4 +258,14 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+    public static class PIDController {
+
+      public static class BalancePID {
+          public static final int kSetpoint = 0;
+          public static final double kP = 0.1;
+          public static final double kI = 0.05;
+          public static final double kD = 0.5;
+      }
+
+  }
 }

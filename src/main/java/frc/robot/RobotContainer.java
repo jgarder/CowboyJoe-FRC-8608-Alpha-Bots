@@ -122,8 +122,9 @@ public class RobotContainer {
 
         JoystickButton AlignXButton = new JoystickButton(driveController, XboxController.Button.kLeftStick.value);
         AlignXButton.whileTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));   
-        JoystickButton AlignZButton = new JoystickButton(driveController, XboxController.Button.kRightStick.value);
-        AlignZButton.whileTrue(new AlignZToTargetCMD(limelight3Subsystem));     //new JoystickButton(joystick1, Constants.OperatorConstants.kresetLassoEncoderButton).whileTrue(new StartEndCommand(LassoSubsystem::slowWindInBeyondSoftLimit, LassoSubsystem::resetEncoder,LassoSubsystem));
+        
+        JoystickButton BalanceButton = new JoystickButton(driveController, XboxController.Button.kRightStick.value);
+        //BalanceButton.whileTrue(new PidBalanceCmd(s_Swerve,navx));     //new JoystickButton(joystick1, Constants.OperatorConstants.kresetLassoEncoderButton).whileTrue(new StartEndCommand(LassoSubsystem::slowWindInBeyondSoftLimit, LassoSubsystem::resetEncoder,LassoSubsystem));
         
 
     }

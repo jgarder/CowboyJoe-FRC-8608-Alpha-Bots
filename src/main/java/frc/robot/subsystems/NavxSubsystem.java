@@ -10,11 +10,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class NavxSubsystem extends SubsystemBase{
 
     public AHRS ahrs;
-
+    public double LastPitch = 0;
     public NavxSubsystem()
     {
-        ahrs = new AHRS(SPI.Port.kMXP); /* Alternatives:  SPI.Port.kMXP, I2C.Port.kMXP or SerialPort.Port.kUSB */
-
+        try { 
+            this.ahrs = new AHRS(SPI.Port.kMXP);/* Alternatives:  SPI.Port.kMXP, I2C.Port.kMXP or SerialPort.Port.kUSB */
+        } catch (Exception e) {
+            System.out.print("Unable to connect to NavX");
+        }
     }
 
     @Override
@@ -22,6 +25,11 @@ public class NavxSubsystem extends SubsystemBase{
         ShowDebugToshuffleboard();
     }
 
+    public double getPitch()
+    {
+        LastPitch = ahrs.getPitch();
+        return (double)LastPitch;
+    }
     /**
    * Display navX-MXP Sensor Data on Smart Dashboard
    */

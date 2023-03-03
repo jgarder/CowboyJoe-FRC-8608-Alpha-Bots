@@ -41,8 +41,8 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     armLiftMotor_encoder.setPosition(0);
     armLiftMotor.setInverted(true);
     //lassoMotor_encoder.setVelocityConversionFactor(lassoencodercountsperinch);
-    armLiftMotor.setSoftLimit(SoftLimitDirection.kForward, (float)Constants.ArmLifterConstants.kmaxEncoderValue);
-    armLiftMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.ArmLifterConstants.kminEncoderValue);
+    armLiftMotor.setSoftLimit(SoftLimitDirection.kForward, (float)Constants.ArmLifterConstants.kEncoderValueMax);
+    armLiftMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.ArmLifterConstants.kEncoderValueMin);
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     //armLiftMotor.setOpenLoopRampRate(.1);
@@ -91,25 +91,27 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     }
   
   public void setSetpointGround() {
-    setSetpoint(80);
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueGroundPickup);
   }
   public void setSetpointScore() {
-    setSetpoint(Constants.ArmLifterConstants.kGoalScoringEncoderValue);
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueGoalScoring);
   }
   public void setSetpointVertical() {
-    setSetpoint(0);
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueVerticle);
+  }
+  public void setSetpointStartingConfig() {
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueStartingConfig);
   }
 
   public void slowWindInBeyondSoftLimit() {
     disable();
-    double kslowretractspeed = -.2;
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
-    SetSpeed(speedLimiter.calculate(kslowretractspeed));
+    SetSpeed(speedLimiter.calculate(Constants.ArmLifterConstants.kslowretractspeed));
   }
   public void resetEncoder() {
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    setSetpointVertical();//might as well set the setpoint to 0 to it doesnt appear to run away after finding 0.
-    armLiftMotor_encoder.setPosition(0);
+    setSetpointVertical();//might as well set the setpoint to verticle to it doesnt appear to run away after finding veritcle.
+    armLiftMotor_encoder.setPosition(Constants.ArmLifterConstants.kEncoderValueVerticle);
     enable();
   }
 
