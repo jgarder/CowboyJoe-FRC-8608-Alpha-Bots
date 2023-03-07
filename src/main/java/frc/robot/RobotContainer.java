@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -22,6 +23,10 @@ import edu.wpi.first.cameraserver.CameraServer;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    //
+    int stage = 0; //scoreing stages 0 - empty, 1-rdy to grab, 2-grabbed, 3 readying to score, 4-score and reset, 10-balancing
+    String currentlyHolding = "";
+    
     /* Controllers */
     private final XboxController driveController = new XboxController(0);
 
@@ -37,7 +42,7 @@ public class RobotContainer {
     public JoePowerDistributionPanel PDP= new JoePowerDistributionPanel();
 
     private final NavxSubsystem navx = new NavxSubsystem();
-    private final Swerve s_Swerve = new Swerve(navx.ahrs);
+    public static Swerve s_Swerve;
     
     public final JoeColorSensor CSensor= new JoeColorSensor();
     public final Limelight3Subsystem limelight3Subsystem = new Limelight3Subsystem(driveController);
@@ -50,6 +55,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        s_Swerve = new Swerve(navx.ahrs);
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
@@ -81,11 +87,11 @@ public class RobotContainer {
 
         //here is one way to handle trigger/axis inputs that act as a button but accept their analog input.
         //this also has the onFalse for both axis triggers that executes when while true is done handled but the Trigger Class.
-        Trigger ArmUpTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis) > 0.2);
-        ArmUpTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis)));
+        Trigger ArmUpTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis) > 0.2);
+        ArmUpTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> -driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis))).and(()->PIDArmLifterSubsystem.isLiftArmVerticalOrCloser());
         ArmUpTrigger.onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
-        Trigger ArmDownTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis) > 0.2);
-        ArmDownTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> -driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis)));
+        Trigger ArmDownTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis) > 0.2);
+        ArmDownTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis)));
         ArmDownTrigger.onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
 
         int kArmOutHighestPoleButton = XboxController.Button.kY.value;//this is the Y button, the triangle button or the Top button of the xbox controller
@@ -126,9 +132,36 @@ public class RobotContainer {
         JoystickButton BalanceButton = new JoystickButton(driveController, XboxController.Button.kRightStick.value);
         //BalanceButton.whileTrue(new PidBalanceCmd(s_Swerve,navx));     //new JoystickButton(joystick1, Constants.OperatorConstants.kresetLassoEncoderButton).whileTrue(new StartEndCommand(LassoSubsystem::slowWindInBeyondSoftLimit, LassoSubsystem::resetEncoder,LassoSubsystem));
         
+        checkStageControls();
 
     }
 
+    public void checkStageControls()
+    {
+        SmartDashboard.putNumber("ActionStage", stage);
+        SmartDashboard.putString("currentlyHolding", currentlyHolding);
+        JoystickButton Proceedbutton = new JoystickButton(driveController, XboxController.Button.kRightBumper.value);
+        JoystickButton Retrybutton = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value);
+        //run auto
+        //Proceedbutton.onTrue(new myfirstAuto(s_Swerve));
+        //Proceedbutton.onTrue(new DriveFollowPath("Test Path 2",4,4));
+        Proceedbutton.onTrue(new DriveFollowPath("back",2,2));
+        Retrybutton.onTrue(new DriveFollowPath("translate left",2,2));
+        
+        //if pressing proceed then try the next thing
+        //Proceedbutton.and(()->{return stage == 0;})
+        //.whileTrue(new  SequentialCommandGroup(
+            // new openLasso(),
+            // new dropArmLiftToPickupReadyHeigh(),
+
+        //   new DriveToGoal(m_drive),
+        //    new ScoreTube(m_wrist)););
+
+
+
+        //if pressing retry, try the last thing
+        //if pressing both, reset?
+    }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *

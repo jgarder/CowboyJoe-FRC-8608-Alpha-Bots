@@ -58,6 +58,10 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     SmartDashboard.putNumber("ArmLift PID Encoder Position",armliftMotorEncoderValue);
     return armliftMotorEncoderValue;
   }
+  public double getEncoderPosition()
+  {
+    return armliftMotorEncoderValue;
+  }
 
   @Override
   public void useOutput(double output, double setpoint) {
@@ -71,6 +75,20 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     public void periodic() {
       getEncoderData();
       super.periodic();// This is a PidSubsystem, we have orridden the periodic method to get encoder data... So we need to call the super periodic method to get the PID stuff to work.
+    }
+
+
+    public boolean isLiftArmVerticalOrCloser()
+    {
+      //if we are already vertical then we dont need to fold back further. 
+      boolean istrue = (getEncoderPosition() <= Constants.ArmLifterConstants.kEncoderValueVertical);
+      SmartDashboard.putBoolean("LiftArmVeritcal", istrue);
+      if(istrue) {
+        return true;
+      }
+      else {
+        return false; // we are not vertical or less (closer)
+      }
     }
 
     public void setSetpointAtCurrentPoint() {
@@ -97,7 +115,7 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueGoalScoring);
   }
   public void setSetpointVertical() {
-    setSetpoint(Constants.ArmLifterConstants.kEncoderValueVerticle);
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueVertical);
   }
   public void setSetpointStartingConfig() {
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueStartingConfig);
@@ -111,7 +129,7 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   public void resetEncoder() {
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     setSetpointVertical();//might as well set the setpoint to verticle to it doesnt appear to run away after finding veritcle.
-    armLiftMotor_encoder.setPosition(Constants.ArmLifterConstants.kEncoderValueVerticle);
+    armLiftMotor_encoder.setPosition(Constants.ArmLifterConstants.kEncoderValueVertical);
     enable();
   }
 
@@ -137,9 +155,17 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
 
   }
   public void LiftArmUP() {
-    SetSpeed(speedLimiter.calculate(Constants.ArmLifterConstants.kArmLifterUpSpeed));
+    //if we are already vertical then we dont need to fold back further. 
+    //if(armliftMotorEncoderValue <= Constants.ArmLifterConstants.kEncoderValueVertical) {
+      //return;
+    //}
+    //else {
+      SetSpeed(speedLimiter.calculate(Constants.ArmLifterConstants.kArmLifterUpSpeed));
+    //}
+    
   }
   public void LiftArmDown() {
+
     SetSpeed(speedLimiter.calculate(Constants.ArmLifterConstants.kArmLifterDownSpeed));
   }
   public void LiftArmStop() {

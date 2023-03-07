@@ -40,9 +40,9 @@ public final class Constants {
         public static final int klassoMotorAxis = XboxController.Axis.kRightY.value;
         public static final int kDRIVERightTriggerAxis = XboxController.Axis.kRightTrigger.value;
         public static final int kDRIVELeftTriggerAxis = XboxController.Axis.kLeftTrigger.value;
-        public static final int kArmupButton = XboxController.Button.kRightBumper.value;
-        public static final int kArmdownButton = XboxController.Button.kStart.value;
-        public static final int kArmoutButton = XboxController.Button.kBack.value;
+        //public static final int kArmupButton = kDRIVELeftTriggerAxis;
+        //public static final int kArmdownButton = kDRIVERightTriggerAxis;
+        public static final int kArmoutButton = XboxController.Button.kRightBumper.value;
         public static final int kArminButton = XboxController.Button.kLeftBumper.value; 
     
         //public static final int kresetLassoEncoderButton = 9;//#9 is the "select" button in the middle of the joystick
@@ -63,13 +63,14 @@ public final class Constants {
         public static final int kArmLifterSparkMaxCanID = 7;
     
         public static final double kEncoderValueMin = 0; // this should when the arm is vertical and slightly leaning back if not straight.
-        public static final double kEncoderValueMax = 65;// this is when the arm is horizontal and the arm is extended all the way out.
-        public static final double kEncoderValueMaxCollapsed=65; //this is when the amr is horizontal and the arm is collapsed all the way in
-        public static final double kEncoderValueMaxExtended=60; //this is when the amr is horizontal and the arm is collapsed all the way in
-        public static final double kEncoderValueGoalScoring = 36.7;// this will change the angle we have our head at when we are scoring goals.
+        public static final double kEncoderValueMax = 76;// this is when the arm is horizontal and the arm is extended all the way out.
+        public static final double kEncoderValueMaxCollapsed=76; //this is when the amr is horizontal and the arm is collapsed all the way in
+        public static final double kEncoderValueMaxExtended=71; //this is when the amr is horizontal and the arm is collapsed all the way in
+        public static final double kEncoderValueGoalScoring = 47.7;// this will change the angle we have our head at when we are scoring goals.
         public static final double kEncoderValueStartingConfig = 0;// arm laying back and collapsed resting against backstop is 0 position
-        public static final double kEncoderValueVerticle = 30; // this is when the arm is veritcal at the 90 degree angle
-        public static final double kEncoderValueGroundPickup = 60;  //this is most likely the same as max encoder value. or prolly can calc using those instead
+        public static final double kEncoderValueVertical = 11.7; // this is when the arm is veritcal at the 90 degree angle
+        public static final double kEncoderValueGroundPickup = 70;  //this is most likely the same as max encoder value. or prolly can calc using those instead
+        public static final double kEncoderValueSubStationPickup = 47.7;  //this is most likely the same as max encoder value. or prolly can calc using those instead
 
 
         public static final double kslowretractspeed = -.2;
@@ -192,8 +193,13 @@ public final class Constants {
         public static final double driveKA = (0.27 / 12);
 
         /* Swerve Profiling Values */
+        public static final double DRIVE_POS_ERROR_CONTROLLER_P = 0.1;
+        public static final double DRIVE_AUTO_ROTATE_CONTROLLER_P = 0.1;
+        public static final double DRIVE_MAX_ANGULAR_ACCEL = 4;
+        public static final double DRIVE_MAX_ANGULAR_VELOCITY = 4;
+        public static final double SWERVE_MAX_VELOCITY_METERS = 4;
         /** Meters per Second */
-        public static final double maxSpeed = .01;//.5;//4.5; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = .1;//.5;//4.5; //TODO: This must be tuned to specific robot
         /** Radians per Second */
         public static final double maxAngularVelocity = .5;//2;//10.0; //TODO: This must be tuned to specific robot
 

@@ -32,8 +32,10 @@ public class Swerve extends SubsystemBase {
     //String[] songs = new String[] {"Imperial-March.chrp"};
     //int timeToPlaySong = 10;
    //ArrayList<TalonFX> instruments = new ArrayList<TalonFX>();
-
+    public SwerveDriveKinematics kinematics = Constants.Swerve.swerveKinematics;
     public SwerveDriveOdometry swerveOdometry;
+    boolean hasOdometryBeenSet;
+
     public SwerveModule[] mSwerveMods;
     //public Pigeon2 gyro;
     public AHRS ahrs;
@@ -71,6 +73,8 @@ public class Swerve extends SubsystemBase {
         resetModulesToAbsolute();
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
+        
+        hasOdometryBeenSet = false;
 
 
 
@@ -80,6 +84,49 @@ public class Swerve extends SubsystemBase {
     //     orchestra.loadMusic(songs[selection]);
     //     System.out.println("Song selected is: " + songs[selection]);
     // }
+
+    /**
+     * Sets the states of all swerve modules based on input velocities with NWU
+     * coordinates
+     * 
+     * @param xVelMeters       the desired velocity of the robot in the x direction
+     *                         in meters; relative to either the robot or the field.
+     * @param yVelMeters       the desired velocity of the robot in the y direction
+     *                         in meters; relative to either the robot or the field.
+     * @param degreesPerSecond the desired angular velocity of the robot in degrees
+     * @param isFieldRelative
+     *                         <ul>
+     *                         <li>true - the x and y velocities refer to an
+     *                         absolute coordinate axis defined by the field;
+     *                         <li>false - the x and y velocities refer to a
+     *                         coordinate axis defined by the robot's current angle
+     */
+    public void drive(double xVelMeters, double yVelMeters, double degreesPerSecond, boolean isFieldRelative) {
+        if (isFieldRelative) {
+            drive(ChassisSpeeds.fromFieldRelativeSpeeds(xVelMeters, yVelMeters, Math.toRadians(degreesPerSecond),
+                    getAngleRotation2d()));
+        } else {
+            drive(new ChassisSpeeds(xVelMeters, yVelMeters, Math.toRadians(degreesPerSecond)));
+        }
+
+    }
+    /**
+     * Sets the states of all swerve modules based on input
+     * <code>ChassisSpeeds</code>
+     * 
+     * @param chassisSpeeds an object encapsulating desired dx, dy, and dθ of the
+     *                      robot
+     */
+    public void drive(ChassisSpeeds chassisSpeeds) {
+        SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Swerve.SWERVE_MAX_VELOCITY_METERS);
+
+        for (int i = 0; i < 4; i++) {
+            SwerveModuleState currentState = mSwerveMods[i].getState();
+            SwerveModuleState.optimize(moduleStates[i], currentState.angle);
+            mSwerveMods[i].setDesiredState(moduleStates[i], hasOdometryBeenSet);
+        }
+    }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
@@ -113,6 +160,14 @@ public class Swerve extends SubsystemBase {
 
     public Pose2d getPose() {
         return swerveOdometry.getPoseMeters();
+    }
+       /**
+     * Gets the Robot's heading as a <code>Rotation2d</code> object
+     * 
+     * @return a Rotation2d object representing the robot's current heading
+     */
+    public Rotation2d getAngleRotation2d() {
+        return Rotation2d.fromDegrees(getAngleDegrees());
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -149,6 +204,20 @@ public class Swerve extends SubsystemBase {
             mod.resetToAbsolute();
         }
     }
+    /**
+     * Gets the IMU's current heading in degrees
+     * 
+     * @return the IMU's heading in degrees normalized between -180 and +180
+     */
+    public double getAngleDegrees() {
+        double angle = ahrs.getFusedHeading() % 360 ;
+        if (angle > 180) {
+            angle -= 360;
+        } else if (angle <= -180) {
+            angle += 360;
+        }
+        return -angle;
+    }
 
     @Override
     public void periodic(){
@@ -160,4 +229,6 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
     }
+
+    
 }
