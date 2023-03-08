@@ -6,9 +6,14 @@ package frc.robot;
 
 import com.pathplanner.lib.server.PathPlannerServer;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.FieldConstants;
 
 
 /**
@@ -24,7 +29,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -65,13 +70,41 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    
+    mattsmethod();
+    
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
   }
+
+  private void mattsmethod() {
+    AprilTagFieldLayout currenTagFieldLayout = FieldConstants.aprilTags;
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // Somehow add a variable here to let the robot communicate with dashboard to tell it what side of the field it is on
+    // These three lines below seem to be part of the solution.  The origin is different for each alliance, there is potentially a way
+    // to address this with april tags to give the bot some reference locations.
+    Alliance alliance = DriverStation.getAlliance();
+
+  //   //ternary operator shortform
+  //   OriginPosition chosenposition = (alliance == Alliance.Red) 
+  //   ? OriginPosition.kRedAllianceWallRightSide 
+  //   : OriginPosition.kBlueAllianceWallRightSide;
+    
+  //   //longform
+  //   if(Alliance.Red == alliance)
+  //   {
+  //     chosenposition = OriginPosition.kRedAllianceWallRightSide;
+  //     currenTagFieldLayout.setOrigin(chosenposition);
+  //   }
+  //   else
+  //   {
+  //     chosenposition = OriginPosition.kBlueAllianceWallRightSide;
+  //     currenTagFieldLayout.setOrigin(chosenposition);
+  //   }
+   }
 
   /** This function is called periodically during autonomous. */
   @Override

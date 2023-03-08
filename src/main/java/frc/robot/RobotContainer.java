@@ -145,8 +145,8 @@ public class RobotContainer {
         //run auto
         //Proceedbutton.onTrue(new myfirstAuto(s_Swerve));
         //Proceedbutton.onTrue(new DriveFollowPath("Test Path 2",4,4));
-        Proceedbutton.onTrue(new DriveFollowPath("back",2,2));
-        Retrybutton.onTrue(new DriveFollowPath("translate left",2,2));
+        //Proceedbutton.onTrue(new DriveFollowPath("back",2,2));
+       // Retrybutton.onTrue(new DriveFollowPath("translate left",2,2));
         
         //if pressing proceed then try the next thing
         //Proceedbutton.and(()->{return stage == 0;})
@@ -169,6 +169,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new exampleAuto(s_Swerve);
+        //return new exampleAuto(s_Swerve);
+        return new DriveFollowPath("translate left",2,2);
     }
 }
