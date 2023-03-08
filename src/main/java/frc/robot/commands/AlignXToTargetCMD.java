@@ -4,8 +4,14 @@
 
 package frc.robot.Commands;
 
+import javax.lang.model.util.ElementScanner14;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableType;
@@ -19,24 +25,24 @@ import frc.robot.Subsystems.*;
 
 
 public class AlignXToTargetCMD extends CommandBase {
-  double kXP = 0.001;
-  double kXI = 0.001;
+  double kXP = 1.0;
+  double kXI = 0.000;
   double kXD = 0.000;
 
   double kZP = 0.07;
-  double kZI = 0.01;
+  double kZI = 0.00;
   double kZD = 0.0000; 
 
   double kZRetroLowP = 3.0;
-  double kZRetroLowI = 0.010;
+  double kZRetroLowI = 0.000;
   double kZRetroLowD = 0.001;
 
   double kZRetroHighP = 5.0;
-  double kZRetroHighI = 0.050;
+  double kZRetroHighI = 0.000;
   double kZRetroHighD = 0.0001;
 
-  double kRP = 0.007;
-  double kRI = 0.003;
+  double kRP = 0.07;
+  double kRI = 0.000;
   double kRD = 0.000;
   /** Creates a new ArmStopCMD. */
   Limelight3Subsystem limelight3Subsystem;
@@ -50,26 +56,35 @@ public class AlignXToTargetCMD extends CommandBase {
     
   }
 
-  PIDController AligXController;// this will turn left or right to align
-  PIDController AlignZController;//this will go forward and back to align. 
-  PIDController AlignRotationController;//this will spin us. 
+  private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
+  private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
+  private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =   new TrapezoidProfile.Constraints(8, 8);
+  private final ProfiledPIDController AlignXController = new ProfiledPIDController(kXP,kXI,kXD, X_CONSTRAINTS);
+  private final ProfiledPIDController AlignZController = new ProfiledPIDController(kZP,kZI,kZD, Y_CONSTRAINTS);
+  private final ProfiledPIDController AlignRotationController = new ProfiledPIDController(kRP,kRI,kRD, OMEGA_CONSTRAINTS);
 
+  //PIDController AligXController;// this will turn left or right to align
+  //PIDController AlignZController;//this will go forward and back to align. 
+  //PIDController AlignRotationController;//this will spin us. 
+  //min amounts to tolerate 
+  double minXErrorToCorrect = .1;//.04
+  double minRYErrorToCorrect = .04;//.04;
+  double minStrafeErrorToCorrect = .1;//.04;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+      
+    AlignXController.setTolerance(0.4);
+    AlignZController.setTolerance(0.0);
+    AlignRotationController.setTolerance(0.4);
+    //AlignRotationController.setTolerance(Units.degreesToRadians(3));
+    //AlignRotationController.enableContinuousInput(-Math.PI, Math.PI);
 
-  
-       
-    AligXController =  new PIDController(kXP,kXI,kXD);
-
-
-       
-    AlignZController =  new PIDController(kZP,kZI,kZD);
-
-
-       
-    AlignRotationController =  new PIDController(kRP,kRI,kRD);
     
+    // Drive
+    AlignXController.setGoal(0);
+    AlignZController.setGoal(0);
+    AlignRotationController.setGoal(minRYErrorToCorrect);
   }
   int pipeline = 0;
   // Called every time the scheduler runs while the command is scheduled.
@@ -77,44 +92,46 @@ public class AlignXToTargetCMD extends CommandBase {
   public void execute() {
     //double KpAim = -0.1f;
     //double KpDistance = -0.1f;
-    double min_aim_command = 0.008;
+    
     
 
-    double x = limelight3Subsystem.getXOffset(); 
-    double y = limelight3Subsystem.getYOffset();
+    //double x = limelight3Subsystem.getXOffset(); 
+    //double y = limelight3Subsystem.getYOffset();
     double area = limelight3Subsystem.getArea();
 
-    NetworkTableEntry targetpose_robotsSpace = limelight3Subsystem.latestInfo.getEntry("targetpose_robotspace");
-    double[] tPoseRS = 	targetpose_robotsSpace.getDoubleArray(new double[]{});
-    SmartDashboard.putNumberArray("TposeRS", tPoseRS);
-    double targetOffsetAngle_Vertical = y;
+    //NetworkTableEntry targetpose_robotsSpace = limelight3Subsystem.latestInfo.getEntry("targetpose_robotspace");
+    //double[] tPoseRS = 	targetpose_robotsSpace.getDoubleArray(new double[]{});
+    //SmartDashboard.putNumberArray("TposeRS", tPoseRS);
+    //double targetOffsetAngle_Vertical = y;
 
-    double targetrotationyoffset = tPoseRS[4];//we want to get the 3d yaw correction we need for our swerve
-    SmartDashboard.putNumber("TposeRY", targetrotationyoffset);//rotation Y targetspace is ROtation Z field space?
+    //double targetrotationyoffset = tPoseRS[4];//we want to get the 3d yaw correction we need for our swerve
+    //SmartDashboard.putNumber("TposeRY", targetrotationyoffset);//rotation Y targetspace is ROtation Z field space?
 
 
     // how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = 0.0;
+    //double limelightMountAngleDegrees = 0.0;
 
     // distance from the center of the Limelight lens to the floor
-    double limelightLensHeightInches = 17.0;
+    //double limelightLensHeightInches = 17.0;
 
     // distance from the target to the floor
-    double goalHeightInches = 11.0;
+    //double goalHeightInches = 11.0;
 
-    double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-    double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+    //double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+    //double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
     //calculate distance
-    double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
+    //double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
 
     
-    
     //////////////
-    double RotationY_error = x * 1.0;//rotation Y targetspace is ROtation Z field space?
+    //rotation is the bots rotation to the target
+    //////////////
+    double RotationY_error = limelight3Subsystem.getYaw() * -1.0;//rotation Y targetspace is ROtation Z field space?
     double rotation_adjust = 0.0;
-    double min_spin_command = 0.004;
-    if (Math.abs(RotationY_error) > .04)
+    double min_spin_command = 0;//0.004;
+    
+    if (Math.abs(RotationY_error) > minRYErrorToCorrect)//!AlignRotationController.atGoal()
     {
       if (RotationY_error < 0)
       {
@@ -125,24 +142,37 @@ public class AlignXToTargetCMD extends CommandBase {
         rotation_adjust = AlignRotationController.calculate(RotationY_error,0) - min_spin_command;
       }
     }
-    //////////////
-    //////////////
-    double heading_error = x * 1.0;
-    double steering_adjust = 0.0;
-    if (Math.abs(heading_error) > .04)
+    else
     {
-      if (heading_error < 0)
+      rotation_adjust = 0;
+    }
+    //////////////
+    //heading is currently the left and right alingment to the target
+    //////////////
+    double stafe_error = limelight3Subsystem.getXPos() * -1.0;
+    double strafe_adjust = 0.0;
+    double min_strafe_command = 0.008;
+    
+    if (Math.abs(stafe_error) > minStrafeErrorToCorrect ) //!AlignXController.atGoal()
+    {
+      if (stafe_error < 0)
       {
-              steering_adjust = AligXController.calculate(heading_error,0) + min_aim_command;
+              strafe_adjust = AlignXController.calculate(stafe_error,0) + min_strafe_command;
       }
       else
       {
-              steering_adjust = AligXController.calculate(heading_error,0) - min_aim_command;
+              strafe_adjust = AlignXController.calculate(stafe_error,0) - min_strafe_command;
       }
     }
+    else 
+    {
+      strafe_adjust = 0;
+    }
     //////////////
-    double min_forward_command = 0.03;
-
+    //////////////
+    //distance is currently the left and right alingment to the target
+    //////////////
+    
     double RetroHighMustBeThisSizeBeforeAutomating = .020;
     double RetroHigh_tagArea_setpoint = .10;
     double RetroLowMustBeThisSizeBeforeAutomating = .06;
@@ -150,34 +180,39 @@ public class AlignXToTargetCMD extends CommandBase {
     double AprilMustBeThisSizeBeforeAutomating = .4;
     double April_tagArea_setpoint = 3.0;
 
-    double SizeNeededForAuto = 0;
-    double tagArea_error = area;
-    double tagArea_setpoint = 3.01;
-    //double distance_error = y * 1.0;
-    double distance_adjust =  0.0;
 
+    double Selected_tagArea_error = limelight3Subsystem.getZPos();//area;
+    double Selected_tagArea_setpoint = 3.01;
+
+    double min_forward_command = 0.003;
+    double distance_adjust =  0.0;
+    double minAreaErrorToCorrect = .00;//.04;
+    double SizeNeededForAuto = 0;
     //depending on the pipeline set the setpoint and outer limit.
     if(limelight3Subsystem.getPipeline() == limelight3Subsystem.kpipelineAprilTags){
-      tagArea_setpoint = April_tagArea_setpoint;
+      Selected_tagArea_setpoint = April_tagArea_setpoint;
       SizeNeededForAuto = AprilMustBeThisSizeBeforeAutomating;
       AlignZController.setPID(kZP, kZI, kZD);
     }
     else if(limelight3Subsystem.getPipeline() == limelight3Subsystem.kpipelineRetroflectiveHighRung){
-      tagArea_setpoint = RetroHigh_tagArea_setpoint;
+      Selected_tagArea_setpoint = RetroHigh_tagArea_setpoint;
       SizeNeededForAuto = RetroHighMustBeThisSizeBeforeAutomating;
       AlignZController.setPID(kZRetroHighP, kZRetroHighI, kZRetroHighD);
     }
     else if(limelight3Subsystem.getPipeline() == limelight3Subsystem.kpipelineRetroflectiveLowerRung){
-      tagArea_setpoint = RetroLow_tagArea_setpoint;
+      Selected_tagArea_setpoint = RetroLow_tagArea_setpoint;
       SizeNeededForAuto = RetroLowMustBeThisSizeBeforeAutomating;
       AlignZController.setPID(kZRetroLowP, kZRetroLowI, kZRetroLowD);
     }
 
-    if (Math.abs(tagArea_error) > SizeNeededForAuto)
-    {
-      distance_adjust = AlignZController.calculate(tagArea_error,tagArea_setpoint); //KpDistance * distance_error;/// we are ignoring Y (up down) for now. 
 
-      if (heading_error > 0)
+    
+    
+    if (Math.abs(Selected_tagArea_error) > SizeNeededForAuto )//!AlignZController.atGoal() &&
+    {
+      distance_adjust = AlignZController.calculate(Selected_tagArea_error,Selected_tagArea_setpoint); //KpDistance * distance_error;/// we are ignoring Y (up down) for now. 
+
+      if (Selected_tagArea_error > minAreaErrorToCorrect)
       {
         distance_adjust += min_forward_command;
       }
@@ -186,23 +221,31 @@ public class AlignXToTargetCMD extends CommandBase {
         distance_adjust -= min_forward_command; //KpDistance * distance_error;/// we are ignoring Y (up down) for now. 
       }
     }
+    /////////////////
+
     // double left_command = steering_adjust + distance_adjust;
     // double right_command = steering_adjust + distance_adjust;
     //driveSubsystem.ArcadeDrivemotors(0, steering_adjust);
     boolean robotCentric = true;
-    double translationAxis = distance_adjust;
-    double strafeAxis = steering_adjust;
+    double translationAxis = 0;//distance_adjust;
+    double strafeAxis = 0;//strafe_adjust ;
     double rotationAxis = rotation_adjust;
+    double alignmentspeed = 1;//5.0 * Constants.Swerve.maxSpeed;
+    // s_Swerve.drive(
+    //         new Translation2d(translationAxis, strafeAxis).times(alignmentspeed), 
+    //         rotationAxis * Constants.Swerve.maxAngularVelocity, 
+    //         !robotCentric, 
+    //         true
+    //     );
+
+    s_Swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(translationAxis, strafeAxis, rotationAxis,s_Swerve.swerveOdometry.getPoseMeters().getRotation() ));
+    SmartDashboard.putNumber("rotation_adjust", RotationY_error);
+    SmartDashboard.putNumber("distance_adjust", Selected_tagArea_error);
+    SmartDashboard.putNumber("steering_adjust", stafe_error);
+    SmartDashboard.putNumber("rotation_PID", rotation_adjust);
+    SmartDashboard.putNumber("distance_PID", distance_adjust);
+    SmartDashboard.putNumber("steering_PID", strafeAxis);
     
-    s_Swerve.drive(
-            new Translation2d(translationAxis, strafeAxis).times(Constants.Swerve.maxSpeed), 
-            rotationAxis * Constants.Swerve.maxAngularVelocity, 
-            !robotCentric, 
-            true
-        );
-    
-    SmartDashboard.putNumber("distance_adjust", distance_adjust);
-    SmartDashboard.putNumber("steering_adjust", steering_adjust);
   }
 
   // Called once the command ends or is interrupted.
