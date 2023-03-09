@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.controller.PIDController;
@@ -33,7 +34,10 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
       super(new PIDController(kP, kI, kD));
       setSetpoint(0);
       extensionMotor_encoder = extensionMotor.getEncoder();
+     
 
+      extensionMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo550safelimitAmps);
+    
       extensionMotor_encoder.setPosition(0);
       extensionMotor.setInverted(false);
       ;
@@ -42,9 +46,17 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
       extensionMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.ArmExtensionConstants.kminEncoderValue);
       extensionMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
       extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-      enable();//enable the pidcontroller of this subsystem
+
+      //limit everything on this motor controller to 500ms except the status 0 frame which is 10ms and does faults and applied output. 
+      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 30);  //Default Rate: 20ms ,Motor Velocity,Motor Temperature,Motor VoltageMotor Current
+      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 30);  //Default Rate: 20ms ,Motor Position
+      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500); //Default Rate: 50ms ,Analog Sensor Voltage ,Analog Sensor Velocity ,Analog Sensor Position
+      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 500); //Default Rate: 20ms, Alternate Encoder Velocity,Alternate Encoder Position
+      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Position,Duty Cycle Absolute Encoder Absolute Angle
+      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Velocity,Duty Cycle Absolute Encoder Frequency
+      
       getController().setTolerance(100);
-      extensionMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo550safelimitAmps);
+      enable();//enable the pidcontroller of this subsystem
     }
 
   @Override

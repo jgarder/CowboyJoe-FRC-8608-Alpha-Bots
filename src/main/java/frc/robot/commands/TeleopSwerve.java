@@ -1,6 +1,7 @@
 package frc.robot.Commands;
 
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Subsystems.Swerve;
 
 import java.util.function.BooleanSupplier;
@@ -28,6 +29,15 @@ public class TeleopSwerve extends CommandBase {
         this.robotCentricSup = robotCentricSup;
     }
 
+    public double getcurrentspeedmultiplier()
+    {
+        // subscribe to the topic in "datatable" called "Y"
+    // default value is 0
+    
+    //ySub = datatable.getDoubleTopic("Y").subscribe(0.0);
+    return RobotContainer.SpeedAdjustSlider.getDouble(0.0);
+    }
+
     @Override
     public void execute() {
         /* Get Values, Deadband*/
@@ -37,7 +47,7 @@ public class TeleopSwerve extends CommandBase {
 
         /* Drive */
         s_Swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
+            new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * getcurrentspeedmultiplier()), 
             rotationVal * Constants.Swerve.maxAngularVelocity, 
             !robotCentricSup.getAsBoolean(), 
             true

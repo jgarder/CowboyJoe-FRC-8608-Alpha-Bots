@@ -199,7 +199,7 @@ public final class Constants {
         public static final double DRIVE_MAX_ANGULAR_VELOCITY = 4;
         public static final double SWERVE_MAX_VELOCITY_METERS = 4;
         /** Meters per Second */
-        public static final double maxSpeed = .1;//.5;//4.5; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 1;//.1;//.5;//4.5; //TODO: This must be tuned to specific robot
         /** Radians per Second */
         public static final double maxAngularVelocity = .5;//2;//10.0; //TODO: This must be tuned to specific robot
 

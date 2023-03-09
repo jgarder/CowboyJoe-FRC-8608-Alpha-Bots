@@ -3,6 +3,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -14,7 +17,12 @@ import frc.robot.Commands.*;
 import frc.robot.Constants.XboxControllerMap;
 import frc.robot.Subsystems.*;
 import frc.robot.autos.*;
+
+import java.util.Map;
+
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,7 +58,8 @@ public class RobotContainer {
     public final PIDArmExtensionSubsystem PIDArmExtensionSubsystem = new PIDArmExtensionSubsystem();
     public final PIDArmLifterSubsystem PIDArmLifterSubsystem = new PIDArmLifterSubsystem();
 
-
+    public static ShuffleboardTab CowboyJowTab;
+    public static GenericEntry SpeedAdjustSlider;
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -73,6 +82,14 @@ public class RobotContainer {
 
         //on boot might as well start up the camera server
         CameraServer.startAutomaticCapture();
+        CowboyJowTab = Shuffleboard.getTab("CowboyJoe");
+        //GenericEntry maxSpeed = tab.add("Joe Speed Adjustment", 0).getEntry();
+        SpeedAdjustSlider =  CowboyJowTab
+    .add("Joe Speed Adjustment", 0)
+    .withWidget(BuiltInWidgets.kNumberSlider)
+    .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
+    .getEntry();
+
     }
 
     /**
@@ -127,8 +144,9 @@ public class RobotContainer {
 
 
         JoystickButton AlignXButton = new JoystickButton(driveController, XboxController.Button.kLeftStick.value);
-        AlignXButton.whileTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));   
-        
+        //AlignXButton.whileTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));   
+        AlignXButton.toggleOnTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));
+
         JoystickButton BalanceButton = new JoystickButton(driveController, XboxController.Button.kRightStick.value);
         //BalanceButton.whileTrue(new PidBalanceCmd(s_Swerve,navx));     //new JoystickButton(joystick1, Constants.OperatorConstants.kresetLassoEncoderButton).whileTrue(new StartEndCommand(LassoSubsystem::slowWindInBeyondSoftLimit, LassoSubsystem::resetEncoder,LassoSubsystem));
         

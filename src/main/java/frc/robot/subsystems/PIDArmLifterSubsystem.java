@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.controller.PIDController;
@@ -40,7 +41,7 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
 
     armLiftMotor_encoder.setPosition(0);
     armLiftMotor.setInverted(true);
-    //lassoMotor_encoder.setVelocityConversionFactor(lassoencodercountsperinch);
+    //armLiftMotor_encoder.setVelocityConversionFactor(lassoencodercountsperinch);
     armLiftMotor.setSoftLimit(SoftLimitDirection.kForward, (float)Constants.ArmLifterConstants.kEncoderValueMax);
     armLiftMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.ArmLifterConstants.kEncoderValueMin);
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -48,6 +49,15 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     //armLiftMotor.setOpenLoopRampRate(.1);
     armLiftMotor.setClosedLoopRampRate(.05);
     armLiftMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo1650safelimitAmps);
+
+    //limit everything on this motor controller to 500ms except the status 0 frame which is 10ms and does faults and applied output. 
+    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 30);  //Default Rate: 20ms ,Motor Velocity,Motor Temperature,Motor VoltageMotor Current
+    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 30);  //Default Rate: 20ms ,Motor Position
+    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500); //Default Rate: 50ms ,Analog Sensor Voltage ,Analog Sensor Velocity ,Analog Sensor Position
+    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 500); //Default Rate: 20ms, Alternate Encoder Velocity,Alternate Encoder Position
+    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Position,Duty Cycle Absolute Encoder Absolute Angle
+    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Velocity,Duty Cycle Absolute Encoder Frequency
+    
     enable();//enable the pidcontroller of this subsystem
   }
 

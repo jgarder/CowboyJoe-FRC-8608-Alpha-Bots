@@ -25,7 +25,7 @@ import frc.robot.Subsystems.*;
 
 
 public class AlignXToTargetCMD extends CommandBase {
-  double kXP = 1.0;
+  double kXP = 1.5;
   double kXI = 0.000;
   double kXD = 0.000;
 
@@ -42,8 +42,8 @@ public class AlignXToTargetCMD extends CommandBase {
   double kZRetroHighD = 0.0001;
 
   double kRP = 0.07;
-  double kRI = 0.000;
-  double kRD = 0.000;
+  double kRI = 0.00;
+  double kRD = 0.00;
   /** Creates a new ArmStopCMD. */
   Limelight3Subsystem limelight3Subsystem;
   Swerve s_Swerve;
@@ -67,22 +67,22 @@ public class AlignXToTargetCMD extends CommandBase {
   //PIDController AlignZController;//this will go forward and back to align. 
   //PIDController AlignRotationController;//this will spin us. 
   //min amounts to tolerate 
-  double minXErrorToCorrect = .1;//.04
-  double minRYErrorToCorrect = .04;//.04;
-  double minStrafeErrorToCorrect = .1;//.04;
+  //double minXErrorToCorrect = .1;//.04
+  double minRYErrorToCorrect = .5;//.04;
+  double minStrafeXErrorToCorrect = .08;//.04;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
       
-    AlignXController.setTolerance(0.4);
-    AlignZController.setTolerance(0.0);
-    AlignRotationController.setTolerance(0.4);
+    AlignXController.setTolerance(minStrafeXErrorToCorrect);
+    AlignZController.setTolerance(minRYErrorToCorrect);
+    AlignRotationController.setTolerance(minRYErrorToCorrect);
     //AlignRotationController.setTolerance(Units.degreesToRadians(3));
     //AlignRotationController.enableContinuousInput(-Math.PI, Math.PI);
 
-    
+    double xoffsetinmeters = .11;
     // Drive
-    AlignXController.setGoal(0);
+    AlignXController.setGoal(0-.11);
     AlignZController.setGoal(0);
     AlignRotationController.setGoal(minRYErrorToCorrect);
   }
@@ -153,7 +153,7 @@ public class AlignXToTargetCMD extends CommandBase {
     double strafe_adjust = 0.0;
     double min_strafe_command = 0.008;
     
-    if (Math.abs(stafe_error) > minStrafeErrorToCorrect ) //!AlignXController.atGoal()
+    if (Math.abs(stafe_error) > minStrafeXErrorToCorrect ) //!AlignXController.atGoal()
     {
       if (stafe_error < 0)
       {
@@ -228,17 +228,18 @@ public class AlignXToTargetCMD extends CommandBase {
     //driveSubsystem.ArcadeDrivemotors(0, steering_adjust);
     boolean robotCentric = true;
     double translationAxis = 0;//distance_adjust;
-    double strafeAxis = 0;//strafe_adjust ;
-    double rotationAxis = rotation_adjust;
-    double alignmentspeed = 1;//5.0 * Constants.Swerve.maxSpeed;
-    // s_Swerve.drive(
-    //         new Translation2d(translationAxis, strafeAxis).times(alignmentspeed), 
-    //         rotationAxis * Constants.Swerve.maxAngularVelocity, 
-    //         !robotCentric, 
-    //         true
-    //     );
+    double strafeAxis = strafe_adjust;//strafe_adjust ;
+    double rotationAxis = rotation_adjust;//rotation_adjust;
+    double alignmentspeed = .1;//5.0 * Constants.Swerve.maxSpeed;
+    double rotationspeed = .1;//1.0 * Constants.Swerve.maxAngularVelocity;
+     s_Swerve.drive(
+             new Translation2d(translationAxis, strafeAxis).times(alignmentspeed), 
+             rotationAxis * rotationspeed , 
+             !robotCentric, 
+           true
+         );
 
-    s_Swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(translationAxis, strafeAxis, rotationAxis,s_Swerve.swerveOdometry.getPoseMeters().getRotation() ));
+    //s_Swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(translationAxis, strafeAxis, rotationAxis,s_Swerve.swerveOdometry.getPoseMeters().getRotation() ));
     SmartDashboard.putNumber("rotation_adjust", RotationY_error);
     SmartDashboard.putNumber("distance_adjust", Selected_tagArea_error);
     SmartDashboard.putNumber("steering_adjust", stafe_error);
