@@ -40,7 +40,7 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
     
       extensionMotor_encoder.setPosition(0);
       extensionMotor.setInverted(false);
-      ;
+      extensionStage = 0;
       //lassoMotor_encoder.setVelocityConversionFactor(lassoencodercountsperinch);
       extensionMotor.setSoftLimit(SoftLimitDirection.kForward, (float)Constants.ArmExtensionConstants.kmaxEncoderValue);
       extensionMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.ArmExtensionConstants.kminEncoderValue);
@@ -81,6 +81,32 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
       super.periodic();// This is a PidSubsystem, we have orridden the periodic method to get encoder data... So we need to call the super periodic method to get the PID stuff to work.
     }
 
+  int extensionStage = -1; // -1 = unknown postion, 0 = zeroed , 1= manual mode (could be anywhere), 2 = Mid Score extension , 3 High score extension, 4 substation pickup
+  
+  public void runArmExtensionStages()
+  {
+    switch (extensionStage){
+      case -1 : //we are in pre setup
+        extensionMotor_encoder.setPosition(0);
+        setSetpointIn();
+        break;
+      case 0  :
+        setSetpointMidScore();
+        extensionStage = 2;
+        break;
+      case 1  :
+        break;
+      case 2  :
+        setSetpointHighestScore();
+        extensionStage = 3;
+        break;
+      case 3  :
+        setSetpointIn();
+        break;
+      case 4  :
+        break;
+    }
+  }
 
   public void setSetpointHighestScore() {
     setSetpoint(Constants.ArmExtensionConstants.kHighestGoalEncoderValue);
@@ -92,6 +118,7 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
     setSetpoint(Constants.ArmExtensionConstants.kLowestGoalEncoderValue);
   }
   public void setSetpointIn() {
+    extensionStage = 0;
     setSetpoint(Constants.ArmExtensionConstants.kminEncoderValue);
   }
 

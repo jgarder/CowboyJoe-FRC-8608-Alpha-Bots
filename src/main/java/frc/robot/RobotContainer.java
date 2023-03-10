@@ -122,6 +122,11 @@ public class RobotContainer {
             SmartDashboard.putNumber("Jow Speed Multiplier", .25);
             SmartDashboard.setPersistent("Jow Speed Multiplier");
         }
+        if(!SmartDashboard.containsKey("Jow Rotation Multiplier"))
+        {
+            SmartDashboard.putNumber("Jow Rotation Multiplier", .25);
+            SmartDashboard.setPersistent("Jow Rotation Multiplier");
+        }
 
 
     }

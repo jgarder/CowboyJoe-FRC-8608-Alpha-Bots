@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
@@ -32,10 +33,16 @@ public class TeleopSwerve extends CommandBase {
     public double getcurrentspeedmultiplier()
     {
         // subscribe to the topic in "datatable" called "Y"
-    // default value is 0
-    
-    //ySub = datatable.getDoubleTopic("Y").subscribe(0.0);
-    return RobotContainer.SpeedAdjustSlider.getDouble(0.0);
+        // default value is 0
+        
+        //ySub = datatable.getDoubleTopic("Y").subscribe(0.0);
+        //return RobotContainer.SpeedAdjustSlider.getDouble(0.0);
+        double clamped = MathUtil.clamp(SmartDashboard.getNumber("Jow Speed Multiplier", 0.0), 0.0, 1.0);
+        return clamped;
+    }
+    public double getcurrentRotationMultiplier()
+    {
+        return MathUtil.clamp(SmartDashboard.getNumber("Jow Rotation Multiplier", 0.0), 0.0, 1.0);
     }
 
     @Override
@@ -48,7 +55,7 @@ public class TeleopSwerve extends CommandBase {
         /* Drive */
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed * getcurrentspeedmultiplier()), 
-            rotationVal * Constants.Swerve.maxAngularVelocity, 
+            rotationVal * Constants.Swerve.maxAngularVelocity * getcurrentRotationMultiplier(), 
             !robotCentricSup.getAsBoolean(), 
             true
         );

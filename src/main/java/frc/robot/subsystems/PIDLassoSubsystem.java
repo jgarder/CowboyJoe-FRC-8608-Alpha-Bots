@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PIDLassoSubsystem extends PIDSubsystem {
 
-  static double kP = 0.030;
+  static double kP = 0.060;
   static double kI = 0.0;
   static double kD = 0.0;
     
@@ -35,8 +35,10 @@ public class PIDLassoSubsystem extends PIDSubsystem {
       super(new PIDController(kP, kI, kD));
       setSetpoint(0);
       lassoMotor_encoder = lassoMotor.getEncoder();
-      this.colorSensor =  thisSensor;
       lassoMotor_encoder.setPosition(0);
+      lassoState = 0;// our state, says lasso is in 0 position
+      this.colorSensor =  thisSensor;
+ 
       lassoMotor.setInverted(true);
       //lassoMotor_encoder.setVelocityConversionFactor(lassoencodercountsperinch);
       lassoMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -88,7 +90,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     {
       return;
     }
-    boolean isLassoHeadedTowardsConeSize = (getSetpoint() <= Constants.LassoConstants.kminEncoderValueWithCone);
+    boolean isLassoHeadedTowardsConeSize = (getSetpoint() <= Constants.LassoConstants.kminEncoderValueWithCube);
     if (colorSensor.lastdetectedColor == "Cube" && isLassoHeadedTowardsConeSize)
     {
       //lassospeed = thisspeed/2;
@@ -102,13 +104,14 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   public void slowWindInBeyondSoftLimit() {
     disable(); //disable the pidcontroller of this subsystem
     double slowretractspeed = -.1;
-    setSetpointLassoZero();
-    lassoMotor_encoder.setPosition(Constants.LassoConstants.kmaxEncoderValue);//we could disable soft limit here but this is "safer" because you ALWAYS call reset encoder after.
+    lassoMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
     SetSpeed(slowretractspeed);
   }
 
   public void resetEncoder() {
-    lassoMotor_encoder.setPosition(0);
+    setSetpointLassoZero();
+    lassoMotor_encoder.setPosition(Constants.LassoConstants.kminEncoderValue);
+    lassoMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     enable();//reactivate the pidcontroller of this subsystem
   }
 
@@ -139,6 +142,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   }
   public void setSetpointLassoZero() {
     setSetpoint(Constants.LassoConstants.kminEncoderValue);
+    lassoState = 0;
   }
   public void setSetpointLassoCone() {
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCone);
@@ -147,6 +151,72 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCube);
   }
 
+   // -1 = start state, 0 = zeroed, 1= go(ing) for cone, 2 = cone color/distance detected,
+   // 3=going for cube, 4 = cube went for and color/distance detected, 5 = open position
+   int lassoState = -1;
+  public void RunLasso()
+  {
+    switch (lassoState){
+      case -1 : // if -1 we are in start state and this will just zero us out and sit. 
+        setSetpointLassoZero();
+        break;
+      case 0 : // 0 if zeroed when button is pressed then send lasso out.  
+        setSetpointLassoOut();
+        lassoState = 5;
+        break;
+      case 1 :// we are pressing button while go(ing) for a cone (we may just have a cone)
+        //we dont have cone then backup
+        //we do have a cone then we are scoring so open lasso
+        setSetpointLassoOut();
+        lassoState = 5;
+        break;
+      case 2 :
+        break;
+      case 3 : // we are pressing button while go(ing) for a cube
+        //we dont have cube then backup and open lasso
+        //we do have a cube then we are scoring so open lasso
+        setSetpointLassoOut();
+        lassoState = 5;
+        break;
+      case 4 :
+        break;
+      case 5 : // if open lasso when run lasso is ran. 
+        //detect cone or cube
+        if (ObjectInLasso() == "Cube")
+        {
+          lassoState = 3;
+          setSetpointLassoCube();
+        }
+        else if(ObjectInLasso() == "Cone")
+        {
+          lassoState = 1;
+          setSetpointLassoCone();
+        }
+        else if(ObjectInLasso() == "RoomLight")
+        {
+          //nothing detected
+          //retractSlowly();
+          setSetpointLassoCone();
+          lassoState = 1;
+        }
+        break;
+
+
+    }
+  }
+
+  private void retractSlowly() {
+    int reduction = 10;
+    if(lassoEncoderValue > reduction)
+    {
+      setSetpoint(lassoEncoderValue-reduction);
+    }
+  }
+
+  public String ObjectInLasso()
+  {
+    return colorSensor.lastdetectedColor;
+  }
   /**
    * 
    * feed this a color sensor and speed from an axis of -1 to 1

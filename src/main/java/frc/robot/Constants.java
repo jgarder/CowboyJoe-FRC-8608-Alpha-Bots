@@ -40,11 +40,11 @@ public final class Constants {
         public static final int klassoMotorAxis = XboxController.Axis.kRightY.value;
         public static final int kDRIVERightTriggerAxis = XboxController.Axis.kRightTrigger.value;
         public static final int kDRIVELeftTriggerAxis = XboxController.Axis.kLeftTrigger.value;
-        //public static final int kArmupButton = kDRIVELeftTriggerAxis;
-        //public static final int kArmdownButton = kDRIVERightTriggerAxis;
-        public static final int kArmoutButton = XboxController.Button.kRightBumper.value;
-        public static final int kArminButton = XboxController.Button.kLeftBumper.value; 
-    
+
+        
+        public static final int kArmOutHighestPoleButton = XboxController.Button.kY.value;//this is the Y button, the triangle button or the Top button of the xbox controller
+        public static final int kArmOutMidestPoleButton = XboxController.Button.kB.value;//this is the B button, the Square button or the Right button of the xbox controller
+ 
         //public static final int kresetLassoEncoderButton = 9;//#9 is the "select" button in the middle of the joystick
         
         public static final int RatchetLinearActuatorsparkMaxCanID = 15;
@@ -66,11 +66,11 @@ public final class Constants {
         public static final double kEncoderValueMax = 76;// this is when the arm is horizontal and the arm is extended all the way out.
         public static final double kEncoderValueMaxCollapsed=76; //this is when the amr is horizontal and the arm is collapsed all the way in
         public static final double kEncoderValueMaxExtended=71; //this is when the amr is horizontal and the arm is collapsed all the way in
-        public static final double kEncoderValueGoalScoring = 47.7;// this will change the angle we have our head at when we are scoring goals.
+        public static final double kEncoderValueGoalScoring = 42;// this will change the angle we have our head at when we are scoring goals.
         public static final double kEncoderValueStartingConfig = 0;// arm laying back and collapsed resting against backstop is 0 position
         public static final double kEncoderValueVertical = 11.7; // this is when the arm is veritcal at the 90 degree angle
         public static final double kEncoderValueGroundPickup = 70;  //this is most likely the same as max encoder value. or prolly can calc using those instead
-        public static final double kEncoderValueSubStationPickup = 47.7;  //this is most likely the same as max encoder value. or prolly can calc using those instead
+        public static final double kEncoderValueSubStationPickup = 42;  //this is most likely the same as max encoder value. or prolly can calc using those instead
 
 
         public static final double kslowretractspeed = -.2;
@@ -98,7 +98,7 @@ public final class Constants {
     
         public static final int kArmExtensionSlewRate = 10;
     
-        public static final double kHighestGoalEncoderValue = 195;
+        public static final double kHighestGoalEncoderValue = 205;
         public static final double kMidestGoalEncoderValue = 30;
         public static final double kLowestGoalEncoderValue = 0;
       }
@@ -116,7 +116,8 @@ public final class Constants {
     
        
         public static final double kminEncoderValue = 0;
-        public static final double kminEncoderValueWithCube = 93;
+        public static final double kminEncoderValueWithCube = 90;
+        public static final double kavgEncoderValueWithCube = 93;
         public static final double kEncoderValueLoopOut= 150;
         public static final double kmaxEncoderValue = 180;
     
@@ -201,7 +202,7 @@ public final class Constants {
         /** Meters per Second */
         public static final double maxSpeed = 1;//.1;//.5;//4.5; //TODO: This must be tuned to specific robot
         /** Radians per Second */
-        public static final double maxAngularVelocity = .5;//2;//10.0; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 2;//2;//10.0; //TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
