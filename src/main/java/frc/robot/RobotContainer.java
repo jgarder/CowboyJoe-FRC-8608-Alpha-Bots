@@ -43,8 +43,6 @@ public class RobotContainer {
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-    /* Driver Buttons */
-    private final JoystickButton robotCentric = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value);
 
     /* Subsystems */
     public JoePowerDistributionPanel PDP= new JoePowerDistributionPanel();
@@ -61,6 +59,32 @@ public class RobotContainer {
     public static ShuffleboardTab CowboyJowTab;
     public static GenericEntry SpeedAdjustSlider;
 
+    /* Controller 1 Declarations and instiantiainted  */
+    private final JoystickButton aButton = new JoystickButton(driveController, XboxController.Button.kA.value);
+    private final JoystickButton xButton = new JoystickButton(driveController, XboxController.Button.kX.value);
+    private final JoystickButton bButton = new JoystickButton(driveController, XboxController.Button.kB.value);
+    private final JoystickButton yButton = new JoystickButton(driveController, XboxController.Button.kY.value);
+
+
+    private final Trigger LeftTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis) > 0.05);
+    private final Trigger RightTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis) > 0.05);
+    
+    private final JoystickButton LeftBumperButton = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton robotCentric = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton RightBumperButton = new JoystickButton(driveController, XboxController.Button.kRightBumper.value);
+    
+    private final JoystickButton LeftStickButton = new JoystickButton(driveController, XboxController.Button.kLeftStick.value);
+    private final JoystickButton RightStickButton = new JoystickButton(driveController, XboxController.Button.kRightStick.value);
+
+    private final JoystickButton Startbutton = new JoystickButton(driveController, XboxController.Button.kStart.value);
+    private final JoystickButton BackButton = new JoystickButton(driveController, XboxController.Button.kBack.value);
+
+
+    private final POVButton UpHatPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionUP);
+    private final POVButton DownHatPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionDOWN);
+    private final POVButton RightHatPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionRIGHT);
+    private final POVButton LeftHatPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionLeft);
+    
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -74,21 +98,31 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
-        
-        PIDLassoSubsystem.setDefaultCommand(new LassoJoystickCmd(PIDLassoSubsystem,CSensor,()->driveController.getRawAxis(Constants.OperatorConstants.klassoMotorAxis)));
+        //lasso is backwards to everyones brain. 
+        //PIDLassoSubsystem.setDefaultCommand(new LassoJoystickCmd(PIDLassoSubsystem,CSensor,()->driveController.getRawAxis(Constants.OperatorConstants.klassoMotorAxis)));
 
-        // Configure the button bindings
-        configureButtonBindings();
+        //Configure Controller 1
+
+        // CONFIGURE DRIVER
+        configureButtonBindingsDefault();
 
         //on boot might as well start up the camera server
         CameraServer.startAutomaticCapture();
-        CowboyJowTab = Shuffleboard.getTab("CowboyJoe");
-        //GenericEntry maxSpeed = tab.add("Joe Speed Adjustment", 0).getEntry();
-        SpeedAdjustSlider =  CowboyJowTab
-    .add("Joe Speed Adjustment", 0)
-    .withWidget(BuiltInWidgets.kNumberSlider)
-    .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
-    .getEntry();
+        // CowboyJowTab = Shuffleboard.getTab("CowboyJoe");
+        // //GenericEntry maxSpeed = tab.add("Joe Speed Adjustment", 0).getEntry();
+        // SpeedAdjustSlider =  CowboyJowTab
+        // .add("Joe Speed Adjustment", 0)
+        // .withWidget(BuiltInWidgets.kNumberSlider)
+        // .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
+        // .getEntry();
+
+        //smartdashboard implementation of speed controller
+        if(!SmartDashboard.containsKey("Jow Speed Multiplier"))
+        {
+            SmartDashboard.putNumber("Jow Speed Multiplier", .25);
+            SmartDashboard.setPersistent("Jow Speed Multiplier");
+        }
+
 
     }
 
@@ -98,56 +132,39 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() {
-        /* Driver Buttons */
-        
 
+    private void configureButtonBindingsDefault() {
+
+        /* Driver Buttons */
+        aButton.onTrue(new InstantCommand(PIDLassoSubsystem::RunLasso,PIDLassoSubsystem));
         //here is one way to handle trigger/axis inputs that act as a button but accept their analog input.
         //this also has the onFalse for both axis triggers that executes when while true is done handled but the Trigger Class.
-        Trigger ArmUpTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis) > 0.2);
-        ArmUpTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> -driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis))).and(()->PIDArmLifterSubsystem.isLiftArmVerticalOrCloser());
-        ArmUpTrigger.onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
-        Trigger ArmDownTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis) > 0.2);
-        ArmDownTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis)));
-        ArmDownTrigger.onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
+        LeftTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> -driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis)))
+        .onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
+        RightTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis)))
+        .onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
 
-        int kArmOutHighestPoleButton = XboxController.Button.kY.value;//this is the Y button, the triangle button or the Top button of the xbox controller
-        int kArmOutMidestPoleButton = XboxController.Button.kB.value;//this is the B button, the Square button or the Right button of the xbox controller
-        int kArmin = XboxController.Button.kA.value;// A button, bottom of 4 buttons
-        JoystickButton armHighestout = new JoystickButton(driveController, kArmOutHighestPoleButton);
-        JoystickButton armMidestOut = new JoystickButton(driveController, kArmOutMidestPoleButton);
-        armHighestout.onTrue(new InstantCommand(PIDArmExtensionSubsystem::setSetpointHighestScore,PIDArmExtensionSubsystem));
-        armMidestOut.onTrue(new InstantCommand(PIDArmExtensionSubsystem::setSetpointMidScore,PIDArmExtensionSubsystem));
 
-        JoystickButton armIn = new JoystickButton(driveController, kArmin);
-        armIn.onTrue(new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem));
+        LeftBumperButton.onTrue(new InstantCommand(PIDArmExtensionSubsystem::runArmExtensionStages,PIDArmExtensionSubsystem));
         
-        //new JoystickButton(joystick1, 10).whileTrue(new InstantCommand(PIDArmExtensionSubsystem::enable,PIDArmExtensionSubsystem));
-        JoystickButton armliftToScoring = new JoystickButton(driveController, XboxController.Button.kX.value);
-        armliftToScoring.onTrue(new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem));
+        xButton.onTrue(new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem));
 
-        POVButton HomeLifterPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionUP);
-        POVButton HomeExtensionPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionDOWN);
-        POVButton HomeLassoPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionRIGHT);
+
         
-        HomeLifterPOV.whileTrue(new StartEndCommand(PIDArmLifterSubsystem::slowWindInBeyondSoftLimit, PIDArmLifterSubsystem::resetEncoder,PIDArmLifterSubsystem));
-        HomeExtensionPOV.whileTrue(new StartEndCommand(PIDArmExtensionSubsystem::slowWindInBeyondSoftLimit, PIDArmExtensionSubsystem::resetEncoder,PIDArmExtensionSubsystem));
-        HomeLassoPOV.whileTrue(new StartEndCommand(PIDLassoSubsystem::slowWindInBeyondSoftLimit, PIDLassoSubsystem::resetEncoder,PIDLassoSubsystem));
+        UpHatPOV.whileTrue(new StartEndCommand(PIDArmLifterSubsystem::slowWindInBeyondSoftLimit, PIDArmLifterSubsystem::resetEncoder,PIDArmLifterSubsystem));
+        DownHatPOV.whileTrue(new StartEndCommand(PIDArmExtensionSubsystem::slowWindInBeyondSoftLimit, PIDArmExtensionSubsystem::resetEncoder,PIDArmExtensionSubsystem));
+        RightHatPOV.whileTrue(new StartEndCommand(PIDLassoSubsystem::slowWindInBeyondSoftLimit, PIDLassoSubsystem::resetEncoder,PIDLassoSubsystem));
 
 
-        JoystickButton Startbutton = new JoystickButton(driveController, XboxController.Button.kStart.value);
         //Startbutton.onTrue(new InstantCommand(driveSubsystem::changeturbomode,driveSubsystem));
         Startbutton.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
-        JoystickButton switchpipelinebutton = new JoystickButton(driveController, XboxController.Button.kBack.value);
-        switchpipelinebutton.onTrue(new InstantCommand(limelight3Subsystem::switchPipeline,limelight3Subsystem));
+        BackButton.onTrue(new InstantCommand(limelight3Subsystem::switchPipeline,limelight3Subsystem));
 
 
-        JoystickButton AlignXButton = new JoystickButton(driveController, XboxController.Button.kLeftStick.value);
         //AlignXButton.whileTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));   
-        AlignXButton.toggleOnTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));
+        //AlignXButton.toggleOnTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));
 
-        JoystickButton BalanceButton = new JoystickButton(driveController, XboxController.Button.kRightStick.value);
         //BalanceButton.whileTrue(new PidBalanceCmd(s_Swerve,navx));     //new JoystickButton(joystick1, Constants.OperatorConstants.kresetLassoEncoderButton).whileTrue(new StartEndCommand(LassoSubsystem::slowWindInBeyondSoftLimit, LassoSubsystem::resetEncoder,LassoSubsystem));
         
         checkStageControls();
@@ -158,8 +175,7 @@ public class RobotContainer {
     {
         SmartDashboard.putNumber("ActionStage", stage);
         SmartDashboard.putString("currentlyHolding", currentlyHolding);
-        JoystickButton Proceedbutton = new JoystickButton(driveController, XboxController.Button.kRightBumper.value);
-        JoystickButton Retrybutton = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value);
+
         //run auto
         //Proceedbutton.onTrue(new myfirstAuto(s_Swerve));
         //Proceedbutton.onTrue(new DriveFollowPath("Test Path 2",4,4));
