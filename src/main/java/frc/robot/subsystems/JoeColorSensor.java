@@ -57,10 +57,12 @@ public class JoeColorSensor extends SubsystemBase {
   private final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
   private final Color kRedTarget = new Color(0.561, 0.232, 0.114);
   private final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+  
   private final Color kConeTarget = new Color(0.367, 0.578, 0.05);
   private final Color kConeFarTarget = new Color(0.312, 0.475, 0.207);
   private final Color kCubeTarget = new Color(0.192, 0.290, 0.517);
   private final Color kCubeFarTarget = new Color(0.247, 0.444, 0.301);
+  private final Color kCubeLogoTarget = new Color(0.237, 0.47, 0.297);
   private final Color kRoomLightingTarget = new Color(0.25, .48, 0.27);
 
   @Override
@@ -112,7 +114,11 @@ public class JoeColorSensor extends SubsystemBase {
       } else if (match.color == kCubeTarget) {
         colorString = "Cube";
         lastdetectedColor = "Cube";
+        
       } else if (match.color == kCubeFarTarget) {
+        colorString = "Cube";
+        lastdetectedColor = "Cube";
+      } else if (match.color == kCubeLogoTarget) {
         colorString = "Cube";
         lastdetectedColor = "Cube";
       } else if (match.color == kRoomLightingTarget) {
@@ -145,6 +151,7 @@ public class JoeColorSensor extends SubsystemBase {
       m_colorMatcher.addColorMatch(kCubeTarget); 
       m_colorMatcher.addColorMatch(kConeFarTarget); 
       m_colorMatcher.addColorMatch(kCubeFarTarget);
+      m_colorMatcher.addColorMatch(kCubeLogoTarget);
       m_colorMatcher.addColorMatch(kRoomLightingTarget);    
     }
       

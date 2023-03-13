@@ -158,8 +158,9 @@ public class RobotContainer {
         
         UpHatPOV.whileTrue(new StartEndCommand(PIDArmLifterSubsystem::slowWindInBeyondSoftLimit, PIDArmLifterSubsystem::resetEncoder,PIDArmLifterSubsystem));
         DownHatPOV.whileTrue(new StartEndCommand(PIDArmExtensionSubsystem::slowWindInBeyondSoftLimit, PIDArmExtensionSubsystem::resetEncoder,PIDArmExtensionSubsystem));
-        RightHatPOV.whileTrue(new StartEndCommand(PIDLassoSubsystem::slowWindInBeyondSoftLimit, PIDLassoSubsystem::resetEncoder,PIDLassoSubsystem));
-
+        
+        //RightHatPOV.whileTrue(new StartEndCommand(PIDLassoSubsystem::slowWindInBeyondSoftLimit, PIDLassoSubsystem::resetEncoder,PIDLassoSubsystem));
+        RightHatPOV.onTrue(new ZeroLassoCmd(PIDLassoSubsystem));
 
         //Startbutton.onTrue(new InstantCommand(driveSubsystem::changeturbomode,driveSubsystem));
         Startbutton.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));

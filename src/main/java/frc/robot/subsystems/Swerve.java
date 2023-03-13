@@ -194,7 +194,16 @@ public class Swerve extends SubsystemBase {
         ahrs.zeroYaw();
         //gyro.setYaw(0);
     }
+    
+    // Can we use the yaw_offset_tracker minus 180 degrees to return the inverse yaw 
+    //offset for corrections when the robot is heading directly towards driver station?
 
+    public void inverseGyro(){//set yaw when in autonomous facing driver station
+       
+        ahrs.zeroYaw();
+    }
+
+    
     public Rotation2d getYaw() {
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - ahrs.getYaw()) : Rotation2d.fromDegrees(ahrs.getYaw());
     }

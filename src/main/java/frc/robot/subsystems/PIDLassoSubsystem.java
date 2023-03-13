@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -46,13 +47,13 @@ public class PIDLassoSubsystem extends PIDSubsystem {
       lassoMotor.setSoftLimit(SoftLimitDirection.kForward, (float)Constants.LassoConstants.kmaxEncoderValue);
       lassoMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.LassoConstants.kminEncoderValue);
       lassoMotor.setIdleMode(IdleMode.kBrake);
-      lassoMotor.setClosedLoopRampRate(.25);
-      
+      //lassoMotor.setClosedLoopRampRate(.5);
+      lassoMotor.setOpenLoopRampRate(.05);//small ramp rate becuase this will reverse instantly. 
       lassoMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo550safelimitAmps);
 
       //limit everything on this motor controller to 500ms except the status 0 frame which is 10ms and does faults and applied output. 
-      lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 30);  //Default Rate: 20ms ,Motor Velocity,Motor Temperature,Motor VoltageMotor Current
-      lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 30);  //Default Rate: 20ms ,Motor Position
+      lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20);  //Default Rate: 20ms ,Motor Velocity,Motor Temperature,Motor VoltageMotor Current
+      lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20);  //Default Rate: 20ms ,Motor Position
       lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500); //Default Rate: 50ms ,Analog Sensor Voltage ,Analog Sensor Velocity ,Analog Sensor Position
       lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 500); //Default Rate: 20ms, Alternate Encoder Velocity,Alternate Encoder Position
       lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Position,Duty Cycle Absolute Encoder Absolute Angle
@@ -83,6 +84,17 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     getEncoderData();
     super.periodic();// This is a PidSubsystem, we have orridden the periodic method to get encoder data... So we need to call the super periodic method to get the PID stuff to work.
     setMinLassoEncoderValueBasedOnColor();
+    double beltStretchMagicNumber = 1.25;
+    if(getSetpoint() == Constants.LassoConstants.kminEncoderValue && lassoEncoderValue < Constants.LassoConstants.kminEncoderValue + beltStretchMagicNumber){
+      disable();
+    }
+    else{
+      if(!isEnabled())
+      {
+        enable();
+      }
+      
+    }
   }
   public void setMinLassoEncoderValueBasedOnColor()
   { 
@@ -101,22 +113,42 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     }
 
   }
+  SlewRateLimiter speedLimiter = new SlewRateLimiter(.5);
   public void slowWindInBeyondSoftLimit() {
     disable(); //disable the pidcontroller of this subsystem
-    double slowretractspeed = -.1;
+    double slowretractspeed = -.6;//-.1;
     lassoMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
-    SetSpeed(slowretractspeed);
+    SetSpeed(speedLimiter.calculate(slowretractspeed));
+  }
+  public void slowerWindInBeyondSoftLimit() {
+    disable(); //disable the pidcontroller of this subsystem
+    double slowretractspeed = -.1;//-.1;
+    lassoMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
+    SetSpeed(speedLimiter.calculate(slowretractspeed));
   }
 
   public void resetEncoder() {
+    SetSpeed(0);
     setSetpointLassoZero();
-    lassoMotor_encoder.setPosition(Constants.LassoConstants.kminEncoderValue);
+    
     lassoMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     enable();//reactivate the pidcontroller of this subsystem
+    lassoMotor_encoder.setPosition(Constants.LassoConstants.kminEncoderValue);
   }
-
+  double OutputCurrent = 0;
+  double LassoTemp = 0;
+  public double getLassoAmps()
+  {
+    OutputCurrent = lassoMotor.getOutputCurrent();
+    return OutputCurrent;
+  }
   public void getEncoderData()
   {
+    getLassoAmps();
+    SmartDashboard.putNumber("Lasso Amps",OutputCurrent);
+
+    LassoTemp = lassoMotor.getMotorTemperature();
+    SmartDashboard.putNumber("Lasso Temp",LassoTemp);
     /**
      * Encoder position is read from a RelativeEncoder object by calling the
      * GetPosition() method.
@@ -138,16 +170,20 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   }
 
   public void setSetpointLassoOut() {
+    enable();
     setSetpoint(Constants.LassoConstants.kEncoderValueLoopOut);
   }
   public void setSetpointLassoZero() {
+    enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValue);
     lassoState = 0;
   }
   public void setSetpointLassoCone() {
+    enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCone);
   }
   public void setSetpointLassoCube() {
+    enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCube);
   }
 
@@ -205,6 +241,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     }
   }
 
+  boolean Zeroed = false;
   private void retractSlowly() {
     int reduction = 10;
     if(lassoEncoderValue > reduction)
