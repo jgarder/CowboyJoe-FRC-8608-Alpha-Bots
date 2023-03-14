@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 
-import javax.lang.model.util.ElementScanner14;
 
 import com.revrobotics.ColorMatch;
 
@@ -53,10 +52,10 @@ public class JoeColorSensor extends SubsystemBase {
    * Note: Any example colors should be calibrated as the user needs, these
    * are here as a basic example.
    */
-  private final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
-  private final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
-  private final Color kRedTarget = new Color(0.561, 0.232, 0.114);
-  private final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+  // private final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
+  // private final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
+  // private final Color kRedTarget = new Color(0.561, 0.232, 0.114);
+  // private final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
   
   private final Color kConeTarget = new Color(0.367, 0.578, 0.05);
   private final Color kConeFarTarget = new Color(0.312, 0.475, 0.207);
@@ -96,29 +95,11 @@ public class JoeColorSensor extends SubsystemBase {
        */
       String colorString;
       ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-  
-      if (match.color == kBlueTarget) {
-        colorString = "Blue";
-      } else if (match.color == kRedTarget) {
-        colorString = "Red";
-      } else if (match.color == kGreenTarget) {
-        colorString = "Green";
-      } else if (match.color == kYellowTarget) {
-        colorString = "Yellow";
-      } else if (match.color == kConeTarget) {
+
+      if (match.color == kConeTarget || match.color == kConeFarTarget) {
         lastdetectedColor = "Cone";
         colorString = "Cone";
-      } else if (match.color == kConeFarTarget) {
-        lastdetectedColor = "Cone";
-        colorString = "Cone";
-      } else if (match.color == kCubeTarget) {
-        colorString = "Cube";
-        lastdetectedColor = "Cube";
-        
-      } else if (match.color == kCubeFarTarget) {
-        colorString = "Cube";
-        lastdetectedColor = "Cube";
-      } else if (match.color == kCubeLogoTarget) {
+      } else if (match.color == kCubeLogoTarget || match.color == kCubeFarTarget || match.color == kCubeTarget) {
         colorString = "Cube";
         lastdetectedColor = "Cube";
       } else if (match.color == kRoomLightingTarget) {

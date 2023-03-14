@@ -1,28 +1,19 @@
 package frc.robot.Commands;
 
-import frc.robot.Constants;
-import frc.robot.Subsystems.NavxSubsystem;
 import frc.robot.Subsystems.PIDLassoSubsystem;
-import frc.robot.Subsystems.Swerve;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
 public class ZeroLassoCmd extends CommandBase {
-
-    long timeoutmilliseconds = 6000;
-    long startTime = 0;
+    // our motors are current limited to 35, so we shoot for about 28 on a okay//full battery 
+    private final double ampslimit = 30.0; 
+    //timeout incase of something horrific happening (life)
+    private final long timeoutmilliseconds = 6000;
+    private long startTime = 0;
     private PIDLassoSubsystem s_Lasso;  
-
+    private double amps = 0;
+    private boolean firstpassdone = false;
     // private DoubleSupplier translationSup;
     // private DoubleSupplier strafeSup;
     // private DoubleSupplier rotationSup;
@@ -34,9 +25,7 @@ public class ZeroLassoCmd extends CommandBase {
     }
 
     
-    double amps = 0;
-    double ampslimit = 30.0; // our motors are current limited to 35, so we shoot for about 28 on a okay//full battery 
-    boolean firstpassdone = false;
+
     @Override
     public void execute() {
         if(!firstpassdone){
@@ -66,17 +55,21 @@ public class ZeroLassoCmd extends CommandBase {
         if (end < System.currentTimeMillis() ){
             return true;
         }
-        amps = s_Lasso.getLassoAmps();
+        //in first 250 milliseconds we cant finish. 
+        if ((startTime + 250) > System.currentTimeMillis()){
+            return false;
+        }
+        amps = s_Lasso.getMotorAmps();
         
         if(amps > ampslimit && !firstpassdone){
-            System.out.println(String.format("FP amps  %f",amps));
+            //System.out.println(String.format("FP amps  %f",amps));
             firstpassdone = true;
             s_Lasso.resetEncoder();
             Timer.delay(.2);
             s_Lasso.resetEncoder();     
         }
         else if(amps > ampslimit && firstpassdone){
-            System.out.println(String.format("SP amps  %f",amps));
+            //System.out.println(String.format("SP amps  %f",amps));
             return true;
         }  
         return false;

@@ -2,7 +2,6 @@ package frc.robot.Subsystems;
 
 
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import com.revrobotics.RelativeEncoder;
@@ -11,7 +10,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
-import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,8 +46,8 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
       extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
       //limit everything on this motor controller to 500ms except the status 0 frame which is 10ms and does faults and applied output. 
-      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 30);  //Default Rate: 20ms ,Motor Velocity,Motor Temperature,Motor VoltageMotor Current
-      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 30);  //Default Rate: 20ms ,Motor Position
+      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20);  //Default Rate: 20ms ,Motor Velocity,Motor Temperature,Motor VoltageMotor Current
+      extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20);  //Default Rate: 20ms ,Motor Position
       extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500); //Default Rate: 50ms ,Analog Sensor Voltage ,Analog Sensor Velocity ,Analog Sensor Position
       extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 500); //Default Rate: 20ms, Alternate Encoder Velocity,Alternate Encoder Position
       extensionMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Position,Duty Cycle Absolute Encoder Absolute Angle
@@ -79,7 +77,27 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
     public void periodic() {
       getEncoderData();
       super.periodic();// This is a PidSubsystem, we have orridden the periodic method to get encoder data... So we need to call the super periodic method to get the PID stuff to work.
+      disablePidWhenParked();
     }
+  
+  public double getEncoderPosition()
+  {
+    return extensionMotorEncoderValue;
+  }
+  
+  public void disablePidWhenParked(){
+    double chainStretchMagicNumber = 1.25;
+    if(getSetpoint() <= Constants.ArmExtensionConstants.kminEncoderValue && Math.abs(getEncoderPosition()) < Constants.ArmExtensionConstants.kminEncoderValue + chainStretchMagicNumber){
+      disable();
+    }
+    else{
+      if(!isEnabled())
+      {
+        enable();
+      }
+      
+    }
+  }
 
   int extensionStage = -1; // -1 = unknown postion, 0 = zeroed , 1= manual mode (could be anywhere), 2 = Mid Score extension , 3 High score extension, 4 substation pickup
   
@@ -109,12 +127,15 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
   }
 
   public void setSetpointHighestScore() {
+    enable();
     setSetpoint(Constants.ArmExtensionConstants.kHighestGoalEncoderValue);
   }
   public void setSetpointMidScore() {
+    enable();
     setSetpoint(Constants.ArmExtensionConstants.kMidestGoalEncoderValue);
   }
   public void setSetpointLowScore() {
+    enable();
     setSetpoint(Constants.ArmExtensionConstants.kLowestGoalEncoderValue);
   }
   public void setSetpointIn() {
@@ -123,21 +144,40 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
   }
 
   public void slowWindInBeyondSoftLimit() {
-    disable();
-    double slowretractspeed = -.2;
+    WindInBeyondSoftLimit(-.3);
+  }
+  public void slowerWindInBeyondSoftLimit() {
+    WindInBeyondSoftLimit(-.1);
+  }
+  public void WindInBeyondSoftLimit(double retractSpeed) {
+    disable(); //disable the pidcontroller of this subsystem
     extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
-    //extensionMotor_encoder.setPosition(Constants.ArmExtensionConstants.kmaxEncoderValue);//we could disable soft limit here but this is "safer" because you ALWAYS call reset encoder after.
-    SetSpeed(slowretractspeed);
+    SetSpeed(speedLimiter.calculate(retractSpeed));
   }
   public void resetEncoder() {
-    extensionMotor_encoder.setPosition(0);
+    SetSpeed(0);
+    
     extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
     setSetpointIn();//might as well set the setpoint to 0 to it doesnt appear to run away after finding 0.
     enable();
+    extensionMotor_encoder.setPosition(Constants.ArmExtensionConstants.kminEncoderValue);
+  }
+
+  double OutputCurrent = 0;
+  double MotorTemp = 0;
+  public double getMotorAmps()
+  {
+    OutputCurrent = extensionMotor.getOutputCurrent();
+    return OutputCurrent;
   }
 
     public void getEncoderData()
   {
+    getMotorAmps();
+    SmartDashboard.putNumber("Extension Amps",OutputCurrent);
+
+    MotorTemp = extensionMotor.getMotorTemperature();
+    SmartDashboard.putNumber("Extension Temp",MotorTemp);
     /**
      * Encoder position is read from a RelativeEncoder object by calling the
      * GetPosition() method.

@@ -16,21 +16,21 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight3Subsystem extends SubsystemBase {
 
-  NetworkTable limelight;//Table for the limelight
-    NetworkTableEntry tx;//Table for the x-coordinate
-    NetworkTableEntry ty;//Table for the y-coordnate
-    NetworkTableEntry ta;//Table for the area
-    NetworkTableEntry ts;//Table for the skew
-    NetworkTableEntry tv;//Table to see if there are valid targets
-    NetworkTableEntry tl;//Table for latency
-    NetworkTableEntry tshort;//Table for short side length
-    NetworkTableEntry tlong;//Table for long side length
-    NetworkTableEntry thoriz;//Table for width
-    NetworkTableEntry tvert;//Table for height
-    NetworkTableEntry ledMode;//Table to set blinking leds
-    NetworkTableEntry camMode;//Table to set camera mode
-    NetworkTableEntry pipeline;//Table to switch pipelines
-    NetworkTableEntry solvePNP;
+    private NetworkTable limelight;//Table for the limelight
+    private NetworkTableEntry tx;//Table for the x-coordinate
+    private NetworkTableEntry ty;//Table for the y-coordnate
+    private NetworkTableEntry ta;//Table for the area
+    private NetworkTableEntry ts;//Table for the skew
+    private NetworkTableEntry tv;//Table to see if there are valid targets
+    private NetworkTableEntry tl;//Table for latency
+    private NetworkTableEntry tshort;//Table for short side length
+    private NetworkTableEntry tlong;//Table for long side length
+    private NetworkTableEntry thoriz;//Table for width
+    private NetworkTableEntry tvert;//Table for height
+    private NetworkTableEntry ledMode;//Table to set blinking leds
+    private NetworkTableEntry camMode;//Table to set camera mode
+    private NetworkTableEntry pipeline;//Table to switch pipelines
+    private NetworkTableEntry solvePNP;
     double[] defaultArray = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   /** Creates a new Limelight3Subsystem. */
@@ -55,7 +55,6 @@ public class Limelight3Subsystem extends SubsystemBase {
   }
 
   XboxController ControllerUsedToScore;
-  public NetworkTable latestInfo;
 
   public static int kpipelineAprilTags = 0;
   public static int kpipelineRetroflectiveHighRung = 1;
@@ -74,24 +73,18 @@ public class Limelight3Subsystem extends SubsystemBase {
     
   }
   public NetworkTable getlatestinfo() {
-    return latestInfo; 
+    return limelight; 
   }
   public void VibeOnZero() {
     
-    NetworkTableEntry tx = latestInfo.getEntry("tx");
-    NetworkTableEntry ty = latestInfo.getEntry("ty");
-    NetworkTableEntry ta = latestInfo.getEntry("ta");
 
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0);
     
     double kXClosenessForRumble = 5.0;
     double kYClosenessForRumble = 1.0;
     double kTagAreaofScreenBeforeRumbleOn = .4;
-    if(area > kTagAreaofScreenBeforeRumbleOn)
+    if(getArea() > kTagAreaofScreenBeforeRumbleOn)
     {
-      if(Math.abs(x) < kXClosenessForRumble && Math.abs(x) > 0.0)
+      if(Math.abs(getXOffset()) < kXClosenessForRumble && Math.abs(getXOffset()) > 0.0)
       {
         ControllerUsedToScore.setRumble(RumbleType.kRightRumble, .3);
       }
@@ -99,7 +92,7 @@ public class Limelight3Subsystem extends SubsystemBase {
       {
         ControllerUsedToScore.setRumble(RumbleType.kRightRumble, 0);
       }
-      if(Math.abs(y) < kYClosenessForRumble && Math.abs(y) > 0.0)
+      if(Math.abs(getYOffset()) < kYClosenessForRumble && Math.abs(getYOffset()) > 0.0)
       {
         ControllerUsedToScore.setRumble(RumbleType.kLeftRumble, .2);
       }
@@ -117,8 +110,8 @@ public class Limelight3Subsystem extends SubsystemBase {
   }
   public NetworkTable getdataToDashboard()
   {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    latestInfo = table;
+    //NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    //latestInfo = table;
 
     //post to smart dashboard periodically
     SmartDashboard.putNumber("LimelightX", getXOffset());
@@ -128,7 +121,7 @@ public class Limelight3Subsystem extends SubsystemBase {
     SmartDashboard.putNumber("LL Pose Y", getYPos());
     SmartDashboard.putNumber("LL Pose Yaw", getYaw());
     SmartDashboard.putNumber("LL Pose Z", getZPos());
-    return latestInfo;
+    return limelight;
   }
 
   /**
@@ -264,23 +257,23 @@ public class Limelight3Subsystem extends SubsystemBase {
 	
 	public void switchLED() {
 		if(getLEDMode() == 0) {
-			latestInfo.getEntry("ledMode").setDouble(1);
+			limelight.getEntry("ledMode").setDouble(1);
 			SmartDashboard.putString("LED Mode", "Off");
 		}else if(getLEDMode() == 1) {
-			latestInfo.getEntry("ledMode").setDouble(0);
+			limelight.getEntry("ledMode").setDouble(0);
 			SmartDashboard.putString("LED Mode", "On");
 		}else if(getLEDMode() == 2) {
-			latestInfo.getEntry("ledMode").setDouble(1);
+			limelight.getEntry("ledMode").setDouble(1);
 			SmartDashboard.putString("LED Mode", "Off");
 		}
 	}
 	
 	public void switchCamera() {
 		if(getCamMode() == 0) {
-			latestInfo.getEntry("camMode").setDouble(1);
+			limelight.getEntry("camMode").setDouble(1);
 			SmartDashboard.putString("Camera Mode", "Camera");
 		}else if(getCamMode() == 1) {
-			latestInfo.getEntry("camMode").setDouble(0);
+			limelight.getEntry("camMode").setDouble(0);
 			SmartDashboard.putString("Camera Mode", "Vision");
 		}
 	}
@@ -301,12 +294,12 @@ public class Limelight3Subsystem extends SubsystemBase {
       setPipeline(kpipelineAprilTags);
     }
 
-    getdataToDashboard();
-    return latestInfo;
+    //getdataToDashboard();
+    return limelight;
   }
 	
 	public void setPipeline(double pipeline) {
-		latestInfo.getEntry("pipeline").setDouble(pipeline);
+		limelight.getEntry("pipeline").setDouble(pipeline);
 		SmartDashboard.putNumber("Camera Mode", pipeline);
 	}
 

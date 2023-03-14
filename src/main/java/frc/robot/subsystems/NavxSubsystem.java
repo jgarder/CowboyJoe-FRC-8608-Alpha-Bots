@@ -3,7 +3,6 @@ package frc.robot.Subsystems;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -45,7 +44,7 @@ public class NavxSubsystem extends SubsystemBase{
 
         /* Display 6-axis Processed Angle Data                                      */
         SmartDashboard.putBoolean(  "IMU_Connected",        ahrs.isConnected());
-        SmartDashboard.putBoolean(  "IMU_IsCalibrating",    ahrs.isCalibrating());
+        //SmartDashboard.putBoolean(  "IMU_IsCalibrating",    ahrs.isCalibrating());
         SmartDashboard.putNumber(   "IMU_Yaw",              ahrs.getYaw());
         SmartDashboard.putNumber(   "IMU_Pitch",            ahrs.getPitch());
         SmartDashboard.putNumber(   "IMU_Roll",             ahrs.getRoll());
@@ -68,8 +67,8 @@ public class NavxSubsystem extends SubsystemBase{
         
         SmartDashboard.putNumber(   "IMU_Accel_X",          ahrs.getWorldLinearAccelX());
         SmartDashboard.putNumber(   "IMU_Accel_Y",          ahrs.getWorldLinearAccelY());
-        SmartDashboard.putBoolean(  "IMU_IsMoving",         ahrs.isMoving());
-        SmartDashboard.putBoolean(  "IMU_IsRotating",       ahrs.isRotating());
+       // SmartDashboard.putBoolean(  "IMU_IsMoving",         ahrs.isMoving());
+       // SmartDashboard.putBoolean(  "IMU_IsRotating",       ahrs.isRotating());
 
         /* Display estimates of velocity/displacement.  Note that these values are  */
         /* not expected to be accurate enough for estimating robot position on a    */
@@ -87,12 +86,12 @@ public class NavxSubsystem extends SubsystemBase{
         /* for advanced users.  Before using this data, please consider whether     */
         /* the processed data (see above) will suit your needs.                     */
         
-        SmartDashboard.putNumber(   "RawGyro_X",            ahrs.getRawGyroX());
-        SmartDashboard.putNumber(   "RawGyro_Y",            ahrs.getRawGyroY());
-        SmartDashboard.putNumber(   "RawGyro_Z",            ahrs.getRawGyroZ());
-        SmartDashboard.putNumber(   "RawAccel_X",           ahrs.getRawAccelX());
-        SmartDashboard.putNumber(   "RawAccel_Y",           ahrs.getRawAccelY());
-        SmartDashboard.putNumber(   "RawAccel_Z",           ahrs.getRawAccelZ());
+        //SmartDashboard.putNumber(   "RawGyro_X",            ahrs.getRawGyroX());
+        //SmartDashboard.putNumber(   "RawGyro_Y",            ahrs.getRawGyroY());
+        //SmartDashboard.putNumber(   "RawGyro_Z",            ahrs.getRawGyroZ());
+        //SmartDashboard.putNumber(   "RawAccel_X",           ahrs.getRawAccelX());
+        //SmartDashboard.putNumber(   "RawAccel_Y",           ahrs.getRawAccelY());
+        //SmartDashboard.putNumber(   "RawAccel_Z",           ahrs.getRawAccelZ());
         //SmartDashboard.putNumber(   "RawMag_X",             ahrs.getRawMagX());
         //SmartDashboard.putNumber(   "RawMag_Y",             ahrs.getRawMagY());
         //SmartDashboard.putNumber(   "RawMag_Z",             ahrs.getRawMagZ());
@@ -112,10 +111,10 @@ public class NavxSubsystem extends SubsystemBase{
         /* orientation data.  All of the Yaw, Pitch and Roll Values can be derived  */
         /* from the Quaternions.  If interested in motion processing, knowledge of  */
         /* Quaternions is highly recommended.                                       */
-        SmartDashboard.putNumber(   "QuaternionW",          ahrs.getQuaternionW());
-        SmartDashboard.putNumber(   "QuaternionX",          ahrs.getQuaternionX());
-        SmartDashboard.putNumber(   "QuaternionY",          ahrs.getQuaternionY());
-        SmartDashboard.putNumber(   "QuaternionZ",          ahrs.getQuaternionZ());
+        //SmartDashboard.putNumber(   "QuaternionW",          ahrs.getQuaternionW());
+        //SmartDashboard.putNumber(   "QuaternionX",          ahrs.getQuaternionX());
+        //SmartDashboard.putNumber(   "QuaternionY",          ahrs.getQuaternionY());
+        //SmartDashboard.putNumber(   "QuaternionZ",          ahrs.getQuaternionZ());
         
         /* Connectivity Debugging Support                                           */
         SmartDashboard.putNumber(   "IMU_Byte_Count",       ahrs.getByteCount());

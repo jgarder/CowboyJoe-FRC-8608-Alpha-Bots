@@ -14,8 +14,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
-import edu.wpi.first.hal.SimDevice.Direction;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -46,13 +44,14 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     armLiftMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.ArmLifterConstants.kEncoderValueMin);
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    //armLiftMotor.setOpenLoopRampRate(.1);
-    armLiftMotor.setClosedLoopRampRate(.05);
+
+    armLiftMotor.setOpenLoopRampRate(.05);//small ramp rate becuase this will reverse instantly. 
+    armLiftMotor.setClosedLoopRampRate(.05);//orig
     armLiftMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo1650safelimitAmps);
 
     //limit everything on this motor controller to 500ms except the status 0 frame which is 10ms and does faults and applied output. 
-    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 30);  //Default Rate: 20ms ,Motor Velocity,Motor Temperature,Motor VoltageMotor Current
-    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 30);  //Default Rate: 20ms ,Motor Position
+    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20);  //Default Rate: 20ms ,Motor Velocity,Motor Temperature,Motor VoltageMotor Current
+    armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20);  //Default Rate: 20ms ,Motor Position
     armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500); //Default Rate: 50ms ,Analog Sensor Voltage ,Analog Sensor Velocity ,Analog Sensor Position
     armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 500); //Default Rate: 20ms, Alternate Encoder Velocity,Alternate Encoder Position
     armLiftMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Position,Duty Cycle Absolute Encoder Absolute Angle
@@ -85,8 +84,22 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     public void periodic() {
       getEncoderData();
       super.periodic();// This is a PidSubsystem, we have orridden the periodic method to get encoder data... So we need to call the super periodic method to get the PID stuff to work.
+      disablePidWhenParked();
+    
     }
-
+    public void disablePidWhenParked(){
+      double chainStretchMagicNumber = 1.25;
+      if(getSetpoint() <= Constants.ArmLifterConstants.kEncoderValueMin && Math.abs(getEncoderPosition()) < Constants.ArmLifterConstants.kEncoderValueMin + chainStretchMagicNumber){
+        disable();
+      }
+      else{
+        if(!isEnabled())
+        {
+          enable();
+        }
+        
+      }
+    }
 
     public boolean isLiftArmVerticalOrCloser()
     {
@@ -119,12 +132,15 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     }
   
   public void setSetpointGround() {
+    enable();
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueGroundPickup);
   }
   public void setSetpointScore() {
+    enable();
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueGoalScoring);
   }
   public void setSetpointVertical() {
+    enable();
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueVertical);
   }
   public void setSetpointStartingConfig() {
@@ -132,19 +148,43 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   }
 
   public void slowWindInBeyondSoftLimit() {
+    WindInBeyondSoftLimit(-.2); //Constants.ArmLifterConstants.kslowretractspeed
+  }
+  public void slowerWindInBeyondSoftLimit() {
+    WindInBeyondSoftLimit(-.1);
+  }
+  public void WindInBeyondSoftLimit(double retractSpeed) {
     disable();
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
-    SetSpeed(speedLimiter.calculate(Constants.ArmLifterConstants.kslowretractspeed));
+    SetSpeed(speedLimiter.calculate(retractSpeed));
   }
+
+
   public void resetEncoder() {
+    SetSpeed(0);
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    setSetpointVertical();//might as well set the setpoint to verticle to it doesnt appear to run away after finding veritcle.
-    armLiftMotor_encoder.setPosition(Constants.ArmLifterConstants.kEncoderValueVertical);
+    setSetpointStartingConfig();//might as well set the setpoint to verticle to it doesnt appear to run away after finding veritcle.
     enable();
+    armLiftMotor_encoder.setPosition(Constants.ArmLifterConstants.kEncoderValueStartingConfig);
+  }
+
+
+  double OutputCurrent = 0;
+  double MotorTemp = 0;
+  public double getMotorAmps()
+  {
+    OutputCurrent = armLiftMotor.getOutputCurrent();
+    return OutputCurrent;
   }
 
     public void getEncoderData()
   {
+
+    getMotorAmps();
+    SmartDashboard.putNumber("Lifter Amps",OutputCurrent);
+
+    MotorTemp = armLiftMotor.getMotorTemperature();
+    SmartDashboard.putNumber("Lifter Temp",MotorTemp);
     /**
      * Encoder position is read from a RelativeEncoder object by calling the
      * GetPosition() method.

@@ -1,18 +1,36 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Confidence" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="674" y="2"/>
+		<width>152</width>
+		<property name="Background" value="51.255.51.255"/>
+		<property name="Font Size" value="30"/>
+	</widget>
+	<widget field="Extension Temp" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="699" y="128"/>
+	</widget>
+	<widget field="Extension Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="699" y="107"/>
+	</widget>
+	<widget field="Lifter Temp" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="862" y="131"/>
+	</widget>
+	<widget field="Lifter Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="862" y="108"/>
+	</widget>
 	<widget field="Lasso Temp" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="853" y="342"/>
+		<location x="1005" y="130"/>
 	</widget>
 	<widget field="Lasso Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="855" y="317"/>
+		<location x="1005" y="110"/>
 	</widget>
 	<widget field="Jow Rotation Multiplier" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="528" y="142"/>
+		<location x="265" y="57"/>
 		<width>217</width>
 		<height>34</height>
 	</widget>
 	<widget field="Jow Speed Multiplier" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="539" y="106"/>
+		<location x="273" y="24"/>
 		<width>221</width>
 		<height>31</height>
 	</widget>
@@ -25,24 +43,24 @@
 		<property name="Font Size" value="30"/>
 	</widget>
 	<widget field="Detected Color" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="527" y="4"/>
-		<width>300</width>
+		<location x="527" y="2"/>
+		<width>203</width>
 		<height>43</height>
 		<property name="Foreground" value="51.255.0.255"/>
 		<property name="Background" value="0.0.0.255"/>
 		<property name="Font Size" value="30"/>
 	</widget>
 	<widget field="ArmLift PID Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="306" y="514"/>
+		<location x="66" y="358"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
-		<location x="840" y="6"/>
+		<location x="8" y="6"/>
 	</static-widget>
 	<widget field="ArmLift velocity add" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="297" y="273"/>
+		<location x="109" y="314"/>
 	</widget>
 	<widget field="LiftArmVeritcal" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="362" y="470"/>
+		<location x="136" y="292"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="1176" y="557"/>
@@ -57,139 +75,68 @@
 		<property name="Camera Choice" value=""/>
 	</static-widget>
 	<widget field="ArmExtension PID Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="239" y="689"/>
-	</widget>
-	<widget field="Mod 3 Velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="287" y="180"/>
+		<location x="290" y="366"/>
+		<height>20</height>
 	</widget>
 	<widget field="ArmExtension Encoder Velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="262" y="667"/>
+		<location x="310" y="342"/>
 	</widget>
 	<widget field="IMU_TotalYaw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="287" y="140"/>
+		<location x="83" y="132"/>
 	</widget>
 	<widget field="limelight_Stream" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="636" y="481"/>
+		<location x="172" y="3"/>
 	</widget>
 	<widget field="IMU_Byte_Count" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="287" y="100"/>
-	</widget>
-	<widget field="Mod 1 Velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="287" y="80"/>
-	</widget>
-	<widget field="Mod 2 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="287" y="60"/>
+		<location x="76" y="235"/>
 	</widget>
 	<widget field="IMU_YawRateDPS" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="287" y="40"/>
-	</widget>
-	<widget field="Mod 3 Integrated" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="287" y="20"/>
+		<location x="65" y="109"/>
 	</widget>
 	<widget field="Lasso PID Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="798" y="375"/>
 	</widget>
-	<widget field="RawGyro_Z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="340"/>
-	</widget>
-	<widget field="RawGyro_Y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="712" y="588"/>
-	</widget>
-	<widget field="RawGyro_X" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="714" y="610"/>
-	</widget>
-	<widget field="Mod 0 Integrated" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="683" y="679"/>
-	</widget>
 	<widget field="IMU_Update_Count" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="685" y="656"/>
-	</widget>
-	<widget field="Mod 0 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="698" y="631"/>
+		<location x="63" y="255"/>
 	</widget>
 	<widget field="ArmLift SetPoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="371" y="563"/>
+		<location x="122" y="402"/>
 	</widget>
 	<widget field="ObjectDistance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="225" y="369"/>
+		<location x="858" y="493"/>
 	</widget>
 	<widget field="ArmExtension PID output" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="301" y="644"/>
+		<location x="336" y="321"/>
 	</widget>
 	<widget field="IMU_Yaw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="718" y="565"/>
-	</widget>
-	<widget field="IMU_IsMoving" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="690" y="540"/>
+		<location x="107" y="88"/>
 	</widget>
 	<widget field="YawAxisDirection" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="270" y="406"/>
+		<location x="74" y="212"/>
 	</widget>
 	<widget field="IMU_Connected" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="895" y="10"/>
 	</widget>
 	<widget field="Red" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="266" y="296"/>
+		<location x="908" y="516"/>
 	</widget>
 	<widget field="ArmLift Encoder Velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="324" y="540"/>
+		<location x="84" y="381"/>
 	</widget>
 	<widget field="Lasso Encoder Velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="822" y="465"/>
 	</widget>
-	<widget field="Mod 1 Integrated" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="660"/>
-	</widget>
-	<widget field="Mod 2 Velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="640"/>
-	</widget>
 	<widget field="ArmLift PID output" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="363" y="493"/>
-	</widget>
-	<widget field="Mod 3 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="600"/>
-	</widget>
-	<widget field="Mod 0 Velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="580"/>
-	</widget>
-	<widget field="Confidence" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="560"/>
-	</widget>
-	<widget field="QuaternionY" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="540"/>
-	</widget>
-	<widget field="QuaternionZ" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="520"/>
-	</widget>
-	<widget field="QuaternionW" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="500"/>
-	</widget>
-	<widget field="IMU_IsCalibrating" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="480"/>
-	</widget>
-	<widget field="QuaternionX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="460"/>
-	</widget>
-	<widget field="IMU_Accel_Y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="440"/>
-	</widget>
-	<widget field="IMU_Accel_X" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="420"/>
+		<location x="114" y="338"/>
 	</widget>
 	<widget field="Lasso PID output" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="844" y="420"/>
 	</widget>
-	<widget field="Mod 1 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="380"/>
-	</widget>
 	<widget field="YawAxis" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="360"/>
-	</widget>
-	<widget field="IMU_IsRotating" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="320"/>
+		<location x="113" y="188"/>
 	</widget>
 	<widget field="Blue" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="262" y="343"/>
+		<location x="908" y="562"/>
 	</widget>
 	<widget field="Lasso SetPoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="859" y="440"/>
@@ -198,43 +145,32 @@
 		<location x="815" y="398"/>
 	</widget>
 	<widget field="ArmExtension SetPoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="315" y="617"/>
+		<location x="346" y="298"/>
+		<height>21</height>
 	</widget>
 	<widget field="limelight_Interface" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="220"/>
+		<location x="340" y="0"/>
 	</widget>
 	<widget field="IMU_Temp_C" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="200"/>
-	</widget>
-	<widget field="RawAccel_Z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="180"/>
-	</widget>
-	<widget field="RawAccel_Y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="160"/>
-	</widget>
-	<widget field="RawAccel_X" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="140"/>
-	</widget>
-	<widget field="Mod 2 Integrated" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="120"/>
+		<location x="546" y="129"/>
 	</widget>
 	<widget field="Green" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="251" y="317"/>
+		<location x="898" y="538"/>
 	</widget>
 	<widget field="IMU_Roll" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="60"/>
+		<location x="109" y="65"/>
 	</widget>
 	<widget field="IMU_Pitch" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="40"/>
+		<location x="103" y="43"/>
 	</widget>
 	<widget field="LimelightArea" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="590" y="426"/>
+		<location x="606" y="426"/>
 	</widget>
 	<widget field="LL Pose Yaw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="608" y="290"/>
 	</widget>
 	<widget field="distance_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="595" y="210"/>
+		<location x="595" y="211"/>
 	</widget>
 	<widget field="LL Pose Z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="622" y="401"/>
@@ -243,7 +179,7 @@
 		<location x="622" y="381"/>
 	</widget>
 	<widget field="rotation_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="598" y="233"/>
+		<location x="597" y="232"/>
 		<height>22</height>
 	</widget>
 	<widget field="steering_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -273,10 +209,50 @@
 	<widget field="rotation_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="827" y="235"/>
 	</widget>
-	<widget field="Limelight3Subsystem" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
-		<location x="27" y="13"/>
-	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="842" y="5"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="1176" y="557"/>
+		<width>736</width>
+		<height>435</height>
+		<property name="Camera Choice" value="limelight"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="1162" y="-14"/>
+		<width>743</width>
+		<height>583</height>
+		<property name="Camera Choice" value=""/>
+	</static-widget>
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="Mod 3 Velocity"/>
+	<hidden field="IMU_Accel_Y"/>
+	<hidden field="Mod 1 Integrated"/>
+	<hidden field="Mod 2 Cancoder"/>
+	<hidden field="IMU_Accel_X"/>
+	<hidden field="Mod 0 Velocity"/>
+	<hidden field="IMU_IsCalibrating"/>
+	<hidden field="Mod 3 Integrated"/>
+	<hidden field="IMU_IsMoving"/>
+	<hidden field="QuaternionW"/>
+	<hidden field="QuaternionY"/>
+	<hidden field="QuaternionX"/>
+	<hidden field="QuaternionZ"/>
+	<hidden field="Mod 2 Velocity"/>
+	<hidden field="Mod 2 Integrated"/>
+	<hidden field="Mod 1 Cancoder"/>
+	<hidden field="Mod 1 Velocity"/>
+	<hidden field="Limelight3Subsystem"/>
+	<hidden field="IMU_IsRotating"/>
+	<hidden field="Mod 3 Cancoder"/>
+	<hidden field="RawGyro_Y"/>
+	<hidden field="Mod 0 Integrated"/>
+	<hidden field="RawGyro_X"/>
+	<hidden field="Mod 0 Cancoder"/>
+	<hidden field="RawGyro_Z"/>
+	<hidden field="RawAccel_Z"/>
+	<hidden field="RawAccel_Y"/>
+	<hidden field="RawAccel_X"/>
 </xml>

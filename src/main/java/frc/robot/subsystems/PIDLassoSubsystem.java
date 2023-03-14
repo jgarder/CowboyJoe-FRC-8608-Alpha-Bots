@@ -2,7 +2,6 @@ package frc.robot.Subsystems;
 
 
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 import com.revrobotics.RelativeEncoder;
@@ -12,7 +11,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
-import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -84,8 +82,9 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     getEncoderData();
     super.periodic();// This is a PidSubsystem, we have orridden the periodic method to get encoder data... So we need to call the super periodic method to get the PID stuff to work.
     setMinLassoEncoderValueBasedOnColor();
+    
     double beltStretchMagicNumber = 1.25;
-    if(getSetpoint() == Constants.LassoConstants.kminEncoderValue && lassoEncoderValue < Constants.LassoConstants.kminEncoderValue + beltStretchMagicNumber){
+    if(getSetpoint() == Constants.LassoConstants.kminEncoderValue && Math.abs(lassoEncoderValue) < Constants.LassoConstants.kminEncoderValue + beltStretchMagicNumber){
       disable();
     }
     else{
@@ -115,16 +114,15 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   }
   SlewRateLimiter speedLimiter = new SlewRateLimiter(.5);
   public void slowWindInBeyondSoftLimit() {
-    disable(); //disable the pidcontroller of this subsystem
-    double slowretractspeed = -.6;//-.1;
-    lassoMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
-    SetSpeed(speedLimiter.calculate(slowretractspeed));
+    WindInBeyondSoftLimit(-.6);
   }
   public void slowerWindInBeyondSoftLimit() {
+    WindInBeyondSoftLimit(-.1);
+  }
+  public void WindInBeyondSoftLimit(double retractSpeed) {
     disable(); //disable the pidcontroller of this subsystem
-    double slowretractspeed = -.1;//-.1;
     lassoMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
-    SetSpeed(speedLimiter.calculate(slowretractspeed));
+    SetSpeed(speedLimiter.calculate(retractSpeed));
   }
 
   public void resetEncoder() {
@@ -136,19 +134,19 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     lassoMotor_encoder.setPosition(Constants.LassoConstants.kminEncoderValue);
   }
   double OutputCurrent = 0;
-  double LassoTemp = 0;
-  public double getLassoAmps()
+  double MotorTemp = 0;
+  public double getMotorAmps()
   {
     OutputCurrent = lassoMotor.getOutputCurrent();
     return OutputCurrent;
   }
   public void getEncoderData()
   {
-    getLassoAmps();
+    getMotorAmps();
     SmartDashboard.putNumber("Lasso Amps",OutputCurrent);
 
-    LassoTemp = lassoMotor.getMotorTemperature();
-    SmartDashboard.putNumber("Lasso Temp",LassoTemp);
+    MotorTemp = lassoMotor.getMotorTemperature();
+    SmartDashboard.putNumber("Lasso Temp",MotorTemp);
     /**
      * Encoder position is read from a RelativeEncoder object by calling the
      * GetPosition() method.

@@ -62,12 +62,12 @@ public final class Constants {
       public static class ArmLifterConstants {
         public static final int kArmLifterSparkMaxCanID = 7;
     
-        public static final double kEncoderValueMin = 0; // this should when the arm is vertical and slightly leaning back if not straight.
+        public static final double kEncoderValueMin = 0; // this should when the arm is laying back on the rest.
         public static final double kEncoderValueMax = 76;// this is when the arm is horizontal and the arm is extended all the way out.
         public static final double kEncoderValueMaxCollapsed=76; //this is when the amr is horizontal and the arm is collapsed all the way in
         public static final double kEncoderValueMaxExtended=71; //this is when the amr is horizontal and the arm is collapsed all the way in
-        public static final double kEncoderValueGoalScoring = 42;// this will change the angle we have our head at when we are scoring goals.
-        public static final double kEncoderValueStartingConfig = 0;// arm laying back and collapsed resting against backstop is 0 position
+        public static final double kEncoderValueGoalScoring = 46;// this will change the angle we have our head at when we are scoring goals.
+        public static final double kEncoderValueStartingConfig = kEncoderValueMin;// arm laying back and collapsed resting against backstop is 0 position
         public static final double kEncoderValueVertical = 11.7; // this is when the arm is veritcal at the 90 degree angle
         public static final double kEncoderValueGroundPickup = 70;  //this is most likely the same as max encoder value. or prolly can calc using those instead
         public static final double kEncoderValueSubStationPickup = 42;  //this is most likely the same as max encoder value. or prolly can calc using those instead
