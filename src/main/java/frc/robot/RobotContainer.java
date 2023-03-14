@@ -1,15 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -18,11 +14,8 @@ import frc.robot.Constants.XboxControllerMap;
 import frc.robot.Subsystems.*;
 import frc.robot.autos.*;
 
-import java.util.Map;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,10 +31,7 @@ public class RobotContainer {
     /* Controllers */
     private final XboxController driveController = new XboxController(0);
 
-    /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    
 
 
     /* Subsystems */
@@ -60,6 +50,12 @@ public class RobotContainer {
     public static GenericEntry SpeedAdjustSlider;
 
     /* Controller 1 Declarations and instiantiainted  */
+
+    /* Drive Controls */
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
+
     private final JoystickButton aButton = new JoystickButton(driveController, XboxController.Button.kA.value);
     private final JoystickButton xButton = new JoystickButton(driveController, XboxController.Button.kX.value);
     private final JoystickButton bButton = new JoystickButton(driveController, XboxController.Button.kB.value);
@@ -155,9 +151,10 @@ public class RobotContainer {
         xButton.onTrue(new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem));
 
 
-        
-        UpHatPOV.whileTrue(new StartEndCommand(PIDArmLifterSubsystem::slowWindInBeyondSoftLimit, PIDArmLifterSubsystem::resetEncoder,PIDArmLifterSubsystem));
-        DownHatPOV.whileTrue(new StartEndCommand(PIDArmExtensionSubsystem::slowWindInBeyondSoftLimit, PIDArmExtensionSubsystem::resetEncoder,PIDArmExtensionSubsystem));
+        //UpHatPOV.whileTrue(new StartEndCommand(PIDArmLifterSubsystem::slowWindInBeyondSoftLimit, PIDArmLifterSubsystem::resetEncoder,PIDArmLifterSubsystem));
+        UpHatPOV.onTrue(new ZeroLifterCmd(PIDArmLifterSubsystem));
+
+        DownHatPOV.onTrue(new ZeroExtensionCmd(PIDArmExtensionSubsystem));
         
         //RightHatPOV.whileTrue(new StartEndCommand(PIDLassoSubsystem::slowWindInBeyondSoftLimit, PIDLassoSubsystem::resetEncoder,PIDLassoSubsystem));
         RightHatPOV.onTrue(new ZeroLassoCmd(PIDLassoSubsystem));
