@@ -2,7 +2,7 @@
 <dashboard>
 	<widget field="CowboyMode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="198" y="4"/>
-		<width>319</width>
+		<width>394</width>
 		<height>65</height>
 		<property name="Foreground" value="204.0.204.255"/>
 		<property name="Font Size" value="30"/>
@@ -25,7 +25,7 @@
 		<property name="Font Size" value="30"/>
 	</widget>
 	<widget field="Confidence" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="674" y="2"/>
+		<location x="751" y="1"/>
 		<width>152</width>
 		<property name="Background" value="51.255.51.255"/>
 		<property name="Font Size" value="30"/>
@@ -65,7 +65,7 @@
 		<height>31</height>
 	</widget>
 	<widget field="limelight_PipelineName" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="491" y="47"/>
+		<location x="570" y="49"/>
 		<width>336</width>
 		<height>56</height>
 		<property name="Foreground" value="0.204.204.255"/>
@@ -73,7 +73,7 @@
 		<property name="Font Size" value="30"/>
 	</widget>
 	<widget field="Detected Color" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="527" y="2"/>
+		<location x="602" y="2"/>
 		<width>203</width>
 		<height>43</height>
 		<property name="Foreground" value="51.255.0.255"/>
