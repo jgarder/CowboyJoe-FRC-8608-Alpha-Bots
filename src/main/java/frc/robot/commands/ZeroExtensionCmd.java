@@ -63,7 +63,7 @@ public class ZeroExtensionCmd extends CommandBase {
             return false;
         }
         amps = s_Extension.getMotorAmps();
-        System.out.println(String.format("amps  %f",amps));
+        //System.out.println(String.format("amps  %f",amps));
         if(amps > ampslimit && !firstpassdone){
             //System.out.println(String.format("FP amps  %f",amps));
             firstpassdone = true;
