@@ -4,12 +4,16 @@
 
 package frc.robot.Subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
+
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
@@ -32,9 +36,11 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   private final CANSparkMax armLiftMotor = new CANSparkMax(Constants.ArmLifterConstants.kArmLifterSparkMaxCanID,MotorType.kBrushless);
   private RelativeEncoder armLiftMotor_encoder; 
 
-  public PIDArmLifterSubsystem() {
+  private BooleanSupplier sup_isLassoOpen;
+  public PIDArmLifterSubsystem(BooleanSupplier isLassoOpen) {
     super(new PIDController(kP, kI, kD));
     setSetpoint(0);
+    sup_isLassoOpen = isLassoOpen;
     armLiftMotor_encoder = armLiftMotor.getEncoder();
 
     armLiftMotor_encoder.setPosition(0);
@@ -113,6 +119,9 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
         return false; // we are not vertical or less (closer)
       }
     }
+    public boolean getSuppliersaysLassoisOpen(){
+      return sup_isLassoOpen.getAsBoolean();
+    }
 
     public void setSetpointAtCurrentPoint() {
       armliftMotorEncoderVelocity = armLiftMotor_encoder.getVelocity();
@@ -128,12 +137,20 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
       }
       double totaloutput = ((armliftMotorEncoderVelocity/60)/60) * outputgain;
       SmartDashboard.putNumber("ArmLift velocity add",totaloutput);
-      setSetpoint(armLiftMotor_encoder.getPosition() + totaloutput );
+      double finaloutput = 0;
+      if(sup_isLassoOpen.getAsBoolean()){
+        finaloutput = MathUtil.clamp((armLiftMotor_encoder.getPosition() + totaloutput), Constants.ArmLifterConstants.kEncoderValueMin, Constants.ArmLifterConstants.kEncoderValueGroundPickupGRAB) ;
+        armLiftMotor.setSoftLimit(SoftLimitDirection.kForward, (float)Constants.ArmLifterConstants.kEncoderValueGroundPickupGRAB);
+      }else{
+        finaloutput = MathUtil.clamp((armLiftMotor_encoder.getPosition() + totaloutput), Constants.ArmLifterConstants.kEncoderValueMin, Constants.ArmLifterConstants.kEncoderValueGroundPickupHUNT) ;
+        armLiftMotor.setSoftLimit(SoftLimitDirection.kForward, (float)Constants.ArmLifterConstants.kEncoderValueGroundPickupHUNT);
+      }
+      setSetpoint(finaloutput);
     }
   
   public void setSetpointGround() {
     enable();
-    setSetpoint(Constants.ArmLifterConstants.kEncoderValueGroundPickup);
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueGroundPickupGRAB);
   }
   public void setSetpointScore() {
     enable();
@@ -146,6 +163,9 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   public void setSetpointStartingConfig() {
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueStartingConfig);
   }
+  public void setSetpointSubstation() {
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueSubStationPickup);
+  }
 
   public void slowWindInBeyondSoftLimit() {
     WindInBeyondSoftLimit(-.2); //Constants.ArmLifterConstants.kslowretractspeed
@@ -156,7 +176,7 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   public void WindInBeyondSoftLimit(double retractSpeed) {
     disable();
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
-    SetSpeed(speedLimiter.calculate(retractSpeed));
+    SetSpeed(retractSpeed);
   }
 
 

@@ -138,6 +138,11 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
     enable();
     setSetpoint(Constants.ArmExtensionConstants.kLowestGoalEncoderValue);
   }
+  public void setSetpointSubstation() {
+    enable();
+    setSetpoint(Constants.ArmExtensionConstants.kSubstationPickupEncoderValue);
+    extensionStage = 3;//this will make it so that the next trip of the cycle will reel it in,
+  }
   public void setSetpointIn() {
     extensionStage = 0;
     setSetpoint(Constants.ArmExtensionConstants.kminEncoderValue);

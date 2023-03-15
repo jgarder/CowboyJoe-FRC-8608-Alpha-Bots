@@ -1,8 +1,11 @@
 package frc.robot.Subsystems;
 
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.Commands.ZeroLassoCmd;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -35,7 +38,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
       setSetpoint(0);
       lassoMotor_encoder = lassoMotor.getEncoder();
       lassoMotor_encoder.setPosition(0);
-      lassoState = 0;// our state, says lasso is in 0 position
+      lassoState = LassoState.STARTUP;// our state, says lasso is in Startup position
       this.colorSensor =  thisSensor;
  
       lassoMotor.setInverted(true);
@@ -170,11 +173,12 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   public void setSetpointLassoOut() {
     enable();
     setSetpoint(Constants.LassoConstants.kEncoderValueLoopOut);
+    lassoState = LassoState.OPEN;
   }
   public void setSetpointLassoZero() {
     enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValue);
-    lassoState = 0;
+    lassoState = LassoState.ZERO;
   }
   public void setSetpointLassoCone() {
     enable();
@@ -184,46 +188,57 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCube);
   }
+  public enum LassoState{
+    STARTUP,
+    ZERO,
+    GOCONE,
+    CONEIN,
+    GOCUBE,
+    CUBEIN,
+    OPEN,
 
+
+  }
    // -1 = start state, 0 = zeroed, 1= go(ing) for cone, 2 = cone color/distance detected,
    // 3=going for cube, 4 = cube went for and color/distance detected, 5 = open position
-   int lassoState = -1;
+  LassoState lassoState = LassoState.STARTUP;
   public void RunLasso()
   {
     switch (lassoState){
-      case -1 : // if -1 we are in start state and this will just zero us out and sit. 
+      case STARTUP : // if -1 we are in start state and this will just zero us out and sit. 
+        new ZeroLassoCmd(this).schedule();
         setSetpointLassoZero();
         break;
-      case 0 : // 0 if zeroed when button is pressed then send lasso out.  
+      case ZERO : // 0 if zeroed when button is pressed then send lasso out.  
         setSetpointLassoOut();
-        lassoState = 5;
+        lassoState = LassoState.OPEN;
         break;
-      case 1 :// we are pressing button while go(ing) for a cone (we may just have a cone)
+      case GOCONE :// we are pressing button while go(ing) for a cone (we may just have a cone)
         //we dont have cone then backup
         //we do have a cone then we are scoring so open lasso
         setSetpointLassoOut();
-        lassoState = 5;
+        lassoState = LassoState.OPEN;
         break;
-      case 2 :
+      case CONEIN :
         break;
-      case 3 : // we are pressing button while go(ing) for a cube
+      case GOCUBE : // we are pressing button while go(ing) for a cube
         //we dont have cube then backup and open lasso
         //we do have a cube then we are scoring so open lasso
         setSetpointLassoOut();
-        lassoState = 5;
+        
         break;
-      case 4 :
+      case CUBEIN :
         break;
-      case 5 : // if open lasso when run lasso is ran. 
+      case OPEN : // if open lasso when run lasso is ran. 
         //detect cone or cube
         if (ObjectInLasso() == "Cube")
         {
-          lassoState = 3;
+          lassoState = LassoState.GOCUBE;
           setSetpointLassoCube();
         }
         else if(ObjectInLasso() == "Cone")
         {
-          lassoState = 1;
+          lassoState = LassoState.GOCONE;
           setSetpointLassoCone();
         }
         else if(ObjectInLasso() == "RoomLight")
@@ -231,15 +246,30 @@ public class PIDLassoSubsystem extends PIDSubsystem {
           //nothing detected
           //retractSlowly();
           setSetpointLassoCone();
-          lassoState = 1;
+          lassoState = LassoState.GOCONE;
         }
         break;
 
 
     }
   }
-
+  public boolean isLassoOpen(){
+    if (lassoState == LassoState.OPEN){
+      return true;
+    }
+    return false;
+  }
   boolean Zeroed = false;
+
+  public void coneAutoLoaded(){
+    // set lassostate to cone
+    lassoState = LassoState.GOCONE;
+    // set encoder position to cone position? no. encoder knows where it is. Set setpoint
+    // Set Setpoint to be the encoder position -.25 or something
+    setSetpoint(lassoEncoderValue-.25);
+    //
+  }
+
   private void retractSlowly() {
     int reduction = 10;
     if(lassoEncoderValue > reduction)

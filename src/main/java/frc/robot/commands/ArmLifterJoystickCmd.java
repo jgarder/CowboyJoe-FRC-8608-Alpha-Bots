@@ -4,6 +4,7 @@ package frc.robot.Commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Subsystems.PIDArmLifterSubsystem;
 
 
@@ -33,6 +34,17 @@ public class ArmLifterJoystickCmd extends CommandBase {
         System.out.println("Arm vertical");
          return;
      }
+     if(PIDArmLifterSubsystem.getSuppliersaysLassoisOpen()){
+        if(PIDArmLifterSubsystem.getSetpoint() >= Constants.ArmLifterConstants.kEncoderValueGroundPickupGRAB && joystickAxis >=0){
+            return;
+         }
+     }
+     else{
+        if(PIDArmLifterSubsystem.getSetpoint() >= Constants.ArmLifterConstants.kEncoderValueGroundPickupHUNT && joystickAxis >=0){
+            return;
+         }
+     }
+
         //PIDArmLifterSubsystem.SetSpeed(speedFunction.get());
         double SetpointGain = 20;
         PIDArmLifterSubsystem.setSetpoint(PIDArmLifterSubsystem.getMeasurement() + (SetpointGain * joystickAxis));

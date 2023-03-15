@@ -1,5 +1,29 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="CowboyMode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="198" y="4"/>
+		<width>319</width>
+		<height>65</height>
+		<property name="Foreground" value="204.0.204.255"/>
+		<property name="Font Size" value="30"/>
+	</widget>
+	<widget field="teleOpEnable" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="8" y="104"/>
+		<width>117</width>
+		<height>45</height>
+	</widget>
+	<widget field="AutonEnable" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="7" y="54"/>
+		<width>115</width>
+		<height>42</height>
+	</widget>
+	<widget field="Alliance" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="64" y="6"/>
+		<width>123</width>
+		<property name="Foreground" value="255.255.0.255"/>
+		<property name="Background" value="0.0.0.255"/>
+		<property name="Font Size" value="30"/>
+	</widget>
 	<widget field="Confidence" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="674" y="2"/>
 		<width>152</width>
@@ -7,35 +31,41 @@
 		<property name="Font Size" value="30"/>
 	</widget>
 	<widget field="Extension Temp" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="699" y="128"/>
+		<location x="844" y="132"/>
+		<width>110</width>
 	</widget>
 	<widget field="Extension Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="699" y="107"/>
+		<location x="845" y="109"/>
+		<width>110</width>
 	</widget>
 	<widget field="Lifter Temp" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="862" y="131"/>
+		<location x="957" y="132"/>
+		<width>94</width>
 	</widget>
 	<widget field="Lifter Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="862" y="108"/>
+		<location x="957" y="109"/>
+		<width>89</width>
 	</widget>
 	<widget field="Lasso Temp" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1005" y="130"/>
+		<location x="1055" y="131"/>
+		<width>96</width>
 	</widget>
 	<widget field="Lasso Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1005" y="110"/>
+		<location x="1054" y="108"/>
+		<width>91</width>
 	</widget>
 	<widget field="Jow Rotation Multiplier" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="265" y="57"/>
+		<location x="942" y="39"/>
 		<width>217</width>
 		<height>34</height>
 	</widget>
 	<widget field="Jow Speed Multiplier" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="273" y="24"/>
+		<location x="939" y="4"/>
 		<width>221</width>
 		<height>31</height>
 	</widget>
 	<widget field="limelight_PipelineName" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="493" y="46"/>
+		<location x="491" y="47"/>
 		<width>336</width>
 		<height>56</height>
 		<property name="Foreground" value="0.204.204.255"/>
@@ -55,6 +85,8 @@
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
 		<location x="8" y="6"/>
+		<width>52</width>
+		<height>42</height>
 	</static-widget>
 	<widget field="ArmLift velocity add" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="109" y="314"/>
@@ -62,12 +94,6 @@
 	<widget field="LiftArmVeritcal" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="136" y="292"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="1176" y="557"/>
-		<width>736</width>
-		<height>435</height>
-		<property name="Camera Choice" value="limelight"/>
-	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="1162" y="-14"/>
 		<width>743</width>
@@ -82,22 +108,22 @@
 		<location x="310" y="342"/>
 	</widget>
 	<widget field="IMU_TotalYaw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="83" y="132"/>
+		<location x="23" y="619"/>
 	</widget>
 	<widget field="limelight_Stream" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="172" y="3"/>
+		<location x="1086" y="589"/>
 	</widget>
 	<widget field="IMU_Byte_Count" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="76" y="235"/>
+		<location x="10" y="685"/>
 	</widget>
 	<widget field="IMU_YawRateDPS" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="65" y="109"/>
+		<location x="6" y="596"/>
 	</widget>
 	<widget field="Lasso PID Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="798" y="375"/>
 	</widget>
 	<widget field="IMU_Update_Count" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="63" y="255"/>
+		<location x="0" y="708"/>
 	</widget>
 	<widget field="ArmLift SetPoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="122" y="402"/>
@@ -109,13 +135,13 @@
 		<location x="336" y="321"/>
 	</widget>
 	<widget field="IMU_Yaw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="107" y="88"/>
+		<location x="45" y="574"/>
 	</widget>
 	<widget field="YawAxisDirection" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="74" y="212"/>
+		<location x="9" y="663"/>
 	</widget>
 	<widget field="IMU_Connected" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="895" y="10"/>
+		<location x="13" y="509"/>
 	</widget>
 	<widget field="Red" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="908" y="516"/>
@@ -133,7 +159,7 @@
 		<location x="844" y="420"/>
 	</widget>
 	<widget field="YawAxis" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="113" y="188"/>
+		<location x="49" y="642"/>
 	</widget>
 	<widget field="Blue" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="908" y="562"/>
@@ -149,19 +175,20 @@
 		<height>21</height>
 	</widget>
 	<widget field="limelight_Interface" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="340" y="0"/>
+		<location x="1073" y="612"/>
 	</widget>
 	<widget field="IMU_Temp_C" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="546" y="129"/>
+		<location x="735" y="130"/>
+		<width>104</width>
 	</widget>
 	<widget field="Green" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="898" y="538"/>
 	</widget>
 	<widget field="IMU_Roll" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="109" y="65"/>
+		<location x="47" y="553"/>
 	</widget>
 	<widget field="IMU_Pitch" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="103" y="43"/>
+		<location x="40" y="532"/>
 	</widget>
 	<widget field="LimelightArea" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="606" y="426"/>
@@ -195,10 +222,10 @@
 		<location x="618" y="360"/>
 	</widget>
 	<widget field="currentlyHolding" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="837" y="72"/>
+		<location x="41" y="241"/>
 	</widget>
 	<widget field="ActionStage" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="851" y="41"/>
+		<location x="55" y="213"/>
 	</widget>
 	<widget field="steering_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="594" y="187"/>
@@ -209,11 +236,8 @@
 	<widget field="rotation_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="827" y="235"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
-		<location x="842" y="5"/>
-	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="1176" y="557"/>
+		<location x="1178" y="562"/>
 		<width>736</width>
 		<height>435</height>
 		<property name="Camera Choice" value="limelight"/>
@@ -227,32 +251,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Mod 3 Velocity"/>
-	<hidden field="IMU_Accel_Y"/>
-	<hidden field="Mod 1 Integrated"/>
-	<hidden field="Mod 2 Cancoder"/>
-	<hidden field="IMU_Accel_X"/>
-	<hidden field="Mod 0 Velocity"/>
-	<hidden field="IMU_IsCalibrating"/>
-	<hidden field="Mod 3 Integrated"/>
-	<hidden field="IMU_IsMoving"/>
-	<hidden field="QuaternionW"/>
-	<hidden field="QuaternionY"/>
-	<hidden field="QuaternionX"/>
-	<hidden field="QuaternionZ"/>
-	<hidden field="Mod 2 Velocity"/>
-	<hidden field="Mod 2 Integrated"/>
-	<hidden field="Mod 1 Cancoder"/>
-	<hidden field="Mod 1 Velocity"/>
-	<hidden field="Limelight3Subsystem"/>
-	<hidden field="IMU_IsRotating"/>
-	<hidden field="Mod 3 Cancoder"/>
-	<hidden field="RawGyro_Y"/>
-	<hidden field="Mod 0 Integrated"/>
-	<hidden field="RawGyro_X"/>
-	<hidden field="Mod 0 Cancoder"/>
-	<hidden field="RawGyro_Z"/>
-	<hidden field="RawAccel_Z"/>
-	<hidden field="RawAccel_Y"/>
-	<hidden field="RawAccel_X"/>
 </xml>

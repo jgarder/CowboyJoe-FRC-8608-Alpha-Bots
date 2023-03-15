@@ -2,10 +2,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -13,6 +15,8 @@ import frc.robot.Commands.*;
 import frc.robot.Constants.XboxControllerMap;
 import frc.robot.Subsystems.*;
 import frc.robot.autos.*;
+
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
@@ -25,6 +29,23 @@ import edu.wpi.first.networktables.GenericEntry;
  */
 public class RobotContainer {
     //
+    public enum CowboyMode{
+        STARTUP,
+        CALIBRATED,
+        AUTONOMOUS,
+        READYTOSTART,
+        FLOORHUNTING,
+        SUBSTATIONPICKING,
+        PICKED,
+        CONEPICKED,
+        CUBEPICKED,
+        SCORE,
+        SCORECONE,
+        SCORECUBE,
+
+
+    }
+    public CowboyMode cowboyMode = CowboyMode.STARTUP;
     int stage = 0; //scoreing stages 0 - empty, 1-rdy to grab, 2-grabbed, 3 readying to score, 4-score and reset, 10-balancing
     String currentlyHolding = "";
     
@@ -44,23 +65,27 @@ public class RobotContainer {
     public final Limelight3Subsystem limelight3Subsystem = new Limelight3Subsystem(driveController);
     public final PIDLassoSubsystem PIDLassoSubsystem = new PIDLassoSubsystem(CSensor);
     public final PIDArmExtensionSubsystem PIDArmExtensionSubsystem = new PIDArmExtensionSubsystem();
-    public final PIDArmLifterSubsystem PIDArmLifterSubsystem = new PIDArmLifterSubsystem();
+    public final PIDArmLifterSubsystem PIDArmLifterSubsystem = new PIDArmLifterSubsystem(PIDLassoSubsystem::isLassoOpen);
 
     public static ShuffleboardTab CowboyJowTab;
     public static GenericEntry SpeedAdjustSlider;
 
+    public final SmartDashboardHandler mySmartDashboardHandler = new SmartDashboardHandler(this);
     /* Controller 1 Declarations and instiantiainted  */
 
     /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    
 
     private final JoystickButton aButton = new JoystickButton(driveController, XboxController.Button.kA.value);
     private final JoystickButton xButton = new JoystickButton(driveController, XboxController.Button.kX.value);
     private final JoystickButton bButton = new JoystickButton(driveController, XboxController.Button.kB.value);
     private final JoystickButton yButton = new JoystickButton(driveController, XboxController.Button.kY.value);
 
+    private final Axis LeftForwardBackAxis = Axis.kLeftX;
+    private final Axis LeftLeftRightAxis = Axis.kLeftY;
+
+    private final Axis RightForwardBackAxis = Axis.kRightX;
+    private final Axis RightLeftRightAxis = Axis.kRightY;
 
     private final Trigger LeftTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis) > 0.05);
     private final Trigger RightTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis) > 0.05);
@@ -81,6 +106,9 @@ public class RobotContainer {
     private final POVButton RightHatPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionRIGHT);
     private final POVButton LeftHatPOV = new POVButton(driveController, XboxControllerMap.kPOVDirectionLeft);
     
+    private final int translationAxis = LeftLeftRightAxis.value;
+    private final int strafeAxis = LeftForwardBackAxis.value;
+    private final int rotationAxis = RightForwardBackAxis.value;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -113,16 +141,7 @@ public class RobotContainer {
         // .getEntry();
 
         //smartdashboard implementation of speed controller
-        if(!SmartDashboard.containsKey("Jow Speed Multiplier"))
-        {
-            SmartDashboard.putNumber("Jow Speed Multiplier", .25);
-            SmartDashboard.setPersistent("Jow Speed Multiplier");
-        }
-        if(!SmartDashboard.containsKey("Jow Rotation Multiplier"))
-        {
-            SmartDashboard.putNumber("Jow Rotation Multiplier", .25);
-            SmartDashboard.setPersistent("Jow Rotation Multiplier");
-        }
+        
 
 
     }
@@ -133,7 +152,9 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-
+    public boolean isReadyToStart(){
+        return cowboyMode == CowboyMode.READYTOSTART;
+    }
     private void configureButtonBindingsDefault() {
 
         /* Driver Buttons */
@@ -147,12 +168,29 @@ public class RobotContainer {
 
 
         LeftBumperButton.onTrue(new InstantCommand(PIDArmExtensionSubsystem::runArmExtensionStages,PIDArmExtensionSubsystem));
-        
-        xButton.onTrue(new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem));
+        BooleanSupplier isInScoreMode =  ()->cowboyMode == CowboyMode.SCORE;
+        //BooleanSupplier isReadyToStart =  ()->;
+
+        xButton.onTrue(
+            new ParallelCommandGroup(
+                new InstantCommand(()->{cowboyMode = CowboyMode.SCORE;}),
+                new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
+                ));
+        yButton.onTrue(
+            new ParallelCommandGroup(
+                new InstantCommand(()->{cowboyMode = CowboyMode.SUBSTATIONPICKING;}),
+                new InstantCommand(PIDArmExtensionSubsystem::setSetpointSubstation,PIDArmExtensionSubsystem),
+                new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
+                new InstantCommand(PIDArmLifterSubsystem::setSetpointSubstation,PIDArmLifterSubsystem)
+                ));
 
 
         //UpHatPOV.whileTrue(new StartEndCommand(PIDArmLifterSubsystem::slowWindInBeyondSoftLimit, PIDArmLifterSubsystem::resetEncoder,PIDArmLifterSubsystem));
-        UpHatPOV.onTrue(new ZeroLifterCmd(PIDArmLifterSubsystem));
+        UpHatPOV.onTrue(
+            new ParallelCommandGroup(
+                new InstantCommand(()->{cowboyMode = CowboyMode.READYTOSTART;}),
+                new ZeroLifterCmd(PIDArmLifterSubsystem)
+                ));
 
         DownHatPOV.onTrue(new ZeroExtensionCmd(PIDArmExtensionSubsystem));
         
@@ -170,7 +208,7 @@ public class RobotContainer {
 
         //BalanceButton.whileTrue(new PidBalanceCmd(s_Swerve,navx));     //new JoystickButton(joystick1, Constants.OperatorConstants.kresetLassoEncoderButton).whileTrue(new StartEndCommand(LassoSubsystem::slowWindInBeyondSoftLimit, LassoSubsystem::resetEncoder,LassoSubsystem));
         
-        checkStageControls();
+        //checkStageControls();
 
     }
 

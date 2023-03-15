@@ -65,8 +65,8 @@ public class NavxSubsystem extends SubsystemBase{
 
         /* Display Processed Acceleration Data (Linear Acceleration, Motion Detect) */
         
-        SmartDashboard.putNumber(   "IMU_Accel_X",          ahrs.getWorldLinearAccelX());
-        SmartDashboard.putNumber(   "IMU_Accel_Y",          ahrs.getWorldLinearAccelY());
+        //SmartDashboard.putNumber(   "IMU_Accel_X",          ahrs.getWorldLinearAccelX());
+        //SmartDashboard.putNumber(   "IMU_Accel_Y",          ahrs.getWorldLinearAccelY());
        // SmartDashboard.putBoolean(  "IMU_IsMoving",         ahrs.isMoving());
        // SmartDashboard.putBoolean(  "IMU_IsRotating",       ahrs.isRotating());
 
