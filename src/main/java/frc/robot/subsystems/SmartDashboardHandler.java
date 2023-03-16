@@ -60,6 +60,8 @@ public class SmartDashboardHandler extends SubsystemBase {
     SmartDashboard.putBoolean("AutonEnable", DriverStation.isAutonomousEnabled());
     SmartDashboard.putString("Alliance", DriverStation.getAlliance().toString());
     SmartDashboard.putString("CowboyMode", thisrobot.cowboyMode.toString());
+
+    SmartDashboard.putString("LassoMode", thisrobot.PIDLassoSubsystem.lassoState.toString());
   }
 
 

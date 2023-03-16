@@ -35,13 +35,17 @@ public class RobotContainer {
         AUTONOMOUS,
         READYTOSTART,
         FLOORHUNTING,
-        SUBSTATIONPICKING,
-        PICKED,
+        FLOORGRABBING,
+        SUBSTATIONHUNTING,
+        SUBSTATIONGRABING,
+        PICKED,//LIKE READYTOSTART but with a cone/cube
         CONEPICKED,
         CUBEPICKED,
-        SCORE,
+        SCOREHUNTING,
         SCORECONE,
         SCORECUBE,
+        BALANCING,
+        ENDGAME,
 
 
     }
@@ -65,8 +69,9 @@ public class RobotContainer {
     public final Limelight3Subsystem limelight3Subsystem = new Limelight3Subsystem(driveController);
     public final PIDLassoSubsystem PIDLassoSubsystem = new PIDLassoSubsystem(CSensor);
     public final PIDArmExtensionSubsystem PIDArmExtensionSubsystem = new PIDArmExtensionSubsystem();
-    public final PIDArmLifterSubsystem PIDArmLifterSubsystem = new PIDArmLifterSubsystem(PIDLassoSubsystem::isLassoOpen);
+    public final PIDArmLifterSubsystem PIDArmLifterSubsystem = new PIDArmLifterSubsystem(PIDLassoSubsystem::isLassoinOpenState);
 
+    ArmStateHandler ArmStateHandler = new ArmStateHandler(PIDArmLifterSubsystem, PIDArmExtensionSubsystem, PIDLassoSubsystem,this);
     public static ShuffleboardTab CowboyJowTab;
     public static GenericEntry SpeedAdjustSlider;
 
@@ -87,8 +92,8 @@ public class RobotContainer {
     private final Axis RightForwardBackAxis = Axis.kRightX;
     private final Axis RightLeftRightAxis = Axis.kRightY;
 
-    private final Trigger LeftTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis) > 0.05);
-    private final Trigger RightTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis) > 0.05);
+    private final Trigger LeftTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis) > 0.7);
+    private final Trigger RightTrigger = new Trigger(()->driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis) > 0.7);
     
     private final JoystickButton LeftBumperButton = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value);
     private final JoystickButton robotCentric = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value);
@@ -161,29 +166,36 @@ public class RobotContainer {
         aButton.onTrue(new InstantCommand(PIDLassoSubsystem::RunLasso,PIDLassoSubsystem));
         //here is one way to handle trigger/axis inputs that act as a button but accept their analog input.
         //this also has the onFalse for both axis triggers that executes when while true is done handled but the Trigger Class.
-        LeftTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> -driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis)))
-        .onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
-        RightTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis)))
-        .onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
-
-
+        // LeftTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> -driveController.getRawAxis(Constants.OperatorConstants.kDRIVELeftTriggerAxis)))
+        // .onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
+        // RightTrigger.whileTrue(new ArmLifterJoystickCmd(PIDArmLifterSubsystem, () -> driveController.getRawAxis(Constants.OperatorConstants.kDRIVERightTriggerAxis)))
+        // .onFalse(new InstantCommand(PIDArmLifterSubsystem::setSetpointAtCurrentPoint,PIDArmLifterSubsystem));
+        LeftTrigger.onTrue(new InstantCommand(ArmStateHandler::resetArmState,ArmStateHandler));
+        RightTrigger.onTrue(new InstantCommand(ArmStateHandler::runArmState,ArmStateHandler));
+        
         LeftBumperButton.onTrue(new InstantCommand(PIDArmExtensionSubsystem::runArmExtensionStages,PIDArmExtensionSubsystem));
-        BooleanSupplier isInScoreMode =  ()->cowboyMode == CowboyMode.SCORE;
+        BooleanSupplier isInScoreMode =  ()->cowboyMode == CowboyMode.SCOREHUNTING;
         //BooleanSupplier isReadyToStart =  ()->;
 
         xButton.onTrue(
             new ParallelCommandGroup(
-                new InstantCommand(()->{cowboyMode = CowboyMode.SCORE;}),
+                new InstantCommand(()->{cowboyMode = CowboyMode.SCOREHUNTING;}),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
                 ));
         yButton.onTrue(
             new ParallelCommandGroup(
-                new InstantCommand(()->{cowboyMode = CowboyMode.SUBSTATIONPICKING;}),
+                new InstantCommand(()->{cowboyMode = CowboyMode.SUBSTATIONHUNTING;}),
                 new InstantCommand(PIDArmExtensionSubsystem::setSetpointSubstation,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
-                new InstantCommand(PIDArmLifterSubsystem::setSetpointSubstation,PIDArmLifterSubsystem)
+                new InstantCommand(PIDArmLifterSubsystem::setSetpointSubstationHunt,PIDArmLifterSubsystem)
                 ));
-
+        bButton.onTrue(
+            new ParallelCommandGroup(
+                new InstantCommand(()->{cowboyMode = CowboyMode.FLOORHUNTING;}),
+                new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem),
+                new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
+                new InstantCommand(PIDArmLifterSubsystem::setSetpointFloorHunt,PIDArmLifterSubsystem)
+                ));
 
         //UpHatPOV.whileTrue(new StartEndCommand(PIDArmLifterSubsystem::slowWindInBeyondSoftLimit, PIDArmLifterSubsystem::resetEncoder,PIDArmLifterSubsystem));
         UpHatPOV.onTrue(

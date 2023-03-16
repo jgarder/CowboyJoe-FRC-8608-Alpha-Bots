@@ -48,7 +48,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
       lassoMotor.setSoftLimit(SoftLimitDirection.kForward, (float)Constants.LassoConstants.kmaxEncoderValue);
       lassoMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)Constants.LassoConstants.kminEncoderValue);
       lassoMotor.setIdleMode(IdleMode.kBrake);
-      //lassoMotor.setClosedLoopRampRate(.5);
+      lassoMotor.setClosedLoopRampRate(.05);
       lassoMotor.setOpenLoopRampRate(.05);//small ramp rate becuase this will reverse instantly. 
       lassoMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo550safelimitAmps);
 
@@ -180,13 +180,15 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     setSetpoint(Constants.LassoConstants.kminEncoderValue);
     lassoState = LassoState.ZERO;
   }
-  public void setSetpointLassoCone() {
+  public double setSetpointLassoCone() {
     enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCone);
+    return Constants.LassoConstants.kminEncoderValueWithCone;
   }
-  public void setSetpointLassoCube() {
+  public double setSetpointLassoCube() {
     enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCube);
+    return Constants.LassoConstants.kminEncoderValueWithCube;
   }
   public enum LassoState{
     STARTUP,
@@ -201,7 +203,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   }
    // -1 = start state, 0 = zeroed, 1= go(ing) for cone, 2 = cone color/distance detected,
    // 3=going for cube, 4 = cube went for and color/distance detected, 5 = open position
-  LassoState lassoState = LassoState.STARTUP;
+  public LassoState lassoState = LassoState.STARTUP;
   public void RunLasso()
   {
     switch (lassoState){
@@ -253,12 +255,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
 
     }
   }
-  public boolean isLassoOpen(){
-    if (lassoState == LassoState.OPEN){
-      return true;
-    }
-    return false;
-  }
+  
   boolean Zeroed = false;
 
   public void coneAutoLoaded(){
@@ -321,5 +318,96 @@ public class PIDLassoSubsystem extends PIDSubsystem {
 
     }
     //SetSpeed(lassospeed);
+  }
+  int beltTolerance = 3;
+  public boolean isLassoOut() {
+      if(lassoEncoderValue > Constants.LassoConstants.kEncoderValueLoopOut - beltTolerance)
+      {
+        lassoState = LassoState.OPEN;
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+  }
+  public boolean isLassoinOpenState(){
+    if (lassoState == LassoState.OPEN){
+      return true;
+    }
+    return false;
+  }
+  public double getWantedSetpoint(){
+    double wantedsetpoint = Constants.LassoConstants.kminEncoderValue;// default
+    if (ObjectInLasso() == "Cube")
+        {
+          lassoState = LassoState.GOCUBE;
+          wantedsetpoint = Constants.LassoConstants.kminEncoderValueWithCube;//setSetpointLassoCube();
+        }
+        else if(ObjectInLasso() == "Cone")
+        {
+          lassoState = LassoState.GOCONE;
+          wantedsetpoint = Constants.LassoConstants.kminEncoderValueWithCone;//setSetpointLassoCone();
+        }
+        else if(ObjectInLasso() == "RoomLight")
+        {
+          //nothing detected
+          //retractSlowly();
+          wantedsetpoint = Constants.LassoConstants.kminEncoderValueWithCone;//setSetpointLassoCone();
+          lassoState = LassoState.GOCONE;
+        }
+    return wantedsetpoint;
+  }
+  public boolean getIsLassoIn() {
+    double wantedsetpoint = getWantedSetpoint();
+
+    if(lassoEncoderValue < wantedsetpoint + beltTolerance)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+  }
+  public boolean isLassoIn() {
+    double wantedsetpoint = Constants.LassoConstants.kminEncoderValue;// default
+    if (ObjectInLasso() == "Cube")
+        {
+          lassoState = LassoState.GOCUBE;
+          wantedsetpoint = setSetpointLassoCube();
+        }
+        else if(ObjectInLasso() == "Cone")
+        {
+          lassoState = LassoState.GOCONE;
+          wantedsetpoint = setSetpointLassoCone();
+        }
+        else if(ObjectInLasso() == "RoomLight")
+        {
+          //nothing detected
+          //retractSlowly();
+          wantedsetpoint = setSetpointLassoCone();
+          lassoState = LassoState.GOCONE;
+        }
+
+    if(lassoEncoderValue < wantedsetpoint + beltTolerance)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+  }
+  public boolean isLassoZerod() {
+    if(lassoEncoderValue < Constants.LassoConstants.kminEncoderValue + beltTolerance)
+      {
+        lassoState = LassoState.ZERO;
+        return true;
+      }
+      else
+      {
+        return false;
+      }
   }
 }

@@ -25,8 +25,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PIDArmLifterSubsystem extends PIDSubsystem {
  
+  public enum ArmLifterState {
+    STARTUP,
+    CALIBRATED,
+    VERITCALREADY,
+    SUBSTATIONHUNT,
+    SUBSTATIONGRAB,
+    SCOREHUNT,
+    FLOORHUNT,
+    FLOORGRAB
+    
+  }
   static double kP = 0.025;
-  static double kI = 0.0;
+  static double kI = 0.0001;
   static double kD = 0.005;
 
   public double armliftMotorEncoderValue = 0;
@@ -51,8 +62,8 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-    armLiftMotor.setOpenLoopRampRate(.05);//small ramp rate becuase this will reverse instantly. 
-    armLiftMotor.setClosedLoopRampRate(.05);//orig
+    armLiftMotor.setOpenLoopRampRate(.1);//small ramp rate becuase this will reverse instantly. 
+    armLiftMotor.setClosedLoopRampRate(.1);//orig
     armLiftMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo1650safelimitAmps);
 
     //limit everything on this motor controller to 500ms except the status 0 frame which is 10ms and does faults and applied output. 
@@ -147,8 +158,11 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
       }
       setSetpoint(finaloutput);
     }
-  
-  public void setSetpointGround() {
+  public void setSetpointFloorHunt() {
+    enable();
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueGroundPickupHUNT);
+  }
+  public void setSetpointFloorGrab() {
     enable();
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueGroundPickupGRAB);
   }
@@ -163,8 +177,11 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   public void setSetpointStartingConfig() {
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueStartingConfig);
   }
-  public void setSetpointSubstation() {
-    setSetpoint(Constants.ArmLifterConstants.kEncoderValueSubStationPickup);
+  public void setSetpointSubstationHunt() {
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueSubStationHunt);
+  }
+  public void setSetpointSubstationGrab() {
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueSubStationGrab);
   }
 
   public void slowWindInBeyondSoftLimit() {

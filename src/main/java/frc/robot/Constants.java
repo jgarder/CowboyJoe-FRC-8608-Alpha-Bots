@@ -63,7 +63,7 @@ public final class Constants {
         public static final int kArmLifterSparkMaxCanID = 7;
     
         public static final double kEncoderValueMin = 0; // this should when the arm is laying back on the rest.
-        public static final double kEncoderValueMax = 80;// this is when the arm is horizontal and the arm is extended all the way out.
+        public static final double kEncoderValueMax = 82;// this is when the arm is horizontal and the arm is extended all the way out.
         //public static final double kEncoderValueMaxCollapsed=76; //this is when the amr is horizontal and the arm is collapsed all the way in
         //public static final double kEncoderValueMaxExtended=71; //this is when the amr is horizontal and the arm is collapsed all the way in
         public static final double kEncoderValueGoalScoring = 46;// this will change the angle we have our head at when we are scoring goals.
@@ -71,16 +71,18 @@ public final class Constants {
         public static final double kEncoderValueVertical = 11.7; // this is when the arm is veritcal at the 90 degree angle
         
         public static final double kEncoderValueGroundPickupHUNT = 70;  //Arm IN, right above cube and cone 
-        public static final double kEncoderValueGroundPickupGRAB = 80;  //Arm IN , drop for cone and cube pickup
+        public static final double kEncoderValueGroundPickupGRAB = 82;  //Arm IN , drop for cone and cube pickup
         
-        public static final double kEncoderValueSubStationPickup = 42;  //just a lil lower then scoreing (higher angle)
-
+        public static final double kEncoderValueSubStationHunt = 46;  //just a lil lower then scoreing (higher angle)
+        public static final double kEncoderValueSubStationGrab = kEncoderValueSubStationHunt + 9;  //substation lasso height
 
         public static final double kslowretractspeed = -.2;
         public static final double kArmLifterUpSpeed = 0.5;
         public static final double kArmLifterDownSpeed = -0.5;
         
         public static final int kArmLifterSlewRate =8;
+
+    
         public static int kslewrate = 10;//will be the input slew rate for the arm lifter motor
     
   
@@ -105,7 +107,7 @@ public final class Constants {
         public static final double kMidestGoalEncoderValue = 30;
         public static final double kLowestGoalEncoderValue = 0;
 
-        public static final double kSubstationPickupEncoderValue = 60;
+        public static final double kSubstationPickupEncoderValue = 90;
       }
     
       public static class LassoConstants {
@@ -123,7 +125,7 @@ public final class Constants {
         public static final double kminEncoderValue = 0;
         public static final double kminEncoderValueWithCube = 70;//67 is flat 
         public static final double kavgEncoderValueWithCube = 93;//93 is over inflated
-        public static final double kEncoderValueLoopOut= 150;
+        public static final double kEncoderValueLoopOut= 160;
         public static final double kmaxEncoderValue = 180;
     
         public static final double kminEncoderValueWithCone = 4;
