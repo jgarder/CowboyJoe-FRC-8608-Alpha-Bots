@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -192,15 +193,25 @@ public class Swerve extends SubsystemBase {
     
     // Can we use the yaw_offset_tracker minus 180 degrees to return the inverse yaw 
     //offset for corrections when the robot is heading directly towards driver station?
-
+    boolean shouldInvertGyro = Constants.Swerve.invertGyro;
     public void inverseGyro(){//set yaw when in autonomous facing driver station
-       
-        ahrs.zeroYaw();
+        shouldInvertGyro = !shouldInvertGyro;
+        //ahrs.zeroYaw();
     }
-
+    
+    public double flipflipfused()
+    {
+        double answer = ahrs.getFusedHeading();
+        if(DriverStation.Alliance.Red == DriverStation.getAlliance())
+        {
+            answer = answer + 180;
+        }
+        return answer;
+        //return ahrs.getFusedHeading();
+    }
     
     public Rotation2d getYaw() {
-        return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - ahrs.getYaw()) : Rotation2d.fromDegrees(ahrs.getYaw());
+        return (shouldInvertGyro) ? Rotation2d.fromDegrees(360 - ahrs.getYaw()) : Rotation2d.fromDegrees(ahrs.getYaw());
     }
 
     public void resetModulesToAbsolute(){
@@ -214,7 +225,7 @@ public class Swerve extends SubsystemBase {
      * @return the IMU's heading in degrees normalized between -180 and +180
      */
     public double getAngleDegrees() {
-        double angle = ahrs.getFusedHeading() % 360 ;
+        double angle = flipflipfused() % 360 ; //ahrs.getFusedHeading()
         if (angle > 180) {
             angle -= 360;
         } else if (angle <= -180) {

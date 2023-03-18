@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -67,6 +68,7 @@ public class DriveFollowPath extends CommandBase {
     public void execute(){
         double time = timer.get();
         PathPlannerState desiredState = (PathPlannerState) trajectory.sample(time);
+        desiredState = PathPlannerTrajectory.transformStateForAlliance(desiredState,DriverStation.getAlliance());
         ChassisSpeeds targetSpeeds = controller.calculate(RobotContainer.s_Swerve.getPose(), desiredState, new Rotation2d(desiredState.holonomicRotation.getRadians()));
 
         targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;

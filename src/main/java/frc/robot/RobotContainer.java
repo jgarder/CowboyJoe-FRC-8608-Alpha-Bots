@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
@@ -127,6 +128,7 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
+        //System.out.println("wheel circum: " + Constants.Swerve.wheelCircumference + "gear ratio : " + Constants.Swerve.driveGearRatio);
         //lasso is backwards to everyones brain. 
         //PIDLassoSubsystem.setDefaultCommand(new LassoJoystickCmd(PIDLassoSubsystem,CSensor,()->driveController.getRawAxis(Constants.OperatorConstants.klassoMotorAxis)));
 
@@ -144,7 +146,7 @@ public class RobotContainer {
         // .withWidget(BuiltInWidgets.kNumberSlider)
         // .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
         // .getEntry();
-
+        //s_Swerve.inverseGyro();
         //smartdashboard implementation of speed controller
         
 
@@ -257,6 +259,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         //return new exampleAuto(s_Swerve);
-        return new DriveFollowPath("translate left",2,2);
+        //"backupforwardchargepad"
+        return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
     }
 }
