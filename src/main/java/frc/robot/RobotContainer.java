@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -18,6 +20,9 @@ import frc.robot.Subsystems.*;
 import frc.robot.autos.*;
 
 import java.util.function.BooleanSupplier;
+
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.GenericEntry;
@@ -118,7 +123,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        s_Swerve = new Swerve(navx.ahrs);
+        s_Swerve = new Swerve(navx);
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
@@ -259,7 +264,22 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         //return new exampleAuto(s_Swerve);
-        //"backupforwardchargepad"
-        return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
+        navx.ahrs.zeroYaw();
+        //"backupforwardchargepad","clockwisesquare","straightsquare","spintest","DropAndbackupEZside"
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropAndbackupEZside",1,2);
+        return new ParallelCommandGroup(
+            new InstantCommand(PIDArmExtensionSubsystem::setSetpointHighestScore,PIDArmExtensionSubsystem),
+            new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
+            )
+            .andThen(new WaitCommand(2))
+            .andThen(new LassoOutCmd(PIDLassoSubsystem))
+            .andThen(
+                new ParallelCommandGroup(
+                new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem),
+                new InstantCommand(PIDArmLifterSubsystem::setSetpointVertical,PIDArmLifterSubsystem),
+                new SequentialCommandGroup(new LassoInCmd(PIDLassoSubsystem),new ZeroLassoCmd(PIDLassoSubsystem))                        
+                ))
+            .andThen(s_Swerve.followTrajectoryCommand(trajectory, true));//ALWAYS RESETS ODOMETRY RN
+        //return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
     }
 }
