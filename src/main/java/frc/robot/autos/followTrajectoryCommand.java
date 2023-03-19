@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class DriveFollowPath extends CommandBase {
+public class followTrajectoryCommand extends CommandBase {
     Timer timer = new Timer();
     PathPlannerTrajectory trajectory;
     HolonomicDriveController controller;
@@ -28,15 +28,15 @@ public class DriveFollowPath extends CommandBase {
     String pathName;
     static double SWERVE_MAX_VELOCITY_METERS = 4;
     static double SWERVE_MAX_ACCEL_METERS = 10;
-    public DriveFollowPath(String pathname) {
+    public followTrajectoryCommand(String pathname) {
         this(pathname, SWERVE_MAX_VELOCITY_METERS, SWERVE_MAX_ACCEL_METERS, true);
     }
 
-    public DriveFollowPath(String pathname, double maxVel, double maxAccel) {
+    public followTrajectoryCommand(String pathname, double maxVel, double maxAccel) {
         this(pathname, maxVel, maxAccel, true);
     }
 
-    public DriveFollowPath(String pathName, double maxVel, double maxAccel, boolean resetOdometry) {
+    public followTrajectoryCommand(String pathName, double maxVel, double maxAccel, boolean resetOdometry) {
         addRequirements(RobotContainer.s_Swerve);
 
         this.trajectory = PathPlanner.loadPath(pathName, maxVel, maxAccel);

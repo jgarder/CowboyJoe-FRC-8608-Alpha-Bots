@@ -29,6 +29,23 @@ public class NavxSubsystem extends SubsystemBase{
         LastPitch = ahrs.getPitch();
         return (double)LastPitch;
     }
+
+    public float getYaw()
+    {
+        return applyOffset(ahrs.getYaw());
+    }
+    double value_offset = 180;
+    
+    public float applyOffset( double value ) {
+        float offseted_value = (float) (value - value_offset);
+        if (offseted_value < -180) {
+            offseted_value += 360;
+        }
+        if (offseted_value > 180) {
+            offseted_value -= 360;
+        }        
+        return offseted_value;
+    }
     /**
    * Display navX-MXP Sensor Data on Smart Dashboard
    */
@@ -45,7 +62,7 @@ public class NavxSubsystem extends SubsystemBase{
         /* Display 6-axis Processed Angle Data                                      */
         SmartDashboard.putBoolean(  "IMU_Connected",        ahrs.isConnected());
         //SmartDashboard.putBoolean(  "IMU_IsCalibrating",    ahrs.isCalibrating());
-        SmartDashboard.putNumber(   "IMU_Yaw",              ahrs.getYaw());
+        SmartDashboard.putNumber(   "IMU_Yaw",              getYaw());
         SmartDashboard.putNumber(   "IMU_Pitch",            ahrs.getPitch());
         SmartDashboard.putNumber(   "IMU_Roll",             ahrs.getRoll());
         

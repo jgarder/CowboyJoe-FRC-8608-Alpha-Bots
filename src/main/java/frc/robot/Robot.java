@@ -69,6 +69,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     
+    //
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    //
     mattsmethod();
     
 
@@ -80,7 +83,7 @@ public class Robot extends TimedRobot {
 
   private void mattsmethod() {
     AprilTagFieldLayout currenTagFieldLayout = FieldConstants.aprilTags;
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     // Somehow add a variable here to let the robot communicate with dashboard to tell it what side of the field it is on
     // These three lines below seem to be part of the solution.  The origin is different for each alliance, there is potentially a way
     // to address this with april tags to give the bot some reference locations.

@@ -16,7 +16,7 @@ public final class Constants {
   public static class NeoBrushless
   {
     public static int neo550safelimitAmps = 35;//lasso and arm extension use these
-    public static int neo1650safelimitAmps = 45; //this is the main arm lift motor. 
+    public static int neo1650safelimitAmps = 45; //this is the main arm lift motor.
   }
 
     public static class Canivore{
@@ -24,13 +24,13 @@ public final class Constants {
     }
 
     public static class XboxControllerMap {
-        //THIS MAP EXCEPT POV exist as Xboxcontroller.button.KBack.value or .Axis.kRightY ect ect ect. 
+        //THIS MAP EXCEPT POV exist as Xboxcontroller.button.KBack.value or .Axis.kRightY ect ect ect.
         //these are the pov directional buttons (this had 8 directions but we do not have them mapped.)
         public static final int kPOVDirectionUP = 0;//0 is up on xbox controller POV hat
         public static final int kPOVDirectionDOWN = 180;//180 is down on xbox controller POV hat
         public static final int kPOVDirectionRIGHT = 90;//90 is right on xbox controller POV hat
         public static final int kPOVDirectionLeft = 270;//270 is Left on xbox controller POV hat
-    
+
       }
       public static class OperatorConstants {
         public static final double kStickDeadband = 0.02;
@@ -41,12 +41,12 @@ public final class Constants {
         public static final int kDRIVERightTriggerAxis = XboxController.Axis.kRightTrigger.value;
         public static final int kDRIVELeftTriggerAxis = XboxController.Axis.kLeftTrigger.value;
 
-        
+
         public static final int kArmOutHighestPoleButton = XboxController.Button.kY.value;//this is the Y button, the triangle button or the Top button of the xbox controller
         public static final int kArmOutMidestPoleButton = XboxController.Button.kB.value;//this is the B button, the Square button or the Right button of the xbox controller
- 
+
         //public static final int kresetLassoEncoderButton = 9;//#9 is the "select" button in the middle of the joystick
-        
+
         public static final int RatchetLinearActuatorsparkMaxCanID = 15;
       }
       public static class DriveConstants {
@@ -56,12 +56,12 @@ public final class Constants {
         public static final int kFollowerRightSparkMaxCanID = 9;
         public static final boolean kleftInverted = false;
         public static final boolean krightInverted = true;
-        
+
       }
-    
+
       public static class ArmLifterConstants {
         public static final int kArmLifterSparkMaxCanID = 7;
-    
+
         public static final double kEncoderValueMin = 0; // this should when the arm is laying back on the rest.
         public static final double kEncoderValueMax = 82;// this is when the arm is horizontal and the arm is extended all the way out.
         //public static final double kEncoderValueMaxCollapsed=76; //this is when the amr is horizontal and the arm is collapsed all the way in
@@ -69,68 +69,68 @@ public final class Constants {
         public static final double kEncoderValueGoalScoring = 46;// this will change the angle we have our head at when we are scoring goals.
         public static final double kEncoderValueStartingConfig = kEncoderValueMin;// arm laying back and collapsed resting against backstop is 0 position
         public static final double kEncoderValueVertical = 11.7; // this is when the arm is veritcal at the 90 degree angle
-        
-        public static final double kEncoderValueGroundPickupHUNT = 70;  //Arm IN, right above cube and cone 
+
+        public static final double kEncoderValueGroundPickupHUNT = 70;  //Arm IN, right above cube and cone
         public static final double kEncoderValueGroundPickupGRAB = 82;  //Arm IN , drop for cone and cube pickup
-        
+
         public static final double kEncoderValueSubStationHunt = 46;  //just a lil lower then scoreing (higher angle)
         public static final double kEncoderValueSubStationGrab = kEncoderValueSubStationHunt + 9;  //substation lasso height
 
         public static final double kslowretractspeed = -.2;
         public static final double kArmLifterUpSpeed = 0.5;
         public static final double kArmLifterDownSpeed = -0.5;
-        
+
         public static final int kArmLifterSlewRate =8;
 
-    
+
         public static int kslewrate = 10;//will be the input slew rate for the arm lifter motor
-    
-  
-    
+
+
+
       }
-    
+
       public static class ArmExtensionConstants {
         public static final int kArmExtensionSparkMaxCanID = 13;
-        
+
         //double CubeSpeed = .25;
         //double ConeSpeed = .75;
-    
+
         public static final double kminEncoderValue = 0;
         public static final double kmaxEncoderValue = 220;
-    
+
         public static final double kArmOutSpeed = 0.75;
         public static final double kArmInSpeed = -0.75;
-    
+
         public static final int kArmExtensionSlewRate = 10;
-    
+
         public static final double kHighestGoalEncoderValue = 205;
         public static final double kMidestGoalEncoderValue = 30;
         public static final double kLowestGoalEncoderValue = 0;
 
         public static final double kSubstationPickupEncoderValue = 90;
       }
-    
+
       public static class LassoConstants {
         public static final int klassoMotorCanID = 16;
-        
+
         public static final double kCubeSpeed = .25;
         public static final double kConeSpeed = .75;
-    
+
         //
         //double lassoinchesperrev = 1.5;
         //double lassoencodercountsperrev = 42;
         //double lassoencodercountsperinch = lassoencodercountsperrev/lassoinchesperrev;
-    
-       
+
+
         public static final double kminEncoderValue = 0;
-        public static final double kminEncoderValueWithCube = 70;//67 is flat 
+        public static final double kminEncoderValueWithCube = 70;//67 is flat
         public static final double kavgEncoderValueWithCube = 93;//93 is over inflated
         public static final double kEncoderValueLoopOut= 160;
         public static final double kmaxEncoderValue = 180;
-    
+
         public static final double kminEncoderValueWithCone = 4;
-    
-      
+
+
       }
 
     public static final double stickDeadband = 0.10;
@@ -146,9 +146,9 @@ public final class Constants {
         public static final double trackWidth = Units.inchesToMeters(21.5); //TODO: This must be tuned to specific robot
         public static final double wheelBase = Units.inchesToMeters(26.5); //TODO: This must be tuned to specific robot
         public static final double wheelCircumference = chosenModule.wheelCircumference;//Units.inchesToMeters(12.125);//OVERRODE by 8608 //chosenModule.wheelCircumference;
-        
 
-        /* Swerve Kinematics 
+
+        /* Swerve Kinematics
          * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
          public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
             new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
@@ -195,11 +195,14 @@ public final class Constants {
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
-        /* Drive Motor Characterization Values 
+        /* Drive Motor Characterization Values
          * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
-        public static final double driveKS = (0.32 / 12); //TODO: This must be tuned to specific robot
+        public static final double driveKS = (0.45 / 12); //TODO: This must be tuned to specific robot
         public static final double driveKV = (1.51 / 12);
         public static final double driveKA = (0.27 / 12);
+        // public static final double driveKS = (0.32 / 12); //TODO: This must be tuned to specific robot
+        // public static final double driveKV = (1.51 / 12);
+        // public static final double driveKA = (0.27 / 12);
 
         /* Swerve Profiling Values */
         public static final double DRIVE_POS_ERROR_CONTROLLER_P = 0.1;
@@ -222,8 +225,8 @@ public final class Constants {
             public static final int driveMotorID = 19;
             public static final int angleMotorID = 21;
             public static final int canCoderID = 29;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(336.09);
-            public static final SwerveModuleConstants constants = 
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(335.39);
+            public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
@@ -232,18 +235,18 @@ public final class Constants {
             public static final int driveMotorID = 23;
             public static final int angleMotorID = 18;
             public static final int canCoderID = 28;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(162.5);
-            public static final SwerveModuleConstants constants = 
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(163.1);
+            public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
-        
+
         /* Back Left Module - Module 2 */
         public static final class Mod2 { //TODO: This must be tuned to specific robot
             public static final int driveMotorID = 25;
             public static final int angleMotorID = 24;
             public static final int canCoderID = 26;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(231.06);
-            public static final SwerveModuleConstants constants = 
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(228.60);
+            public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
@@ -252,8 +255,8 @@ public final class Constants {
             public static final int driveMotorID = 22;
             public static final int angleMotorID = 20;
             public static final int canCoderID = 27;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(32);
-            public static final SwerveModuleConstants constants = 
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(32.25);
+            public static final SwerveModuleConstants constants =
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
     }
@@ -263,11 +266,11 @@ public final class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-    
+
         public static final double kPXController = 1;
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
-    
+
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(

@@ -4,33 +4,15 @@
 
 package frc.robot.Subsystems;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
+
 import frc.robot.RobotContainer;
 import frc.robot.Commands.*;
 import frc.robot.RobotContainer.CowboyMode;
-
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
-
-import java.util.function.BooleanSupplier;
-
-import javax.lang.model.util.ElementScanner14;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
-
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 
 public class ArmStateHandler extends SubsystemBase {
@@ -173,7 +155,7 @@ public class ArmStateHandler extends SubsystemBase {
   public void ArmResetting()
   {
     new InstantCommand(()->s_AExtension.setSetpointIn(),s_AExtension).schedule();
-    new InstantCommand(()->s_ALifter.setSetpointVertical(),s_ALifter).schedule();;
+    new InstantCommand(()->s_ALifter.setSetpointVertical(),s_ALifter).schedule();
   }
   //LassoOutCmd lassoOut = new LassoOutCmd(s_Lasso);
   //SequentialCommandGroup lassoInZero = new SequentialCommandGroup( new LassoInCmd(s_Lasso),new ZeroLassoCmd(s_Lasso));

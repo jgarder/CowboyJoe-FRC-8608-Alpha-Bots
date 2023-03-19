@@ -9,15 +9,21 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.music.Orchestra;
@@ -34,8 +40,8 @@ public class Swerve extends SubsystemBase {
 
     public SwerveModule[] mSwerveMods;
     //public Pigeon2 gyro;
-    public AHRS ahrs;
-    public Swerve(AHRS incomingahrs) {
+    public NavxSubsystem ahrs;
+    public Swerve(NavxSubsystem incomingahrs) {
 
         //booted music time
         // TalonFX[] motors = { new TalonFX(18),new TalonFX(19),new TalonFX(20),new TalonFX(21),new TalonFX(22),new TalonFX(23),new TalonFX(24)};
@@ -187,7 +193,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        ahrs.zeroYaw();
+        ahrs.ahrs.zeroYaw();
         //gyro.setYaw(0);
     }
     
@@ -201,7 +207,7 @@ public class Swerve extends SubsystemBase {
     
     public double flipflipfused()
     {
-        double answer = ahrs.getFusedHeading();
+        double answer = ahrs.ahrs.getFusedHeading();
         if(DriverStation.Alliance.Red == DriverStation.getAlliance())
         {
             answer = answer + 180;
@@ -225,7 +231,7 @@ public class Swerve extends SubsystemBase {
      * @return the IMU's heading in degrees normalized between -180 and +180
      */
     public double getAngleDegrees() {
-        double angle = flipflipfused() % 360 ; //ahrs.getFusedHeading()
+        double angle = ahrs.ahrs.getFusedHeading() % 360 ; //flipflipfused()
         if (angle > 180) {
             angle -= 360;
         } else if (angle <= -180) {
@@ -238,12 +244,34 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions());  
 
-        // for(SwerveModule mod : mSwerveMods){
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
-        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
-        // }
+         for(SwerveModule mod : mSwerveMods){
+             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
+             //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
+             //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+         }
     }
 
+    // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
+    public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+    return new SequentialCommandGroup(
+         new InstantCommand(() -> {
+           // Reset odometry for the first path you run during auto
+           if(isFirstPath){
+               this.resetOdometry(traj.getInitialHolonomicPose());
+           }
+         }),
+         new PPSwerveControllerCommand(
+             traj, 
+             this::getPose, // Pose supplier
+             this.kinematics, // SwerveDriveKinematics
+             new PIDController(0.07, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+             new PIDController(0.07, 0, 0), // Y controller (usually the same values as X controller)
+             new PIDController(0.2, 0.01, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+             this::setModuleStates, // Module states consumer
+             true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+             this // Requires this drive subsystem
+         )
+     );
+    }
     
 }
