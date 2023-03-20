@@ -290,62 +290,20 @@ public class RobotContainer {
         //Before running any commands do these setup steps.
         navx.ahrs.zeroYaw();
 
-
+        //command to be used in auton
         Command ZeroLassoStartupCmd = new SequentialCommandGroup(
             new InstantCommand(()->PIDLassoSubsystem.HoldAutoLoaded(),PIDLassoSubsystem)
             );
-            
+        //command to be used in auton 
         Command ZeroLifterCmd = new ParallelCommandGroup(
                     new InstantCommand(()->{cowboyMode = CowboyMode.READYTOSTART;}),
                     new ZeroLifterCmd(PIDArmLifterSubsystem),
                     new ZeroExtensionCmd(PIDArmExtensionSubsystem)
                     )
                ;
-        
-        // while(!command.isFinished() && DriverStation.isAutonomousEnabled())
-        // {
-        //     Timer.delay(1);
-        //     System.out.println("WAITING TO AUTO" + command.isFinished() + DriverStation.isAutonomousEnabled());
-        // }
 
-        //now get which autonomous is selected?
-        m_autoSelected = m_chooser.getSelected();
-        System.out.println("Auto selected: " + m_autoSelected);
-
-        //select the script and return it to whatever called this method. 
-        switch (m_autoSelected) {
-            case kDropBackChargeAuto:
-              // Put custom auto code here
-              
-              break;
-              case kDropBackPullUpChargeAuto:
-              // Put custom auto code here
-              break;
-              case kDropAndbackupEZsideAuto:
-              // Put custom auto code here
-              return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(EZSideDropBackAutoCMD());
-              case kDropBackBumpSideAuto:
-              // Put custom auto code here
-              break;
-            case kDefaultAuto:
-            default:
-                return new WaitCommand(10);
-          }
-
-
-
-          return new WaitCommand(10);
-        //zero the yaw when we begin. 
-        //2023 this is flipped 180
-        
-        //"backupforwardchargepad","clockwisesquare","straightsquare","spintest","DropAndbackupEZside"
-       
-    }
-
-    private Command EZSideDropBackAutoCMD() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropAndbackupEZside",1,2);
-        return 
-            new ParallelCommandGroup(
+        //command to be used in auton
+        Command DropHighestrun = new ParallelCommandGroup(
                 new InstantCommand(PIDArmExtensionSubsystem::setSetpointHighestScore,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
                 )
@@ -362,26 +320,44 @@ public class RobotContainer {
                             new ZeroLassoCmd(PIDLassoSubsystem))                        
                     )
             );
-            //.andThen(s_Swerve.followTrajectoryCommand(trajectory, true));//ALWAYS RESETS ODOMETRY RN
+
+        //now get which autonomous is selected?
+        m_autoSelected = m_chooser.getSelected();
+        System.out.println("Auto selected: " + m_autoSelected);
+
+        //select the script and return it to whatever called this method. 
+        switch (m_autoSelected) {
+            case kDropBackChargeAuto:
+              // Put custom auto code here   
+              break;
+              case kDropBackPullUpChargeAuto:
+              // Put custom auto code here
+              break;
+              case kDropAndbackupEZsideAuto:
+              // Put custom auto code here
+              return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun).andThen(EZSideDropBackAutoCMD());
+              case kDropBackBumpSideAuto:
+              // Put custom auto code here
+              break;
+            case kDefaultAuto:
+            default:
+                return new WaitCommand(10);
+          }
+          return new WaitCommand(10);
+
+
+    }
+
+    private Command EZSideDropBackAutoCMD() {
+        //"backupforwardchargepad","clockwisesquare","straightsquare","spintest","DropAndbackupEZside"
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropAndbackupEZside",1,2);
+        return s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
         //return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
     }
+
     private Command BumpSideDropBackAutoCMD() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropBackBumpSide",1,2);
-        return new ParallelCommandGroup(
-            new InstantCommand(PIDArmExtensionSubsystem::setSetpointHighestScore,PIDArmExtensionSubsystem),
-            new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
-            )
-            .andThen(new WaitCommand(1.8))
-            .andThen(new LassoOutCmd(PIDLassoSubsystem))
-            .andThen(
-                new ParallelCommandGroup(
-                    new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem),
-                    new InstantCommand(PIDArmLifterSubsystem::setSetpointVertical,PIDArmLifterSubsystem),
-                    new SequentialCommandGroup(
-                        new LassoInCmd(PIDLassoSubsystem),
-                        new ZeroLassoCmd(PIDLassoSubsystem))                        
-                ));
-            //.andThen(s_Swerve.followTrajectoryCommand(trajectory, true));//ALWAYS RESETS ODOMETRY RN
+        return s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
         //return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
     }
 }
