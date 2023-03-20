@@ -16,18 +16,19 @@ import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class PIDLassoSubsystem extends PIDSubsystem {
 
-  static double kP = 0.060;
+  static double kP = 0.040;
   static double kI = 0.0;
   static double kD = 0.0;
     
   //double Currentlassolength = 0; // this is the current length of the lasso in inches that is 'out' from the motor. 0 is retracted to tightest position (slight slack)
     
-  double lassoEncoderValue = 0;
+  public double lassoEncoderValue = 0;
   double lassoEncoderVelocity = 0;
   private final CANSparkMax lassoMotor = new CANSparkMax(Constants.LassoConstants.klassoMotorCanID,MotorType.kBrushless);
   private RelativeEncoder lassoMotor_encoder; 
@@ -59,7 +60,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
       lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 500); //Default Rate: 20ms, Alternate Encoder Velocity,Alternate Encoder Position
       lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Position,Duty Cycle Absolute Encoder Absolute Angle
       lassoMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 500); //Default Rate: 200ms, Duty Cycle Absolute Encoder Velocity,Duty Cycle Absolute Encoder Frequency
-      enable();//enable the pidcontroller of this subsystem
+      //enable();//enable the pidcontroller of this subsystem
   }
 
     @Override
@@ -84,19 +85,19 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   public void periodic() {
     getEncoderData();
     super.periodic();// This is a PidSubsystem, we have orridden the periodic method to get encoder data... So we need to call the super periodic method to get the PID stuff to work.
-    setMinLassoEncoderValueBasedOnColor();
+    //setMinLassoEncoderValueBasedOnColor();
     
-    double beltStretchMagicNumber = 1.25;
-    if(getSetpoint() == Constants.LassoConstants.kminEncoderValue && Math.abs(lassoEncoderValue) < Constants.LassoConstants.kminEncoderValue + beltStretchMagicNumber){
-      disable();
-    }
-    else{
-      if(!isEnabled())
-      {
-        enable();
-      }
+    // double beltStretchMagicNumber = 1.25;
+    // if(getSetpoint() == Constants.LassoConstants.kminEncoderValue && Math.abs(lassoEncoderValue) < Constants.LassoConstants.kminEncoderValue + beltStretchMagicNumber){
+    //   disable();
+    // }
+    // else{
+    //   if(!isEnabled())
+    //   {
+    //     enable();
+    //   }
       
-    }
+    // }
   }
   public void setMinLassoEncoderValueBasedOnColor()
   { 
@@ -190,9 +191,20 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCube);
     return Constants.LassoConstants.kminEncoderValueWithCube;
   }
+  public void HoldAutoLoaded(){
+    disable();
+    lassoState = LassoState.AUTON;
+    double position = lassoMotor_encoder.getPosition();
+    lassoMotor_encoder.setPosition(position);
+    setSetpoint(position-3.0);
+    enable();
+  }
+
+
   public enum LassoState{
     STARTUP,
     ZERO,
+    AUTON,
     GOCONE,
     CONEIN,
     GOCUBE,
@@ -258,14 +270,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   
   boolean Zeroed = false;
 
-  public void coneAutoLoaded(){
-    // set lassostate to cone
-    lassoState = LassoState.GOCONE;
-    // set encoder position to cone position? no. encoder knows where it is. Set setpoint
-    // Set Setpoint to be the encoder position -.25 or something
-    setSetpoint(lassoEncoderValue-.25);
-    //
-  }
+
 
   private void retractSlowly() {
     int reduction = 10;

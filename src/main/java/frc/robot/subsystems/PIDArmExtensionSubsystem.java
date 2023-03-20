@@ -110,7 +110,6 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
         break;
       case 0  :
         setSetpointMidScore();
-        extensionStage = 2;
         break;
       case 1  :
         break;
@@ -132,6 +131,7 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
   }
   public void setSetpointMidScore() {
     enable();
+    extensionStage = 2;
     setSetpoint(Constants.ArmExtensionConstants.kMidestGoalEncoderValue);
   }
   public void setSetpointLowScore() {
@@ -189,8 +189,8 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
      * 
      * GetPosition() returns the position of the encoder in units of revolutions
      */
-    //extensionMotorEncoderValue = extensionMotor_encoder.getPosition();
-    //SmartDashboard.putNumber("ArmExtension Encoder Position",extensionMotorEncoderValue);
+    extensionMotorEncoderValue = extensionMotor_encoder.getPosition();
+    SmartDashboard.putNumber("ArmExtension Encoder Position",extensionMotorEncoderValue);
 
     /**
      * Encoder velocity is read from a RelativeEncoder object by calling the

@@ -28,6 +28,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
 
+  
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,6 +42,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     PathPlannerServer.startServer(5811);
+
+    
   }
 
   /**
@@ -70,7 +74,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     
     //
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     //
     mattsmethod();
     
@@ -109,7 +113,28 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    if (m_autonomousCommand == null) {
+      m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+      m_autonomousCommand.schedule();
+    }
+  }
+
+   /**
+   * Exit code for autonomous mode should go here.
+   *
+   * <p>Users should override this method for code which will be called each time the robot exits
+   * autonomous mode.
+   */
+  @Override
+  public void autonomousExit() {
+
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+      CommandScheduler.getInstance().cancelAll();
+    }
+    m_autonomousCommand = null;
+  }
 
   @Override
   public void teleopInit() {

@@ -62,19 +62,19 @@ public final class Constants {
       public static class ArmLifterConstants {
         public static final int kArmLifterSparkMaxCanID = 7;
 
-        public static final double kEncoderValueMin = 0; // this should when the arm is laying back on the rest.
-        public static final double kEncoderValueMax = 82;// this is when the arm is horizontal and the arm is extended all the way out.
+        public static final double kEncoderValueMin = 0;//p // this should when the arm is laying back on the rest.
+        public static final double kEncoderValueMax = 86.4;//p // this is when the arm is horizontal and the arm is extended all the way out.
         //public static final double kEncoderValueMaxCollapsed=76; //this is when the amr is horizontal and the arm is collapsed all the way in
         //public static final double kEncoderValueMaxExtended=71; //this is when the amr is horizontal and the arm is collapsed all the way in
-        public static final double kEncoderValueGoalScoring = 46;// this will change the angle we have our head at when we are scoring goals.
+        public static final double kEncoderValueGoalScoring = 49;//p this will change the angle we have our head at when we are scoring goals.
         public static final double kEncoderValueStartingConfig = kEncoderValueMin;// arm laying back and collapsed resting against backstop is 0 position
-        public static final double kEncoderValueVertical = 11.7; // this is when the arm is veritcal at the 90 degree angle
+        public static final double kEncoderValueVertical = 16.0; //p this is when the arm is veritcal at the 90 degree angle
 
-        public static final double kEncoderValueGroundPickupHUNT = 70;  //Arm IN, right above cube and cone
-        public static final double kEncoderValueGroundPickupGRAB = 82;  //Arm IN , drop for cone and cube pickup
+        public static final double kEncoderValueGroundPickupHUNT = 74.4;//p  //Arm IN, right above cube and cone
+        public static final double kEncoderValueGroundPickupGRAB = 86.4;//p  //Arm IN , drop for cone and cube pickup
 
-        public static final double kEncoderValueSubStationHunt = 46;  //just a lil lower then scoreing (higher angle)
-        public static final double kEncoderValueSubStationGrab = kEncoderValueSubStationHunt + 9;  //substation lasso height
+        public static final double kEncoderValueSubStationHunt = 48;//p  //just a lil lower then scoreing (higher angle)
+        public static final double kEncoderValueSubStationGrab = kEncoderValueSubStationHunt + 7;  //substation lasso height
 
         public static final double kslowretractspeed = -.2;
         public static final double kArmLifterUpSpeed = 0.5;
@@ -121,14 +121,17 @@ public final class Constants {
         //double lassoencodercountsperrev = 42;
         //double lassoencodercountsperinch = lassoencodercountsperrev/lassoinchesperrev;
 
-
+        //LOOP at Start/Home/Zero
         public static final double kminEncoderValue = 0;
-        public static final double kminEncoderValueWithCube = 70;//67 is flat
-        public static final double kavgEncoderValueWithCube = 93;//93 is over inflated
-        public static final double kEncoderValueLoopOut= 160;
-        public static final double kmaxEncoderValue = 180;
+        //lasso at cone or wait/ready
+        public static final double kminEncoderValueWithCone = 2.8;//p
 
-        public static final double kminEncoderValueWithCone = 4;
+        public static final double kminEncoderValueWithCube = 54.00;//67 is flat
+        //public static final double kavgEncoderValueWithCube = 93;//93 is over inflated
+        public static final double kEncoderValueLoopOut= 107.7;
+        public static final double kmaxEncoderValue = 127;
+
+        
 
 
       }

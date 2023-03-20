@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class ZeroExtensionCmd extends CommandBase {
 
     // amp limit for neo brushless 550 is 35 amps. so its smart limited. be aware. 
-    private final double ampslimit = 30.0; // so we shoot for about 28 on a okay//full battery 
+    private final double ampslimit = 24.0; // so we shoot for about 28 on a okay//full battery 
     //timeout incase of something horrific happening (life)
-    private final long timeoutmilliseconds = 5000;
+    private final long timeoutmilliseconds = 10000;
 
     private long startTime = 0;
     private PIDArmExtensionSubsystem s_Extension;  

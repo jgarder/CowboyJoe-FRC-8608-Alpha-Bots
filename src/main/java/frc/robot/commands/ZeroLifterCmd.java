@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ZeroLifterCmd extends CommandBase {
     // amp limit for neo brushless 1650 is 45 amps. so its smart limited. be aware. 
-    private final double ampslimit = 35.0; // so we shoot for about 28 on a okay//full battery
+    private final double ampslimit = 31.0; // so we shoot for about 28 on a okay//full battery
     //timeout incase of something horrific happening (life)
-    private final long timeoutmilliseconds = 6000;
+    private final long timeoutmilliseconds = 8000;
 
     private long startTime = 0;
     private PIDArmLifterSubsystem s_Lifter;  

@@ -154,8 +154,11 @@ public class ArmStateHandler extends SubsystemBase {
 
   public void ArmResetting()
   {
-    new InstantCommand(()->s_AExtension.setSetpointIn(),s_AExtension).schedule();
-    new InstantCommand(()->s_ALifter.setSetpointVertical(),s_ALifter).schedule();
+    new InstantCommand(()->s_ALifter.setSetpointVertical(),s_ALifter)
+    .andThen(new WaitCommand(.10))
+    .andThen(new InstantCommand(()->s_AExtension.setSetpointIn(),s_AExtension))
+    .schedule();
+    
   }
   //LassoOutCmd lassoOut = new LassoOutCmd(s_Lasso);
   //SequentialCommandGroup lassoInZero = new SequentialCommandGroup( new LassoInCmd(s_Lasso),new ZeroLassoCmd(s_Lasso));

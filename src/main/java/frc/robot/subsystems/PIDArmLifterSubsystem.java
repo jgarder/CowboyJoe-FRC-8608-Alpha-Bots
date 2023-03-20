@@ -19,6 +19,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -200,9 +201,10 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   public void resetEncoder() {
     SetSpeed(0);
     armLiftMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    setSetpointStartingConfig();//might as well set the setpoint to verticle to it doesnt appear to run away after finding veritcle.
-    enable();
+    setSetpointStartingConfig();//might as well set the setpoint to verticle to it doesnt appear to run away after finding veritcle. 
+    Timer.delay(.1);//TODO MAKE THIS IN THREAD
     armLiftMotor_encoder.setPosition(Constants.ArmLifterConstants.kEncoderValueStartingConfig);
+    enable();
   }
 
 
@@ -228,8 +230,8 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
      * 
      * GetPosition() returns the position of the encoder in units of revolutions
      */
-    //extensionMotorEncoderValue = extensionMotor_encoder.getPosition();
-    //SmartDashboard.putNumber("ArmExtension Encoder Position",extensionMotorEncoderValue);
+    armliftMotorEncoderValue = armLiftMotor_encoder.getPosition();
+    SmartDashboard.putNumber("ArmLift Encoder Position",armliftMotorEncoderValue);
 
     /**
      * Encoder velocity is read from a RelativeEncoder object by calling the

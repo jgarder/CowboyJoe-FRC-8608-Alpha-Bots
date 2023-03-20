@@ -1,5 +1,20 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="ArmLift Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="530" y="110"/>
+	</widget>
+	<widget field="ArmExtension Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="498" y="132"/>
+		<height>20</height>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="266" y="78"/>
+		<property name="Text" value="Please Select The Autonomous Program to run :"/>
+	</static-widget>
+	<widget field="Auto choices" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="262" y="88"/>
+		<property name="Use Radio Buttons" value="false"/>
+	</widget>
 	<widget field="CowboyMode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="198" y="4"/>
 		<width>394</width>
@@ -44,7 +59,7 @@
 	</widget>
 	<widget field="Lifter Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="957" y="109"/>
-		<width>89</width>
+		<width>93</width>
 	</widget>
 	<widget field="Lasso Temp" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1055" y="131"/>
@@ -89,10 +104,10 @@
 		<height>42</height>
 	</static-widget>
 	<widget field="ArmLift velocity add" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="109" y="314"/>
+		<location x="979" y="275"/>
 	</widget>
 	<widget field="LiftArmVeritcal" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="136" y="292"/>
+		<location x="1004" y="249"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="1162" y="-14"/>
@@ -120,7 +135,7 @@
 		<location x="6" y="596"/>
 	</widget>
 	<widget field="Lasso PID Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="798" y="375"/>
+		<location x="796" y="401"/>
 	</widget>
 	<widget field="IMU_Update_Count" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="708"/>
@@ -168,7 +183,7 @@
 		<location x="859" y="440"/>
 	</widget>
 	<widget field="Lasso Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="815" y="398"/>
+		<location x="537" y="153"/>
 	</widget>
 	<widget field="ArmExtension SetPoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="346" y="298"/>
@@ -197,7 +212,7 @@
 		<location x="608" y="290"/>
 	</widget>
 	<widget field="distance_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="595" y="211"/>
+		<location x="582" y="583"/>
 	</widget>
 	<widget field="LL Pose Z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="622" y="401"/>
@@ -206,11 +221,11 @@
 		<location x="622" y="381"/>
 	</widget>
 	<widget field="rotation_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="597" y="232"/>
+		<location x="584" y="559"/>
 		<height>22</height>
 	</widget>
 	<widget field="steering_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="827" y="186"/>
+		<location x="742" y="605"/>
 	</widget>
 	<widget field="LimelightSkew" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="599" y="314"/>
@@ -222,20 +237,59 @@
 		<location x="618" y="360"/>
 	</widget>
 	<widget field="currentlyHolding" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="41" y="241"/>
+		<location x="996" y="206"/>
 	</widget>
 	<widget field="ActionStage" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="55" y="213"/>
+		<location x="1017" y="228"/>
 	</widget>
 	<widget field="steering_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="594" y="187"/>
+		<location x="583" y="605"/>
 	</widget>
 	<widget field="distance_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="825" y="210"/>
+		<location x="744" y="584"/>
 	</widget>
 	<widget field="rotation_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="827" y="235"/>
+		<location x="749" y="562"/>
 	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="1178" y="562"/>
+		<width>736</width>
+		<height>435</height>
+		<property name="Camera Choice" value="limelight"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="1162" y="-14"/>
+		<width>743</width>
+		<height>583</height>
+		<property name="Camera Choice" value=""/>
+	</static-widget>
+	<widget field="Mod 3 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="358" y="528"/>
+	</widget>
+	<widget field="Mod 2 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="191" y="530"/>
+	</widget>
+	<widget field="Mod 1 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="357" y="507"/>
+		<height>20</height>
+	</widget>
+	<widget field="Mod 0 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="192" y="507"/>
+	</widget>
+	<widget field="LassoMode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1022" y="184"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="8" y="6"/>
+		<width>52</width>
+		<height>42</height>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="1162" y="-14"/>
+		<width>743</width>
+		<height>583</height>
+		<property name="Camera Choice" value=""/>
+	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="1178" y="562"/>
 		<width>736</width>
@@ -251,4 +305,27 @@
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="Right Position"/>
+	<hidden field="Mod 2 Integrated"/>
+	<hidden field="SysIdGearing"/>
+	<hidden field="SysIdWrongMech"/>
+	<hidden field="Left Voltage"/>
+	<hidden field="Mod 1 Integrated"/>
+	<hidden field="SysIdOverflow"/>
+	<hidden field="SysIdTestType"/>
+	<hidden field="Mod 3 Integrated"/>
+	<hidden field="SysIdVoltageCommand"/>
+	<hidden field="SysIdTelemetry"/>
+	<hidden field="Right Velocity"/>
+	<hidden field="Gyro Rate"/>
+	<hidden field="SysIdConversionFactor"/>
+	<hidden field="Left Velocity"/>
+	<hidden field="Mod 0 Integrated"/>
+	<hidden field="SysIdCPR"/>
+	<hidden field="Right Voltage"/>
+	<hidden field="Gyro Reading"/>
+	<hidden field="SysIdRotate"/>
+	<hidden field="SysIdAckNumber"/>
+	<hidden field="SysIdTest"/>
+	<hidden field="Left Position"/>
 </xml>

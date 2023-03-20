@@ -2,11 +2,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -34,6 +38,14 @@ import edu.wpi.first.networktables.GenericEntry;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    //
+    private static final String kDefaultAuto = "Default";
+    private static final String kDropBackChargeAuto = "DropBackCharge";
+    private static final String kDropAndbackupEZsideAuto = "DropAndbackupEZside";
+    private static final String kDropBackBumpSideAuto = "DropBackBumpSide";
+    private static final String kDropBackPullUpChargeAuto = "DropBackPullUpCharge";
+    private String m_autoSelected;
+    private final SendableChooser<String> m_chooser = new SendableChooser<>();
     //
     public enum CowboyMode{
         STARTUP,
@@ -123,6 +135,15 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+
+        //Autonomous selector. 
+        m_chooser.setDefaultOption("No Auto", kDefaultAuto);
+        m_chooser.addOption("Score/Backup Over Charge station", kDropBackChargeAuto);
+        m_chooser.addOption("Score/Backup EZ side", kDropAndbackupEZsideAuto);
+        m_chooser.addOption("Score/Backup Bump side", kDropBackBumpSideAuto);
+        m_chooser.addOption("drive on Charging after score/backup", kDropBackPullUpChargeAuto);
+        SmartDashboard.putData("Auto choices", m_chooser);
+        //
         s_Swerve = new Swerve(navx);
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -187,6 +208,7 @@ public class RobotContainer {
         xButton.onTrue(
             new ParallelCommandGroup(
                 new InstantCommand(()->{cowboyMode = CowboyMode.SCOREHUNTING;}),
+                new InstantCommand(PIDArmExtensionSubsystem::setSetpointMidScore,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
                 ));
         yButton.onTrue(
@@ -256,30 +278,110 @@ public class RobotContainer {
         //if pressing retry, try the last thing
         //if pressing both, reset?
     }
+
+
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        //return new exampleAuto(s_Swerve);
+        //Before running any commands do these setup steps.
         navx.ahrs.zeroYaw();
+
+
+        Command ZeroLassoStartupCmd = new SequentialCommandGroup(
+            new InstantCommand(()->PIDLassoSubsystem.HoldAutoLoaded(),PIDLassoSubsystem)
+            );
+            
+        Command ZeroLifterCmd = new ParallelCommandGroup(
+                    new InstantCommand(()->{cowboyMode = CowboyMode.READYTOSTART;}),
+                    new ZeroLifterCmd(PIDArmLifterSubsystem),
+                    new ZeroExtensionCmd(PIDArmExtensionSubsystem)
+                    )
+               ;
+        
+        // while(!command.isFinished() && DriverStation.isAutonomousEnabled())
+        // {
+        //     Timer.delay(1);
+        //     System.out.println("WAITING TO AUTO" + command.isFinished() + DriverStation.isAutonomousEnabled());
+        // }
+
+        //now get which autonomous is selected?
+        m_autoSelected = m_chooser.getSelected();
+        System.out.println("Auto selected: " + m_autoSelected);
+
+        //select the script and return it to whatever called this method. 
+        switch (m_autoSelected) {
+            case kDropBackChargeAuto:
+              // Put custom auto code here
+              
+              break;
+              case kDropBackPullUpChargeAuto:
+              // Put custom auto code here
+              break;
+              case kDropAndbackupEZsideAuto:
+              // Put custom auto code here
+              return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(EZSideDropBackAutoCMD());
+              case kDropBackBumpSideAuto:
+              // Put custom auto code here
+              break;
+            case kDefaultAuto:
+            default:
+                return new WaitCommand(10);
+          }
+
+
+
+          return new WaitCommand(10);
+        //zero the yaw when we begin. 
+        //2023 this is flipped 180
+        
         //"backupforwardchargepad","clockwisesquare","straightsquare","spintest","DropAndbackupEZside"
+       
+    }
+
+    private Command EZSideDropBackAutoCMD() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropAndbackupEZside",1,2);
+        return 
+            new ParallelCommandGroup(
+                new InstantCommand(PIDArmExtensionSubsystem::setSetpointHighestScore,PIDArmExtensionSubsystem),
+                new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
+                )
+                .andThen(new WaitCommand(1.8))
+                //.andThen(new LassoOutCmd(PIDLassoSubsystem))
+                .andThen(new InstantCommand(()->PIDLassoSubsystem.setSetpoint(PIDLassoSubsystem.lassoEncoderValue+40)))
+                .andThen(new WaitCommand(.5))
+                .andThen(
+                    new ParallelCommandGroup(
+                        new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem),
+                        new InstantCommand(PIDArmLifterSubsystem::setSetpointVertical,PIDArmLifterSubsystem),
+                        new SequentialCommandGroup(
+                            new LassoInCmd(PIDLassoSubsystem),
+                            new ZeroLassoCmd(PIDLassoSubsystem))                        
+                    )
+            );
+            //.andThen(s_Swerve.followTrajectoryCommand(trajectory, true));//ALWAYS RESETS ODOMETRY RN
+        //return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
+    }
+    private Command BumpSideDropBackAutoCMD() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropBackBumpSide",1,2);
         return new ParallelCommandGroup(
             new InstantCommand(PIDArmExtensionSubsystem::setSetpointHighestScore,PIDArmExtensionSubsystem),
             new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
             )
-            .andThen(new WaitCommand(2))
+            .andThen(new WaitCommand(1.8))
             .andThen(new LassoOutCmd(PIDLassoSubsystem))
             .andThen(
                 new ParallelCommandGroup(
-                new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem),
-                new InstantCommand(PIDArmLifterSubsystem::setSetpointVertical,PIDArmLifterSubsystem),
-                new SequentialCommandGroup(new LassoInCmd(PIDLassoSubsystem),new ZeroLassoCmd(PIDLassoSubsystem))                        
-                ))
-            .andThen(s_Swerve.followTrajectoryCommand(trajectory, true));//ALWAYS RESETS ODOMETRY RN
+                    new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem),
+                    new InstantCommand(PIDArmLifterSubsystem::setSetpointVertical,PIDArmLifterSubsystem),
+                    new SequentialCommandGroup(
+                        new LassoInCmd(PIDLassoSubsystem),
+                        new ZeroLassoCmd(PIDLassoSubsystem))                        
+                ));
+            //.andThen(s_Swerve.followTrajectoryCommand(trajectory, true));//ALWAYS RESETS ODOMETRY RN
         //return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
     }
 }
