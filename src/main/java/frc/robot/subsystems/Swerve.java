@@ -200,10 +200,10 @@ public class Swerve extends SubsystemBase {
     // Can we use the yaw_offset_tracker minus 180 degrees to return the inverse yaw 
     //offset for corrections when the robot is heading directly towards driver station?
     boolean shouldInvertGyro = Constants.Swerve.invertGyro;
-    public void inverseGyro(){//set yaw when in autonomous facing driver station
-        shouldInvertGyro = !shouldInvertGyro;
-        //ahrs.zeroYaw();
-    }
+    // public void inverseGyro(){//set yaw when in autonomous facing driver station
+    //     shouldInvertGyro = !shouldInvertGyro;
+    //     //ahrs.zeroYaw();
+    // }
     
     public double flipflipfused()
     {
