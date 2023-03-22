@@ -73,6 +73,8 @@ public class SmartDashboardHandler extends SubsystemBase {
     // This method will be called once per scheduler run
     getdataToDashboard();
    // VibeOnZero();
+
+
     
   }
  
@@ -84,6 +86,8 @@ public class SmartDashboardHandler extends SubsystemBase {
     SmartDashboard.putString("CowboyMode", thisrobot.cowboyMode.toString());
 
     SmartDashboard.putString("LassoMode", thisrobot.PIDLassoSubsystem.lassoState.toString());
+
+    
   }
 
 

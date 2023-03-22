@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -12,6 +15,7 @@ import frc.robot.Commands.*;
 import frc.robot.Constants.XboxControllerMap;
 import frc.robot.Subsystems.*;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class RobotContainer { 
  
@@ -45,7 +49,7 @@ public class RobotContainer {
 
     /* Subsystems */
     public JoePowerDistributionPanel PDP= new JoePowerDistributionPanel();
-    private final NavxSubsystem navx = new NavxSubsystem();
+    public final NavxSubsystem navx = new NavxSubsystem();
     public static Swerve s_Swerve;
     public final JoeColorSensor CSensor= new JoeColorSensor();
     public final Limelight3Subsystem limelight3Subsystem = new Limelight3Subsystem(driveController);
@@ -91,8 +95,12 @@ public class RobotContainer {
     private final int strafeAxis = LeftForwardBackAxis.value;
     private final int rotationAxis = RightForwardBackAxis.value;
 
+    
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+    
+
         //Setup DriveTrain
         s_Swerve = new Swerve(navx);
 
@@ -158,7 +166,7 @@ public class RobotContainer {
                 ));
         DownHatPOV.onTrue(new ZeroExtensionCmd(PIDArmExtensionSubsystem));      
         RightHatPOV.onTrue(new ZeroLassoCmd(PIDLassoSubsystem));
-
+        LeftHatPOV.onTrue(new InstantCommand(()->s_Swerve.resetModulesToAbsolute(),s_Swerve));
         //Central Menu buttons
         Startbutton.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         BackButton.onTrue(new InstantCommand(limelight3Subsystem::switchPipeline,limelight3Subsystem));
@@ -168,6 +176,13 @@ public class RobotContainer {
         //AlignXButton.whileTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));   
         //AlignXButton.toggleOnTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));
         //BalanceButton.whileTrue(new PidBalanceCmd(s_Swerve,navx));     //new JoystickButton(joystick1, Constants.OperatorConstants.kresetLassoEncoderButton).whileTrue(new StartEndCommand(LassoSubsystem::slowWindInBeyondSoftLimit, LassoSubsystem::resetEncoder,LassoSubsystem));
+
+        RightStickButton.toggleOnTrue(
+            new SequentialCommandGroup(
+                new PidBalanceCmd(s_Swerve, navx), 
+                new WaitCommand(.10),
+                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 1, false,true),s_Swerve)
+                ));
     }
 
 

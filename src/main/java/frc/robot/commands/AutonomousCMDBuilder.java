@@ -3,6 +3,7 @@ package frc.robot.Commands;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -31,7 +32,15 @@ public class AutonomousCMDBuilder {
         //select the script and return it to whatever called this method. 
         switch (ChosenAuto) {
             case SmartDashboardHandler.kDropBackPullUpChargeAuto:
-                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun).andThen(DropBackPullUpChargeCMD());
+                return ZeroLassoStartupCmd
+                .andThen(ZeroLifterCmd)
+                .andThen(DropHighestrun)
+                .andThen(DropBackPullUpChargeCMD())
+                .andThen(new SequentialCommandGroup(
+                    new PidBalanceCmd(Thisbrain.s_Swerve, Thisbrain.navx), 
+                    new WaitCommand(.10),
+                    new InstantCommand(() -> Thisbrain.s_Swerve.drive(new Translation2d(0,0), 1, false,true),Thisbrain.s_Swerve)
+                    ));
             case SmartDashboardHandler.kDropBackChargeAuto:
                 return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun).andThen(DropBackChargeAutoCMD());
             case SmartDashboardHandler.kDropAndbackupEZsideAuto://EZ side auto
