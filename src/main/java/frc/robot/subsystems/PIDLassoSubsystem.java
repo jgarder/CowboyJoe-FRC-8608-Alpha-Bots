@@ -144,6 +144,18 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     OutputCurrent = lassoMotor.getOutputCurrent();
     return OutputCurrent;
   }
+  double TempForOverTemp = 37;
+  public boolean isMotorOvertemp()
+  {
+    if(MotorTemp >TempForOverTemp)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
   public void getEncoderData()
   {
     getMotorAmps();

@@ -87,7 +87,9 @@ public class SmartDashboardHandler extends SubsystemBase {
 
     SmartDashboard.putString("LassoMode", thisrobot.PIDLassoSubsystem.lassoState.toString());
 
-    
+    SmartDashboard.putBoolean("Lasso OT", !thisrobot.PIDLassoSubsystem.isMotorOvertemp());
+    SmartDashboard.putBoolean("Lifter OT", !thisrobot.PIDArmLifterSubsystem.isMotorOvertemp());
+    SmartDashboard.putBoolean("Extension OT", !thisrobot.PIDArmExtensionSubsystem.isMotorOvertemp());
   }
 
 

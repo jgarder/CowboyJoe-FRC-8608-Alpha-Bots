@@ -1,5 +1,38 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Extension OT" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="843" y="157"/>
+		<width>109</width>
+		<height>29</height>
+	</widget>
+	<widget field="Lifter OT" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="962" y="157"/>
+		<width>88</width>
+		<height>28</height>
+	</widget>
+	<widget field="Lasso OT" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="1055" y="157"/>
+		<width>91</width>
+		<height>27</height>
+	</widget>
+	<widget field="navx roll" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="736" y="241"/>
+	</widget>
+	<widget field="navx Pitch" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="741" y="221"/>
+	</widget>
+	<widget field="Balancer Pitch" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="575" y="220"/>
+	</widget>
+	<widget field="Balancer Roll" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="579" y="243"/>
+	</widget>
+	<widget field="Balancer Tilt" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="587" y="201"/>
+	</widget>
+	<widget field="Balancer PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="584" y="181"/>
+	</widget>
 	<widget field="ArmLift Encoder Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="530" y="110"/>
 	</widget>
@@ -103,11 +136,8 @@
 		<width>52</width>
 		<height>42</height>
 	</static-widget>
-	<widget field="ArmLift velocity add" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="979" y="275"/>
-	</widget>
 	<widget field="LiftArmVeritcal" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1004" y="249"/>
+		<location x="959" y="334"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="1162" y="-14"/>
@@ -126,7 +156,8 @@
 		<location x="23" y="619"/>
 	</widget>
 	<widget field="limelight_Stream" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1086" y="589"/>
+		<location x="1056" y="590"/>
+		<width>200</width>
 	</widget>
 	<widget field="IMU_Byte_Count" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="10" y="685"/>
@@ -190,7 +221,8 @@
 		<height>21</height>
 	</widget>
 	<widget field="limelight_Interface" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1073" y="612"/>
+		<location x="1043" y="614"/>
+		<width>210</width>
 	</widget>
 	<widget field="IMU_Temp_C" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="735" y="130"/>
@@ -236,12 +268,6 @@
 	<widget field="LimelightX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="618" y="360"/>
 	</widget>
-	<widget field="currentlyHolding" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="996" y="206"/>
-	</widget>
-	<widget field="ActionStage" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1017" y="228"/>
-	</widget>
 	<widget field="steering_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="583" y="605"/>
 	</widget>
@@ -277,7 +303,7 @@
 		<location x="192" y="507"/>
 	</widget>
 	<widget field="LassoMode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1022" y="184"/>
+		<location x="1017" y="219"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
 		<location x="8" y="6"/>
@@ -305,27 +331,10 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Right Position"/>
-	<hidden field="Mod 2 Integrated"/>
-	<hidden field="SysIdGearing"/>
-	<hidden field="SysIdWrongMech"/>
-	<hidden field="Left Voltage"/>
-	<hidden field="Mod 1 Integrated"/>
-	<hidden field="SysIdOverflow"/>
-	<hidden field="SysIdTestType"/>
-	<hidden field="Mod 3 Integrated"/>
-	<hidden field="SysIdVoltageCommand"/>
-	<hidden field="SysIdTelemetry"/>
-	<hidden field="Right Velocity"/>
-	<hidden field="Gyro Rate"/>
-	<hidden field="SysIdConversionFactor"/>
-	<hidden field="Left Velocity"/>
-	<hidden field="Mod 0 Integrated"/>
-	<hidden field="SysIdCPR"/>
-	<hidden field="Right Voltage"/>
-	<hidden field="Gyro Reading"/>
-	<hidden field="SysIdRotate"/>
-	<hidden field="SysIdAckNumber"/>
-	<hidden field="SysIdTest"/>
-	<hidden field="Left Position"/>
+	<hidden field="ArmLift velocity add"/>
+	<hidden field="Extension OverTemp"/>
+	<hidden field="currentlyHolding"/>
+	<hidden field="Lasso OverTemp"/>
+	<hidden field="ActionStage"/>
+	<hidden field="Lifter OverTemp"/>
 </xml>

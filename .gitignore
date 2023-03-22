@@ -160,3 +160,13 @@ bin/
 
 # Simulation GUI and other tools window save file
 *-window.json
+.VSCodeCounter/2023-03-22_14-20-55/details.md
+.VSCodeCounter/2023-03-22_14-20-55/diff-details.md
+.VSCodeCounter/2023-03-22_14-20-55/diff.csv
+.VSCodeCounter/2023-03-22_14-20-55/diff.md
+.VSCodeCounter/2023-03-22_14-20-55/diff.txt
+.VSCodeCounter/2023-03-22_14-20-55/results.csv
+.VSCodeCounter/2023-03-22_14-20-55/results.json
+.VSCodeCounter/2023-03-22_14-20-55/results.md
+.VSCodeCounter/2023-03-22_14-20-55/results.txt
+src/main/java/frc/robot/subsystems/SmartDashboardHandler.java

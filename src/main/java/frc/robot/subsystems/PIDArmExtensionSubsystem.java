@@ -80,6 +80,19 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
       disablePidWhenParked();
     }
   
+    double TempForOverTemp = 37;
+    public boolean isMotorOvertemp()
+    {
+      if(MotorTemp >TempForOverTemp)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    
   public double getEncoderPosition()
   {
     return extensionMotorEncoderValue;

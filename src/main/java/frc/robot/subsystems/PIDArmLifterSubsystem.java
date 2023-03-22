@@ -119,6 +119,19 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
       }
     }
 
+    double TempForOverTemp = 37;
+    public boolean isMotorOvertemp()
+    {
+      if(MotorTemp >TempForOverTemp)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
     public boolean isLiftArmVerticalOrCloser()
     {
       //if we are already vertical then we dont need to fold back further. 
