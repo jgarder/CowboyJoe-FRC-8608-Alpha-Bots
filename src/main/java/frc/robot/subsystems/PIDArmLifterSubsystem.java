@@ -186,7 +186,7 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   }
 
   public void slowWindInBeyondSoftLimit() {
-    WindInBeyondSoftLimit(-.2); //Constants.ArmLifterConstants.kslowretractspeed
+    WindInBeyondSoftLimit(-.3); //Constants.ArmLifterConstants.kslowretractspeed
   }
   public void slowerWindInBeyondSoftLimit() {
     WindInBeyondSoftLimit(-.1);

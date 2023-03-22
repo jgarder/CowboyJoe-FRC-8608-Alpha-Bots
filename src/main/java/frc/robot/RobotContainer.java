@@ -189,7 +189,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         //Before running any commands do these setup steps.
         navx.ahrs.zeroYaw();
-        
+        RobotContainer.s_Swerve.resetModulesToAbsolute();
         //now get which autonomous is selected?
         String SelectedAuto = mySmartDashboardHandler.getChosenAutoString();
         System.out.println("Auto selected: " + SelectedAuto);

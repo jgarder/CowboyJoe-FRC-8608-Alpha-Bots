@@ -29,26 +29,31 @@ public class AutonomousCMDBuilder {
         Command ZeroLifterCmd = GetZeroLifterCmd();
         //command to be used in auton
         Command DropHighestrun = GetDropHighestRungRoutine();
+
+        Command ResetAfterScore = ResetRoutine();
         //select the script and return it to whatever called this method. 
         switch (ChosenAuto) {
             case SmartDashboardHandler.kDropBackPullUpChargeAuto:
                 return ZeroLassoStartupCmd
                 .andThen(ZeroLifterCmd)
                 .andThen(DropHighestrun)
-                .andThen(DropBackPullUpChargeCMD())
+                .andThen(new ParallelCommandGroup(ResetAfterScore,DropBackPullUpChargeCMD()))
                 .andThen(new SequentialCommandGroup(
                     new PidBalanceCmd(Thisbrain.s_Swerve, Thisbrain.navx), 
                     new WaitCommand(.10),
                     new InstantCommand(() -> Thisbrain.s_Swerve.drive(new Translation2d(0,0), 1, false,true),Thisbrain.s_Swerve)
                     ));
             case SmartDashboardHandler.kDropBackChargeAuto:
-                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun).andThen(DropBackChargeAutoCMD());
+                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun)
+                .andThen(new ParallelCommandGroup(ResetAfterScore,DropBackChargeAutoCMD()));
             case SmartDashboardHandler.kDropAndbackupEZsideAuto://EZ side auto
-                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun).andThen(EZSideDropBackAutoCMD());
+                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun)
+                .andThen(new ParallelCommandGroup(ResetAfterScore,EZSideDropBackAutoCMD()));
             case SmartDashboardHandler.kDropBackBumpSideAuto:// Bump side Auto
-                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun).andThen(BumpSideDropBackAutoCMD());
+                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun)
+                .andThen(new ParallelCommandGroup(ResetAfterScore,BumpSideDropBackAutoCMD()));
             case SmartDashboardHandler.kScoreOnlyAuto://calibrate conecube,lifter,extension, then drop to the highest score.
-                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun);
+                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun).andThen(ResetAfterScore);
             case SmartDashboardHandler.kCalibrateYesAuto://calibrate lasso to cone/cube, then calibrate lifter and extension no scoring
                 return ZeroLassoStartupCmd.andThen(ZeroLifterCmd);
             case SmartDashboardHandler.kCalibrateNoAuto://calibrate lasso to 0, calibrate lifter and extension
@@ -91,14 +96,16 @@ public class AutonomousCMDBuilder {
                 //.andThen(new LassoOutCmd(PIDLassoSubsystem))
                 .andThen(new InstantCommand(()->Thisbrain.PIDLassoSubsystem.setSetpoint(Thisbrain.PIDLassoSubsystem.lassoEncoderValue+40)))
                 .andThen(new WaitCommand(.5))
-                .andThen(
-                    new ParallelCommandGroup(
-                        new InstantCommand(Thisbrain.PIDArmExtensionSubsystem::setSetpointIn,Thisbrain.PIDArmExtensionSubsystem),
-                        new InstantCommand(Thisbrain.PIDArmLifterSubsystem::setSetpointVertical,Thisbrain.PIDArmLifterSubsystem),
-                        new SequentialCommandGroup(
-                            new LassoInCmd(Thisbrain.PIDLassoSubsystem),
-                            new ZeroLassoCmd(Thisbrain.PIDLassoSubsystem))                        
-                    )
+                ;
+    }
+    private ParallelCommandGroup ResetRoutine() {
+        return 
+            new ParallelCommandGroup(
+                new InstantCommand(Thisbrain.PIDArmExtensionSubsystem::setSetpointIn,Thisbrain.PIDArmExtensionSubsystem),
+                new InstantCommand(Thisbrain.PIDArmLifterSubsystem::setSetpointVertical,Thisbrain.PIDArmLifterSubsystem),
+                new SequentialCommandGroup(
+                    new LassoInCmd(Thisbrain.PIDLassoSubsystem),
+                    new ZeroLassoCmd(Thisbrain.PIDLassoSubsystem))                        
             );
     }
 
@@ -114,9 +121,10 @@ public class AutonomousCMDBuilder {
 
     private Command GetZeroLifterCmd() {
         Command ZeroLifterCmd = new ParallelCommandGroup(
+                //new InstantCommand(()->RobotContainer.s_Swerve.resetModulesToAbsolute(),RobotContainer.s_Swerve),
                     new InstantCommand(()->{Thisbrain.cowboyMode = CowboyMode.READYTOSTART;}),
-                    new ZeroLifterCmd(Thisbrain.PIDArmLifterSubsystem),
-                    new ZeroExtensionCmd(Thisbrain.PIDArmExtensionSubsystem)
+                    new FastZeroLifterCmd(Thisbrain.PIDArmLifterSubsystem)
+                    //new ZeroExtensionCmd(Thisbrain.PIDArmExtensionSubsystem)
                     )
                ;
         return ZeroLifterCmd;
