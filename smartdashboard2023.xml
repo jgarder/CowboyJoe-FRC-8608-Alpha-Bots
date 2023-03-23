@@ -1,5 +1,14 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="RDY2PICKUP" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="206" y="491"/>
+		<width>885</width>
+		<height>492</height>
+	</widget>
+	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="214" y="255"/>
+		<width>253</width>
+	</widget>
 	<widget field="Extension OT" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="843" y="157"/>
 		<width>109</width>
@@ -175,7 +184,7 @@
 		<location x="122" y="402"/>
 	</widget>
 	<widget field="ObjectDistance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="858" y="493"/>
+		<location x="773" y="356"/>
 	</widget>
 	<widget field="ArmExtension PID output" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="336" y="321"/>
@@ -190,7 +199,7 @@
 		<location x="13" y="509"/>
 	</widget>
 	<widget field="Red" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="908" y="516"/>
+		<location x="822" y="285"/>
 	</widget>
 	<widget field="ArmLift Encoder Velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="84" y="381"/>
@@ -208,7 +217,7 @@
 		<location x="49" y="642"/>
 	</widget>
 	<widget field="Blue" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="908" y="562"/>
+		<location x="818" y="332"/>
 	</widget>
 	<widget field="Lasso SetPoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="859" y="440"/>
@@ -229,7 +238,7 @@
 		<width>104</width>
 	</widget>
 	<widget field="Green" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="898" y="538"/>
+		<location x="811" y="307"/>
 	</widget>
 	<widget field="IMU_Roll" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="47" y="553"/>
@@ -290,17 +299,21 @@
 		<property name="Camera Choice" value=""/>
 	</static-widget>
 	<widget field="Mod 3 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="358" y="528"/>
+		<location x="333" y="162"/>
+		<width>147</width>
 	</widget>
 	<widget field="Mod 2 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="191" y="530"/>
+		<location x="194" y="162"/>
+		<width>138</width>
 	</widget>
 	<widget field="Mod 1 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="357" y="507"/>
+		<location x="336" y="140"/>
+		<width>145</width>
 		<height>20</height>
 	</widget>
 	<widget field="Mod 0 Cancoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="192" y="507"/>
+		<location x="187" y="140"/>
+		<width>147</width>
 	</widget>
 	<widget field="LassoMode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1017" y="219"/>
@@ -331,10 +344,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="ArmLift velocity add"/>
-	<hidden field="Extension OverTemp"/>
-	<hidden field="currentlyHolding"/>
-	<hidden field="Lasso OverTemp"/>
-	<hidden field="ActionStage"/>
-	<hidden field="Lifter OverTemp"/>
 </xml>

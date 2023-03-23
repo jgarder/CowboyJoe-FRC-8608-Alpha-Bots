@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PIDLassoSubsystem extends PIDSubsystem {
 
-  static double kP = 0.040;
+  static double kP = 0.050;
   static double kI = 0.0;
   static double kD = 0.0;
     
@@ -196,11 +196,13 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   public double setSetpointLassoCone() {
     enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCone);
+    lassoState = LassoState.GOCONE;
     return Constants.LassoConstants.kminEncoderValueWithCone;
   }
   public double setSetpointLassoCube() {
     enable();
     setSetpoint(Constants.LassoConstants.kminEncoderValueWithCube);
+    lassoState = LassoState.GOCUBE;
     return Constants.LassoConstants.kminEncoderValueWithCube;
   }
   public void HoldAutoLoaded(){
@@ -236,14 +238,12 @@ public class PIDLassoSubsystem extends PIDSubsystem {
         setSetpointLassoZero();
         break;
       case ZERO : // 0 if zeroed when button is pressed then send lasso out.  
-        setSetpointLassoOut();
-        lassoState = LassoState.OPEN;
+        setSetpointLassoOut();       
         break;
       case GOCONE :// we are pressing button while go(ing) for a cone (we may just have a cone)
         //we dont have cone then backup
         //we do have a cone then we are scoring so open lasso
         setSetpointLassoOut();
-        lassoState = LassoState.OPEN;
         break;
       case CONEIN :
         break;
@@ -251,7 +251,6 @@ public class PIDLassoSubsystem extends PIDSubsystem {
         //we dont have cube then backup and open lasso
         //we do have a cube then we are scoring so open lasso
         setSetpointLassoOut();
-        
         break;
       case CUBEIN :
         break;
@@ -259,12 +258,10 @@ public class PIDLassoSubsystem extends PIDSubsystem {
         //detect cone or cube
         if (ObjectInLasso() == "Cube")
         {
-          lassoState = LassoState.GOCUBE;
           setSetpointLassoCube();
         }
         else if(ObjectInLasso() == "Cone")
-        {
-          lassoState = LassoState.GOCONE;
+        {  
           setSetpointLassoCone();
         }
         else if(ObjectInLasso() == "RoomLight")
@@ -272,7 +269,6 @@ public class PIDLassoSubsystem extends PIDSubsystem {
           //nothing detected
           //retractSlowly();
           setSetpointLassoCone();
-          lassoState = LassoState.GOCONE;
         }
         break;
 

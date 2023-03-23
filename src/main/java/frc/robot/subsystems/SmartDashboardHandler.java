@@ -41,16 +41,22 @@ public class SmartDashboardHandler extends SubsystemBase {
     return m_chooser.getSelected();
   }
 
+  public static final double defaultspeed = .25;
+  public static final double FloorHuntSpeed = .25;
+  public static final double ScoreSpeed = .5;
+  public static final double SubstationSpeed = .5;
+  public static final double CompetitionSpeed = 1.0;
+
   private void bootupPersistents() {
 
     if(!SmartDashboard.containsKey("Jow Speed Multiplier"))
         {
-            SmartDashboard.putNumber("Jow Speed Multiplier", .25);
+            SmartDashboard.putNumber("Jow Speed Multiplier", defaultspeed);
             SmartDashboard.setPersistent("Jow Speed Multiplier");
         }
         if(!SmartDashboard.containsKey("Jow Rotation Multiplier"))
         {
-            SmartDashboard.putNumber("Jow Rotation Multiplier", .25);
+            SmartDashboard.putNumber("Jow Rotation Multiplier", defaultspeed);
             SmartDashboard.setPersistent("Jow Rotation Multiplier");
         }
   }
@@ -66,6 +72,7 @@ public class SmartDashboardHandler extends SubsystemBase {
     m_chooser.addOption("Score/Backup Over Charge station", kDropBackChargeAuto);      
     m_chooser.addOption("drive on Charging after score/backup", kDropBackPullUpChargeAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    
 }
 
   @Override
@@ -90,6 +97,8 @@ public class SmartDashboardHandler extends SubsystemBase {
     SmartDashboard.putBoolean("Lasso OT", !thisrobot.PIDLassoSubsystem.isMotorOvertemp());
     SmartDashboard.putBoolean("Lifter OT", !thisrobot.PIDArmLifterSubsystem.isMotorOvertemp());
     SmartDashboard.putBoolean("Extension OT", !thisrobot.PIDArmExtensionSubsystem.isMotorOvertemp());
+    SmartDashboard.putBoolean("RDY2PICKUP", thisrobot.limelight3Subsystem.iscurrentTagAtSubstationPickupSize());
+    
   }
 
 

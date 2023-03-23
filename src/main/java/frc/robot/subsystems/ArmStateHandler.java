@@ -123,7 +123,7 @@ public class ArmStateHandler extends SubsystemBase {
         break;
       case SCOREHUNTING: 
         //if the arm is in score hunt position  then we need to Let lasso out. and auto reset the arm state.
-        new LassoOutCmd(s_Lasso).andThen(new InstantCommand(()->ArmResetting()).andThen(new WaitCommand(.20)).andThen(new LassoInCmd(s_Lasso))).schedule();
+        new LassoOutCmd(s_Lasso).andThen(new InstantCommand(()->ArmResetting()).andThen(new WaitCommand(.20)).andThen(new LassoInCmd(s_Lasso))).andThen(new ZeroLassoCmd(s_Lasso)).schedule();
         mainbrain.cowboyMode = CowboyMode.READYTOSTART;
         // new SequentialCommandGroup(
         //   new LassoOutCmd(s_Lasso),

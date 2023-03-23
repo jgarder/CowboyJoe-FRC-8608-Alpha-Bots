@@ -73,8 +73,8 @@ public final class Constants {
         public static final double kEncoderValueGroundPickupHUNT = 74.4;//p  //Arm IN, right above cube and cone
         public static final double kEncoderValueGroundPickupGRAB = 86.4;//p  //Arm IN , drop for cone and cube pickup
 
-        public static final double kEncoderValueSubStationHunt = 48;//p  //just a lil lower then scoreing (higher angle)
-        public static final double kEncoderValueSubStationGrab = kEncoderValueSubStationHunt + 7;  //substation lasso height
+        public static final double kEncoderValueSubStationHunt = 46;//p  //just a lil lower then scoreing (higher angle)
+        public static final double kEncoderValueSubStationGrab = kEncoderValueSubStationHunt + 10;  //substation lasso height
 
         public static final double kslowretractspeed = -.2;
         public static final double kArmLifterUpSpeed = 0.5;
@@ -128,7 +128,7 @@ public final class Constants {
 
         public static final double kminEncoderValueWithCube = 54.00;//67 is flat
         //public static final double kavgEncoderValueWithCube = 93;//93 is over inflated
-        public static final double kEncoderValueLoopOut= 107.7;
+        public static final double kEncoderValueLoopOut= 100.0;
         public static final double kmaxEncoderValue = 127;
 
         
@@ -287,6 +287,21 @@ public final class Constants {
           public static final double kI = 0.05;
           public static final double kD = 0.5;
       }
+    }
 
-  }
+    public static class AllianceAprilTags{
+      public static class Red {
+        public static final int substation = 4;
+        public static final int ezSideTag = 3;
+        public static final int centerTag = 2;
+        public static final int bumpSideTag = 1;
+      }
+      public static class Blue {
+        public static final int substation = 5;
+        public static final int ezSideTag = 6;
+        public static final int centerTag = 7;
+        public static final int bumpSideTag = 8;
+      }
+
+    }
 }

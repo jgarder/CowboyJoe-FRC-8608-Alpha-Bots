@@ -5,7 +5,11 @@
 package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.FieldConstants;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,6 +27,7 @@ public class Limelight3Subsystem extends SubsystemBase {
     private NetworkTableEntry ts;//Table for the skew
     private NetworkTableEntry tv;//Table to see if there are valid targets
     private NetworkTableEntry tl;//Table for latency
+    private NetworkTableEntry tid;//table for the current targets ID
     private NetworkTableEntry tshort;//Table for short side length
     private NetworkTableEntry tlong;//Table for long side length
     private NetworkTableEntry thoriz;//Table for width
@@ -44,6 +49,7 @@ public class Limelight3Subsystem extends SubsystemBase {
         ts = limelight.getEntry("ts");// this is the skew of the target
         tv = limelight.getEntry("tv");//is there a visible target
         tl = limelight.getEntry("tl");
+        tid = limelight.getEntry("tid");
         tshort = limelight.getEntry("tshort");
         tlong = limelight.getEntry("tlong");
         thoriz = limelight.getEntry("thor");//thoriz
@@ -64,14 +70,59 @@ public class Limelight3Subsystem extends SubsystemBase {
 	double targetD;
 	boolean hasTarget;
 
-
+  public int getTargetID()
+  {
+    return (int)tid.getInteger(0);
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     getdataToDashboard();
    // VibeOnZero();
+   
+   //get our alliance red or blue
+   Alliance CurrentAlliance = DriverStation.getAlliance();
+   //make sure we are in april tag pipeline before checking
+   //
+   //get if we have any targets
+   boolean HasTarget = hasValidTarget();
+   //get the target number
+   int targetID = getTargetID();
+   //get if the closest target is for our team(ignore others obviously)
+   boolean WeSeeourSubstationTag = false;
+   if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
+   {
+      WeSeeourSubstationTag = true;
+   }
+   if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
+   {
+      WeSeeourSubstationTag = true;
+   }
+   if(WeSeeourSubstationTag){
+       //if substation is at X area size then switch our speed to substation movde
+       //when we are at X area set bool to true. 
+
+   }
+   //if our closest target is a score april (red 123, blue 678)
     
   }
+
+  public boolean iscurrentTagAtSubstationPickupSize()
+  {
+    double tagAreaSizeForPickup = 1.71;//28.5"
+    double currentsize = ta.getDouble(0.0);
+    double tagAreaSizeWhenTooClose = 2.50;//21"
+    
+    if( currentsize > tagAreaSizeForPickup)
+    {
+      if (currentsize < tagAreaSizeWhenTooClose)
+      {
+        return true;
+      }  
+    }
+    return false;
+  }
+
   public NetworkTable getlatestinfo() {
     return limelight; 
   }
@@ -322,3 +373,4 @@ public class Limelight3Subsystem extends SubsystemBase {
     //if tartget found in both, choose the one with the lowest x value (left right offset from center)
   }
 }
+

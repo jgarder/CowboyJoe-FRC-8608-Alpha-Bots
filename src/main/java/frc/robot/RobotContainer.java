@@ -1,7 +1,9 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -48,6 +50,7 @@ public class RobotContainer {
 
 
     /* Subsystems */
+    public PWM ourpwm;
     public JoePowerDistributionPanel PDP= new JoePowerDistributionPanel();
     public final NavxSubsystem navx = new NavxSubsystem();
     public static Swerve s_Swerve;
@@ -99,10 +102,13 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-    
+        //bootup the led pwm
+        //ourpwm = new PWM(9);
+        
 
         //Setup DriveTrain
         s_Swerve = new Swerve(navx);
+        //ourpwm.setRaw(0);
 
         // CONFIGURE CONTROLLER
         configureButtonBindingsDefault();
@@ -129,7 +135,10 @@ public class RobotContainer {
 
         
         //Back Triggers
-        LeftTrigger.onTrue(new InstantCommand(ArmStateHandler::resetArmState,ArmStateHandler));
+        LeftTrigger.onTrue(new ParallelCommandGroup(
+            new InstantCommand(ArmStateHandler::resetArmState,ArmStateHandler),
+            new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);})
+            ));
         RightTrigger.onTrue(new InstantCommand(ArmStateHandler::runArmState,ArmStateHandler));
         
         //Upper Bumper (shoulder) buttons
@@ -138,13 +147,15 @@ public class RobotContainer {
         // Basic Buttons (X,Y,B,A)
         xButton.onTrue(
             new ParallelCommandGroup(
-                new InstantCommand(()->{cowboyMode = CowboyMode.SCOREHUNTING;}),
+                new InstantCommand(()->{cowboyMode = CowboyMode.SCOREHUNTING; }),
+                new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.ScoreSpeed); }),
                 new InstantCommand(PIDArmExtensionSubsystem::setSetpointMidScore,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
                 ));
         yButton.onTrue(
             new ParallelCommandGroup(
                 new InstantCommand(()->{cowboyMode = CowboyMode.SUBSTATIONHUNTING;}),
+                new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.SubstationSpeed); }),
                 new InstantCommand(PIDArmExtensionSubsystem::setSetpointSubstation,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointSubstationHunt,PIDArmLifterSubsystem)
@@ -152,13 +163,14 @@ public class RobotContainer {
         bButton.onTrue(
             new ParallelCommandGroup(
                 new InstantCommand(()->{cowboyMode = CowboyMode.FLOORHUNTING;}),
+                new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.FloorHuntSpeed); }),
                 new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointFloorHunt,PIDArmLifterSubsystem)
                 ));
         aButton.onTrue(new InstantCommand(PIDLassoSubsystem::RunLasso,PIDLassoSubsystem));
         
-        //Hat PoV Dpad
+        //Hat PoV Dpad;
         UpHatPOV.onTrue(
             new ParallelCommandGroup(
                 new InstantCommand(()->{cowboyMode = CowboyMode.READYTOSTART;}),
