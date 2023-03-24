@@ -113,8 +113,8 @@ public class ArmStateHandler extends SubsystemBase {
         break;
       case SUBSTATIONHUNTING:
         //if the arm is in substation hunt position  then we need to go to the substation grab position.
-        mainbrain.cowboyMode = CowboyMode.SUBSTATIONGRABING;
-        new InstantCommand(()->s_ALifter.setSetpointSubstationGrab()).andThen(new WaitCommand(.80)).andThen(new LassoInCmd(s_Lasso)).schedule();
+        mainbrain.cowboyMode = CowboyMode.READYTOSTART;
+        new InstantCommand(()->s_ALifter.setSetpointSubstationGrab()).andThen(new WaitCommand(.80)).andThen(new LassoInCmd(s_Lasso)).andThen(new InstantCommand(()->ArmResetting())).schedule();
         break;
       case SUBSTATIONGRABING:
         //if the arm is in substation Grab position  then we need to go to the substation Hunt position.

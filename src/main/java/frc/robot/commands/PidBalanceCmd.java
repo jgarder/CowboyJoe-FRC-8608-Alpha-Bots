@@ -61,8 +61,8 @@ public class PidBalanceCmd extends CommandBase {
         s_Swerve.drive(speed*1.0, 0, 0, false);
         SmartDashboard.putNumber("Balancer PID", speed);
         SmartDashboard.putNumber("Balancer Tilt", mAutoBalance.getTilt());
-        SmartDashboard.putNumber("Balancer Roll", mAutoBalance.getRoll());
-        SmartDashboard.putNumber("Balancer Pitch", mAutoBalance.getPitch());
+        //SmartDashboard.putNumber("Balancer Roll", mAutoBalance.getRoll());
+        //SmartDashboard.putNumber("Balancer Pitch", mAutoBalance.getPitch());
         SmartDashboard.putNumber("navx roll", mAutoBalance.fliproll());
     }
 

@@ -57,7 +57,7 @@ public class RobotContainer {
     public final JoeColorSensor CSensor= new JoeColorSensor();
     public final Limelight3Subsystem limelight3Subsystem = new Limelight3Subsystem(driveController);
     public final PIDLassoSubsystem PIDLassoSubsystem = new PIDLassoSubsystem(CSensor);
-    public final PIDArmExtensionSubsystem PIDArmExtensionSubsystem = new PIDArmExtensionSubsystem();
+    public final PIDArmExtensionSubsystem PIDArmExtensionSubsystem = new PIDArmExtensionSubsystem(this);
     public final PIDArmLifterSubsystem PIDArmLifterSubsystem = new PIDArmLifterSubsystem(PIDLassoSubsystem::isLassoinOpenState);
     public final ArmStateHandler ArmStateHandler = new ArmStateHandler(PIDArmLifterSubsystem, PIDArmExtensionSubsystem, PIDLassoSubsystem,this);
     public final AutonomousCMDBuilder AutoCmdBuilder = new AutonomousCMDBuilder(this);
@@ -102,6 +102,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        navx.ahrs.calibrate();
         //bootup the led pwm
         //ourpwm = new PWM(9);
         
@@ -115,6 +116,8 @@ public class RobotContainer {
 
         //on boot might as well start up the camera server
         CameraServer.startAutomaticCapture();
+
+        
     }
 
     public boolean isReadyToStart(){
@@ -189,12 +192,12 @@ public class RobotContainer {
         //AlignXButton.toggleOnTrue(new AlignXToTargetCMD(s_Swerve,limelight3Subsystem));
         //BalanceButton.whileTrue(new PidBalanceCmd(s_Swerve,navx));     //new JoystickButton(joystick1, Constants.OperatorConstants.kresetLassoEncoderButton).whileTrue(new StartEndCommand(LassoSubsystem::slowWindInBeyondSoftLimit, LassoSubsystem::resetEncoder,LassoSubsystem));
 
-        RightStickButton.toggleOnTrue(
-            new SequentialCommandGroup(
-                new PidBalanceCmd(s_Swerve, navx), 
-                new WaitCommand(.10),
-                new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 1, false,true),s_Swerve)
-                ));
+        // RightStickButton.toggleOnTrue(
+        //     new SequentialCommandGroup(
+        //         new PidBalanceCmd(s_Swerve, navx), 
+        //         new WaitCommand(.10),
+        //         new InstantCommand(() -> s_Swerve.drive(new Translation2d(0,0), 1, false,true),s_Swerve)
+        //         ));
     }
 
 

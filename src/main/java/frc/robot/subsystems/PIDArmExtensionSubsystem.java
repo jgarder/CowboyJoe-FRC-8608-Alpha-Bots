@@ -3,6 +3,8 @@ package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.CowboyMode;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
@@ -27,13 +29,14 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
     SlewRateLimiter speedLimiter = new SlewRateLimiter(Constants.ArmExtensionConstants.kArmExtensionSlewRate);
     private final CANSparkMax extensionMotor = new CANSparkMax(Constants.ArmExtensionConstants.kArmExtensionSparkMaxCanID,MotorType.kBrushless);
     private RelativeEncoder extensionMotor_encoder; 
+    RobotContainer mainBrain;
 
-    public PIDArmExtensionSubsystem() {
+    public PIDArmExtensionSubsystem(RobotContainer ThisBrain) {
       super(new PIDController(kP, kI, kD));
       setSetpoint(0);
       extensionMotor_encoder = extensionMotor.getEncoder();
      
-
+      mainBrain = ThisBrain;
       extensionMotor.setSmartCurrentLimit(Constants.NeoBrushless.neo550safelimitAmps);
     
       extensionMotor_encoder.setPosition(0);
@@ -116,6 +119,13 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
   
   public void runArmExtensionStages()
   {
+    if(mainBrain.cowboyMode == CowboyMode.READYTOSTART || 
+    mainBrain.cowboyMode == CowboyMode.FLOORHUNTING ||
+    mainBrain.cowboyMode == CowboyMode.FLOORGRABBING )
+    {
+      setSetpointIn();
+      return;
+    }
     switch (extensionStage){
       case -1 : //we are in pre setup
         extensionMotor_encoder.setPosition(0);

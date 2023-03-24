@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import frc.robot.Subsystems.NavxSubsystem;
 
 public class autoBalance {
-    private BuiltInAccelerometer mRioAccel;
+    //private BuiltInAccelerometer mRioAccel;
     public int state;
     private int debounceCount;
     private double robotSpeedSlow;
@@ -18,10 +18,11 @@ public class autoBalance {
     private NavxSubsystem s_navx;
 
     public autoBalance(NavxSubsystem navx) {
-        mRioAccel = new BuiltInAccelerometer();
+        //mRioAccel = new BuiltInAccelerometer();
         state = 0;
         debounceCount = 0;
         s_navx = navx;
+        
         /**********
          * CONFIG *
          **********/
@@ -34,12 +35,12 @@ public class autoBalance {
         robotSpeedSlow = 0.2;
 
         // Angle where the robot knows it is on the charge station, default = 13.0
-        onChargeStationDegree = 13.0;
+        onChargeStationDegree = 10.0;
 
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
         // default = 6.0
-        levelDegree = 10.0;
+        levelDegree = 6.0;
 
         // Amount of time a sensor condition needs to be met before changing states in
         // seconds
@@ -61,26 +62,26 @@ public class autoBalance {
 
     }
 
-    public double getPitch() {
-        return Math.atan2((-mRioAccel.getX()),
-                Math.sqrt(mRioAccel.getY() * mRioAccel.getY() + mRioAccel.getZ() * mRioAccel.getZ())) * 57.3;
-    }
+    // public double getPitch() {
+    //     return Math.atan2((-mRioAccel.getX()),
+    //             Math.sqrt(mRioAccel.getY() * mRioAccel.getY() + mRioAccel.getZ() * mRioAccel.getZ())) * 57.3;
+    // }
 
-    public double getRoll() {
-        return Math.atan2(mRioAccel.getY(), mRioAccel.getZ()) * 57.3;
-    }
+    // public double getRoll() {
+    //     return Math.atan2(mRioAccel.getY(), mRioAccel.getZ()) * 57.3;
+    // }
 
     // returns the magnititude of the robot's tilt calculated by the root of
     // pitch^2 + roll^2, used to compensate for diagonally mounted rio
-    public double getTilt2() {
-        double pitch = getPitch();
-        double roll = getRoll();
-        if ((pitch + roll) >= 0) {
-            return Math.sqrt(pitch * pitch + roll * roll);
-        } else {
-            return -Math.sqrt(pitch * pitch + roll * roll);
-        }
-    }
+    // public double getTilt2() {
+    //     double pitch = getPitch();
+    //     double roll = getRoll();
+    //     if ((pitch + roll) >= 0) {
+    //         return Math.sqrt(pitch * pitch + roll * roll);
+    //     } else {
+    //         return -Math.sqrt(pitch * pitch + roll * roll);
+    //     }
+    // }
     public double getTilt() {
         return fliproll();
     }
