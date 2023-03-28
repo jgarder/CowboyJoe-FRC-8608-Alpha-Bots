@@ -36,7 +36,9 @@ public class Limelight3Subsystem extends SubsystemBase {
     private NetworkTableEntry camMode;//Table to set camera mode
     private NetworkTableEntry pipeline;//Table to switch pipelines
     private NetworkTableEntry solvePNP;
+    private NetworkTableEntry FieldSpace;
     double[] defaultArray = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    //double[] FieldSpaceArray = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   /** Creates a new Limelight3Subsystem. */
   public Limelight3Subsystem(XboxController controllerUsedToScore) {
@@ -58,7 +60,9 @@ public class Limelight3Subsystem extends SubsystemBase {
         camMode = limelight.getEntry("camMode");
         pipeline = limelight.getEntry("pipeline");
         solvePNP = limelight.getEntry("camerapose_targetspace");//("camtran");// this is old. need to find out : is this camera translation in target space?
-  }
+        FieldSpace = limelight.getEntry("botpose");//("camtran");// this is old. need to find out : is this camera translation in target space?
+
+      }
 
   XboxController ControllerUsedToScore;
 
@@ -169,9 +173,15 @@ public class Limelight3Subsystem extends SubsystemBase {
     SmartDashboard.putNumber("LimelightY", getYOffset());
     SmartDashboard.putNumber("LimelightArea", getArea());
     SmartDashboard.putNumber("LimelightSkew", getSkew());
-    SmartDashboard.putNumber("LL Pose Y", getYPos());
-    SmartDashboard.putNumber("LL Pose Yaw", getYaw());
-    SmartDashboard.putNumber("LL Pose Z", getZPos());
+    
+    int roundingpower = 1000;
+    SmartDashboard.putNumber("LL Distance", Math.floor(getDistance()*roundingpower)/roundingpower);
+    SmartDashboard.putNumber("LL Pose X", Math.floor(getXPos()*roundingpower)/roundingpower);
+    SmartDashboard.putNumber("LL Pose Y", Math.floor(getYPos()*roundingpower)/roundingpower);
+    SmartDashboard.putNumber("LL Pose Z", Math.floor(getZPos()*roundingpower)/roundingpower);
+    SmartDashboard.putNumber("LL Pitch", Math.floor(getPitch()*roundingpower)/roundingpower);
+    SmartDashboard.putNumber("LL Pose Yaw", Math.floor(getYaw()*roundingpower)/roundingpower);
+    SmartDashboard.putNumber("LL Roll", Math.floor(getRoll()*roundingpower)/roundingpower);
     return limelight;
   }
 
@@ -188,7 +198,7 @@ public class Limelight3Subsystem extends SubsystemBase {
    * @return x-distance from the target in inches
    */
   public double getXPos() {
-      return solvePNP.getDoubleArray(defaultArray)[0];
+      return FieldSpace.getDoubleArray(defaultArray)[0];
   }
 
   /**
@@ -196,24 +206,27 @@ public class Limelight3Subsystem extends SubsystemBase {
    * @return y-distance from the target in inches
    */
   public double getYPos() {
-      return solvePNP.getDoubleArray(defaultArray)[1];
+      return FieldSpace.getDoubleArray(defaultArray)[1];
   }
 
   public double getZPos() {
-      return solvePNP.getDoubleArray(defaultArray)[2];
+      return FieldSpace.getDoubleArray(defaultArray)[2];
   }
 
   public double getPitch() {
-      return solvePNP.getDoubleArray(defaultArray)[3];
+      return FieldSpace.getDoubleArray(defaultArray)[3];
   }
 
   public double getYaw() {
-      return solvePNP.getDoubleArray(defaultArray)[4];
+      return FieldSpace.getDoubleArray(defaultArray)[4];
   }
 
   public double getRoll() {
-      return solvePNP.getDoubleArray(defaultArray)[5];
+      return FieldSpace.getDoubleArray(defaultArray)[5];
   }
+  public double getRZ() {
+    return FieldSpace.getDoubleArray(defaultArray)[5];
+}
 	
 	public double getXOffset() {
 		//xOffset = latestInfo.getEntry("tx").getDouble(0);

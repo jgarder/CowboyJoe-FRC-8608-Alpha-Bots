@@ -146,7 +146,7 @@ public class RobotContainer {
         
         //Upper Bumper (shoulder) buttons
         LeftBumperButton.onTrue(new InstantCommand(PIDArmExtensionSubsystem::runArmExtensionStages,PIDArmExtensionSubsystem));
-        
+        RightBumperButton.toggleOnTrue(new AlignSubstationCMD(s_Swerve, limelight3Subsystem));
         // Basic Buttons (X,Y,B,A)
         xButton.onTrue(
             new ParallelCommandGroup(

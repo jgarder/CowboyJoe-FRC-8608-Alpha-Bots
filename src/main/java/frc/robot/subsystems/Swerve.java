@@ -1,6 +1,7 @@
 package frc.robot.Subsystems;
 
 import frc.robot.SwerveModule;
+import frc.robot.autoBalance;
 import frc.robot.Constants;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
+import javax.lang.model.util.ElementScanner14;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.music.Orchestra;
@@ -240,15 +243,38 @@ public class Swerve extends SubsystemBase {
         return -angle;
     }
 
+    private int debounceCount = 0;
+    private double debounceTime = 0.2;
+    private boolean gottilted = false;
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions());  
+
+        limitSpeedOnChargePadOrTilt();
 
          for(SwerveModule mod : mSwerveMods){
              SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
              //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
              //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
          }
+    }
+
+    private void limitSpeedOnChargePadOrTilt() {
+        //if tilted slow vehicle in teleop
+        if(Math.abs(ahrs.fliproll()) >= autoBalance.onChargeStationDegree)
+        {
+            gottilted = true;
+            debounceCount = 0;
+            SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.FloorHuntSpeed);
+        }
+        else{
+            if (debounceCount > autoBalance.secondsToTicks(debounceTime) && gottilted) {
+                SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);
+                gottilted = false;
+            }
+        }
+        debounceCount++;
+        ///
     }
 
     // Assuming this method is part of a drivetrain subsystem that provides the necessary methods

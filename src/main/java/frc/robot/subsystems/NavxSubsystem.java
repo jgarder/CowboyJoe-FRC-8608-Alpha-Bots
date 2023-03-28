@@ -22,6 +22,32 @@ public class NavxSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         ShowDebugToshuffleboard();
+
+        SmartDashboard.putNumber("navx roll", fliproll());
+        SmartDashboard.putNumber("navx Pitchroll", getTilt2());
+
+
+    }
+
+    // returns the magnititude of the robot's tilt calculated by the root of
+    // pitch^2 + roll^2, used to compensate for diagonally mounted rio
+    public double getTilt2() {
+        double pitch = getPitch();
+        double roll = fliproll();//getRoll();
+        if ((pitch + roll) >= 0) {
+            return Math.sqrt(pitch * pitch + roll * roll);
+        } else {
+            return -Math.sqrt(pitch * pitch + roll * roll);
+        }
+    }
+
+    public double getTilt() {
+        return fliproll();
+    }
+
+    public double fliproll()
+    {
+        return ahrs.getRoll() * -1.0;
     }
 
     public double getPitch()

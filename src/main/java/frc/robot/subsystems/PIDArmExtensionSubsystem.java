@@ -119,9 +119,12 @@ public class PIDArmExtensionSubsystem extends PIDSubsystem {
   
   public void runArmExtensionStages()
   {
+    //the arm should never extend when in almost anymode except substation hunt and score hunt. 
     if(mainBrain.cowboyMode == CowboyMode.READYTOSTART || 
     mainBrain.cowboyMode == CowboyMode.FLOORHUNTING ||
-    mainBrain.cowboyMode == CowboyMode.FLOORGRABBING )
+    mainBrain.cowboyMode == CowboyMode.FLOORGRABBING ||
+    mainBrain.cowboyMode == CowboyMode.STARTUP ||
+    mainBrain.cowboyMode == CowboyMode.CALIBRATED)
     {
       setSetpointIn();
       return;

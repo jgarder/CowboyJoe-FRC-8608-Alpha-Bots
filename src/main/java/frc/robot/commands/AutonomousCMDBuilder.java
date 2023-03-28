@@ -52,6 +52,10 @@ public class AutonomousCMDBuilder {
             case SmartDashboardHandler.kDropBackBumpSideAuto:// Bump side Auto
                 return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun)
                 .andThen(new ParallelCommandGroup(ResetAfterScore,BumpSideDropBackAutoCMD()));
+            case SmartDashboardHandler.kBumpSideSpin:
+                return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun)
+                .andThen(new ParallelCommandGroup(ResetAfterScore,BumpSideDropSlideRotateCMD()));
+                //.and then hunt mode and then lasso in, and then reset arm, and then run BumpSide Return rotate cmd. AND THEN Drop Highest. 
             case SmartDashboardHandler.kScoreOnlyAuto://calibrate conecube,lifter,extension, then drop to the highest score.
                 return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun).andThen(ResetAfterScore);
             case SmartDashboardHandler.kCalibrateYesAuto://calibrate lasso to cone/cube, then calibrate lifter and extension no scoring
@@ -84,6 +88,10 @@ public class AutonomousCMDBuilder {
     }
     private static Command DropBackPullUpChargeCMD() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropBackPullUpCharge",1,2);
+        return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
+    }
+    private static Command BumpSideDropSlideRotateCMD() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("spinmove",.5,2);
         return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
     }
 

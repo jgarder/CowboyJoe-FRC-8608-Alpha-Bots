@@ -63,7 +63,7 @@ public class PidBalanceCmd extends CommandBase {
         SmartDashboard.putNumber("Balancer Tilt", mAutoBalance.getTilt());
         //SmartDashboard.putNumber("Balancer Roll", mAutoBalance.getRoll());
         //SmartDashboard.putNumber("Balancer Pitch", mAutoBalance.getPitch());
-        SmartDashboard.putNumber("navx roll", mAutoBalance.fliproll());
+        
     }
 
     // called just before this Command runs the first time

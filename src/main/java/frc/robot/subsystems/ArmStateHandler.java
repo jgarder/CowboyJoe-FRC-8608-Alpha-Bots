@@ -5,6 +5,7 @@
 package frc.robot.Subsystems;
 
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -113,17 +114,30 @@ public class ArmStateHandler extends SubsystemBase {
         break;
       case SUBSTATIONHUNTING:
         //if the arm is in substation hunt position  then we need to go to the substation grab position.
+        new InstantCommand(()->s_ALifter.setSetpointSubstationGrab())
+        .andThen(new WaitCommand(.80))
+        .andThen(new LassoInCmd(s_Lasso))
+        .andThen(new InstantCommand(()->ArmResetting()))
+        .andThen(new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);}))
+        .schedule();
         mainbrain.cowboyMode = CowboyMode.READYTOSTART;
-        new InstantCommand(()->s_ALifter.setSetpointSubstationGrab()).andThen(new WaitCommand(.80)).andThen(new LassoInCmd(s_Lasso)).andThen(new InstantCommand(()->ArmResetting())).schedule();
         break;
       case SUBSTATIONGRABING:
         //if the arm is in substation Grab position  then we need to go to the substation Hunt position.
         mainbrain.cowboyMode = CowboyMode.SUBSTATIONHUNTING;
-        new LassoOutCmd(s_Lasso).raceWith(new WaitCommand(.1)).andThen(new InstantCommand(()->s_ALifter.setSetpointSubstationHunt())).schedule();
+        new LassoOutCmd(s_Lasso).raceWith(new WaitCommand(.1))
+        .andThen(new InstantCommand(()->s_ALifter.setSetpointSubstationHunt()))
+        .schedule();
         break;
       case SCOREHUNTING: 
         //if the arm is in score hunt position  then we need to Let lasso out. and auto reset the arm state.
-        new LassoOutCmd(s_Lasso).andThen(new InstantCommand(()->ArmResetting()).andThen(new WaitCommand(.20)).andThen(new LassoInCmd(s_Lasso))).andThen(new ZeroLassoCmd(s_Lasso)).schedule();
+        new LassoOutCmd(s_Lasso)
+        .andThen(new InstantCommand(()->ArmResetting())
+        .andThen(new WaitCommand(.20))
+        .andThen(new LassoInCmd(s_Lasso)))
+        .andThen(new ZeroLassoCmd(s_Lasso))
+        .andThen(new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);}))
+        .schedule();
         mainbrain.cowboyMode = CowboyMode.READYTOSTART;
         // new SequentialCommandGroup(
         //   new LassoOutCmd(s_Lasso),

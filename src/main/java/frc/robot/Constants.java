@@ -124,7 +124,7 @@ public final class Constants {
         //LOOP at Start/Home/Zero
         public static final double kminEncoderValue = 0;
         //lasso at cone or wait/ready
-        public static final double kminEncoderValueWithCone = 2.8;//p
+        public static final double kminEncoderValueWithCone = 3.5;//2.8;//p
 
         public static final double kminEncoderValueWithCube = 54.00;//67 is flat
         //public static final double kavgEncoderValueWithCube = 93;//93 is over inflated

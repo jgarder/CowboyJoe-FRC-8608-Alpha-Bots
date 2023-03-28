@@ -9,7 +9,7 @@ public class autoBalance {
     private int debounceCount;
     private double robotSpeedSlow;
     private double robotSpeedFast;
-    private double onChargeStationDegree;
+    public static final double onChargeStationDegree = 10.0; // Angle where the robot knows it is on the charge station, default = 13.0
     private double levelDegree;
     private double debounceTime;
     private double singleTapTime;
@@ -34,8 +34,8 @@ public class autoBalance {
         // default = 0.2
         robotSpeedSlow = 0.2;
 
-        // Angle where the robot knows it is on the charge station, default = 13.0
-        onChargeStationDegree = 10.0;
+        
+        //onChargeStationDegree = 10.0;
 
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
@@ -71,30 +71,16 @@ public class autoBalance {
     //     return Math.atan2(mRioAccel.getY(), mRioAccel.getZ()) * 57.3;
     // }
 
-    // returns the magnititude of the robot's tilt calculated by the root of
-    // pitch^2 + roll^2, used to compensate for diagonally mounted rio
-    // public double getTilt2() {
-    //     double pitch = getPitch();
-    //     double roll = getRoll();
-    //     if ((pitch + roll) >= 0) {
-    //         return Math.sqrt(pitch * pitch + roll * roll);
-    //     } else {
-    //         return -Math.sqrt(pitch * pitch + roll * roll);
-    //     }
-    // }
+
     public double getTilt() {
-        return fliproll();
+        return s_navx.getTilt2();
     }
 
-    public int secondsToTicks(double time) {
+    public static int secondsToTicks(double time) {
         return (int) (time * 50);
     }
 
-    public double fliproll()
-    {
-        return s_navx.ahrs.getRoll() * -1.0;
-    }
-
+ 
     // routine for automatically driving onto and engaging the charge station.
     // returns a value from -1.0 to 1.0, which left and right motors should be set
     // to.
