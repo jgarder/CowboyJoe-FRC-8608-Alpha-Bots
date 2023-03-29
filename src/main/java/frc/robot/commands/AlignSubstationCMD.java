@@ -4,8 +4,15 @@
 
 package frc.robot.Commands;
 
+import com.ctre.phoenix.motorcontrol.IFollower;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -29,120 +36,176 @@ public class AlignSubstationCMD extends CommandBase {
   Swerve s_Swerve;
 
   //LL POSE X is forward and backward toward target in field space
-  double k_PoseX_P = 0.20;
-  double k_PoseX_I = 0.0025;
-  double k_PoseX_D = 0.0025;
+  double k_PoseX_P = 1.00;
+  double k_PoseX_I = 0.02;
+  double k_PoseX_D = 0.0020;
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
   private final PIDController AlignXController = new PIDController(k_PoseX_P,k_PoseX_I,k_PoseX_D);
 
   //LL POSE Y Is left to right translation in field space
-  double k_PoseY_P = 0.3;
-  double k_PoseY_I = 0.00;
-  double k_PoseY_D = 0.0000; 
+  double k_PoseY_P = 1.00;
+  double k_PoseY_I = 0.02;
+  double k_PoseY_D = 0.000; 
   private static final TrapezoidProfile.Constraints Z_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
   private final PIDController AlignPoseYController = new PIDController(k_PoseY_P,k_PoseY_I,k_PoseY_D);
   
   //LL pose RZ is our rotation relative to the target in field space
-  double k_RZ_P = 0.025;
+  double k_RZ_P = .03;//0.025;
   double k_RZ_I = 0.00;
   double k_RZ_D = 0.00;
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =   new TrapezoidProfile.Constraints(8, 8);
   private final PIDController AlignRZController = new PIDController(k_RZ_P,k_RZ_I,k_RZ_D);
 
   
-  double minXposeErrorToCorrect = .04;//.04;
-  double minYposeErrorToCorrect = .02;//.04;
-  double minRZErrorToCorrect = .2;//.04;
+  double minXposeErrorToCorrect = .17;//.04;
+  double minYposeErrorToCorrect = .08;//.04;
+  double minRZErrorToCorrect = .5;//.04;
 
-  double min_xpose_command = 0.04;
+  double min_xpose_command = 0.00;
   double min_Ypose_command = 0.0;
   double min_RZ_command = 0;//0.004;
 
+  double XP_buffer = 0;
+  double YP_buffer = 0;
+  double RZ_buffer = 0;
+
   boolean robotCentric = true;
-  
+
+  double XP_Setpoint = 0;
+  double YP_Setpoint = 0;
+  double RZ_Setpoint = 0;
   public AlignSubstationCMD(Swerve Thiss_Swerve, Limelight3Subsystem ThisLimelight) {
     s_Swerve = Thiss_Swerve;
     limelight3Subsystem = ThisLimelight;
-    addRequirements(s_Swerve,limelight3Subsystem);    
+    addRequirements(s_Swerve,limelight3Subsystem); 
+
   }
 
+  Alliance CurrentAlliance;
+  double xymulti = -1.0;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      
-    //LL POSE X is forward and backward toward target in field space
-    AlignXController.setSetpoint(-6.8250);
-    //AlignXController.setTolerance(minXposeErrorToCorrect);
-    //LL POSE Y Is left to right translation in field space
-    AlignPoseYController.setSetpoint(2.19);
-    //AlignPoseYController.setTolerance(minYposeErrorToCorrect);
+    if(this.limelight3Subsystem == null)   
+    {
+      System.out.println("LIMELIGHT IS DEAD");
+      return;
+    }
+    AlignXController.reset();
+    AlignPoseYController.reset();
+    AlignRZController.reset();
 
-    //LL pose RZ is our rotation relative to the target in field space
-    AlignRZController.setSetpoint(180);
-    //AlignRZController.enableContinuousInput(-180, 180);
-    //AlignRZController.setTolerance(minRZErrorToCorrect);
+    XP_Setpoint = 0;
+    YP_Setpoint = 0;
+    RZ_Setpoint = 0;
+    //get our alliance red or blue
+    CurrentAlliance = DriverStation.getAlliance();
+    //get the target number
+    int targetID = limelight3Subsystem.getTargetID();
 
+    if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
+    {  
+      xymulti = -1.0;
+      SetPidControlersToRedSubstation();
+    }
+    if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
+    {
+      xymulti = 1.0;
+      SetPidControlersToBlueSubstation();
+    }
+
+    XP_buffer = 0;
+    YP_buffer = 0;
+    RZ_buffer = 0;
+
+    // More complex path with holonomic rotation. Non-zero starting velocity of 2 m/s. Max velocity of 4 m/s and max accel of 3 m/s^2
+  PathPlannerTrajectory traj3 = PathPlanner.generatePath(
+  new PathConstraints(4, 3), 
+  new PathPoint(new Translation2d(1.0, 1.0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), 0), // position, heading(direction of travel), holonomic rotation, velocity override
+  new PathPoint(new Translation2d(3.0, 3.0), Rotation2d.fromDegrees(45), Rotation2d.fromDegrees(-90)), // position, heading(direction of travel), holonomic rotation
+  new PathPoint(new Translation2d(5.0, 3.0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-30)) // position, heading(direction of travel), holonomic rotation
+  );
 
   }
   int pipeline = 0;
   // Called every time the scheduler runs while the command is scheduled.
+  int debounceloops = 0;
+  int loopsoffbeforestopping = 50;
+  //get the target number
+  int targetID = -1;
   @Override
   public void execute() {
-    //get our alliance red or blue
-   Alliance CurrentAlliance = DriverStation.getAlliance();
+    if(this.limelight3Subsystem == null)   
+    {
+      System.out.println("LIMELIGHT IS DEAD");
+      return;
+    }
    //make sure we are in april tag pipeline before checking
    //
    //get if we have any targets
    boolean HasTarget = limelight3Subsystem.hasValidTarget();
    //get the target number
-   int targetID = limelight3Subsystem.getTargetID();
+   targetID = limelight3Subsystem.getTargetID();
    //get if the closest target is for our team(ignore others obviously)
    boolean WeSeeourSubstationTag = false;
    if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
-   {
-      WeSeeourSubstationTag = true;
+   {  
+    SetPidControlersToRedSubstation();
+    //flip flag sayign we see a substation
+    WeSeeourSubstationTag = true;
    }
    if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
    {
-      WeSeeourSubstationTag = true;
+    SetPidControlersToBlueSubstation();
+    //flip flag sayign we see a substation
+    WeSeeourSubstationTag = true;
    }
    if(!WeSeeourSubstationTag){
+      debounceloops++;
        //if substation is at X area size then switch our speed to substation movde
        //when we are at X area set bool to true.
-       s_Swerve.drive(
-             new Translation2d(0,0), 
-             0  , 
-             !robotCentric, 
-           true
-         ); 
+       if(debounceloops >= loopsoffbeforestopping)
+       {
+          s_Swerve.drive(
+            new Translation2d(0,0), 
+            0  , 
+            !robotCentric, 
+          true
+        ); 
+       }
+      
     return;
    }
+   loopsoffbeforestopping = 0;
   
-
+   FillBuffers();
     
     //LL pose RZ is our rotation relative to the target in field space
-    double RZCurrent = limelight3Subsystem.getRZ() *-1.0;//rotation Y targetspace is ROtation Z field space?  
-    
-    double RZAdjust = GetRZPoseAdjust(RZCurrent, min_RZ_command);
+    double RZAdjust = GetRZPoseAdjust(RZ_buffer, min_RZ_command);
     
     //LL POSE X is forward and backward toward target in field space
-    double xpose = limelight3Subsystem.getXPos() ;
-
-    double xpose_adjust = GetXPoseAdjust(xpose, min_xpose_command);
+    double xpose_adjust = GetXPoseAdjust(XP_buffer, min_xpose_command);
 
     //LL POSE Y Is left to right translation in field space
-    double Ypose = limelight3Subsystem.getYPos();
-
-    double Ypose_adjust =  GetYPoseAdjust(Ypose, min_Ypose_command );
+    double Ypose_adjust =  GetYPoseAdjust(YP_buffer, min_Ypose_command );
 
 
 
     
-    double alignmentspeed = 1.0;//5.0 * Constants.Swerve.maxSpeed;
+    double Xspeed = 1.0;//5.0 * Constants.Swerve.maxSpeed;
+    double Yspeed = 1.0;//5.0 * Constants.Swerve.maxSpeed;
     double rotationspeed = 1.0;//1.0 * Constants.Swerve.maxAngularVelocity;
     
-    double YposeAxis = Ypose_adjust * alignmentspeed;
-    double XposeAxis = xpose_adjust * alignmentspeed;
+    //if we are really far away lets keep pid from going insane. 
+    if(Math.abs(xpose_adjust) > .7){
+      Xspeed = .25;
+    }
+    if(Math.abs(xpose_adjust) > 1){
+      Yspeed = .7;
+    }
+
+    double YposeAxis = Ypose_adjust * Yspeed;
+    double XposeAxis = xpose_adjust * Xspeed;
     double RZposeAxis = RZAdjust * rotationspeed;
     
      
@@ -154,38 +217,78 @@ public class AlignSubstationCMD extends CommandBase {
          );
 
     //s_Swerve.drive(ChassisSpeeds.fromFieldRelativeSpeeds(translationAxis, strafeAxis, rotationAxis,s_Swerve.swerveOdometry.getPoseMeters().getRotation() ));
-    SmartDashboard.putNumber("RZ_Current", RZCurrent);
+    SmartDashboard.putNumber("RZ_Current", RZ_buffer);
     SmartDashboard.putNumber("RZ_PID", RZAdjust);
     
    
-    SmartDashboard.putNumber("Ypose_Current", Ypose);
+    SmartDashboard.putNumber("Ypose_Current", YP_buffer);
     SmartDashboard.putNumber("Ypose_PID", Ypose_adjust);
 
-    SmartDashboard.putNumber("Xpose", xpose);
+    SmartDashboard.putNumber("Xpose", XP_buffer);
     SmartDashboard.putNumber("Xpose_PID", XposeAxis);
-    
+
+    SmartDashboard.putNumber("RZ_Offset", RZ_Offset);
+    SmartDashboard.putNumber("Ypose_Offset", Ypose_Offset);
+    SmartDashboard.putNumber("Xpose_Offset", Xpose_Offset);
   }
 
+private void SetPidControlersToRedSubstation() {
+  //LL POSE X is forward and backward toward target in field space
+  AlignXController.setSetpoint(-6.661);
+  //LL POSE Y Is left to right translation in field space
+  AlignPoseYController.setSetpoint(2.06);
+  //LL pose RZ is our rotation relative to the target in field space
+  AlignRZController.setSetpoint(180);
+
+  XP_Setpoint = -6.8250;
+  YP_Setpoint = 2.00;
+  RZ_Setpoint = 180;
+}
+private void SetPidControlersToBlueSubstation() {
+  //LL POSE X is forward and backward toward target in field space
+  AlignXController.setSetpoint(6.66);
+  //LL POSE Y Is left to right translation in field space
+  AlignPoseYController.setSetpoint(3.44);
+  //LL pose RZ is our rotation relative to the target in field space
+  AlignRZController.setSetpoint(0);
+
+  XP_Setpoint = 6.8250;
+  YP_Setpoint = 3.44;
+  RZ_Setpoint = 0;
+}
+private void FillBuffers()
+{
+  double RZCurrent = limelight3Subsystem.getRZ() *-1.0;//rotation Y targetspace is ROtation Z field space?
+  double xpose = limelight3Subsystem.getXPos() ;
+  double Ypose = limelight3Subsystem.getYPos();
+  if(Ypose != 0.00 & xpose != 0.00 & RZCurrent != 0.00) 
+  {
+    XP_buffer = xpose;
+    YP_buffer = Ypose;
+    RZ_buffer = RZCurrent;
+  }
+  else{debounceloops++;}
+}
   //LL POSE Y Is left to right translation in field space
 private double GetYPoseAdjust(double Ypose, double min_PoseY_command) {
   double ypose_adjust;
   //if(Ypose == 0){return 0;}
   //if (Math.abs(Ypose) > minYposeErrorToCorrect )
   //{
-    if (Ypose < 0)
+    if (Ypose < YP_Setpoint)
     {
-            ypose_adjust = AlignPoseYController.calculate(Ypose) + min_PoseY_command;
+            ypose_adjust = AlignPoseYController.calculate(Ypose) - min_PoseY_command;
     }
     else
     {
-            ypose_adjust = AlignPoseYController.calculate(Ypose) - min_PoseY_command;
+            ypose_adjust = AlignPoseYController.calculate(Ypose) + min_PoseY_command;
     }
  // }
   //else 
  // {
   //  ypose_adjust = 0;
   //}
-  return ypose_adjust *-1.0;
+  return ypose_adjust *xymulti;
 }
 
   //LL POSE X is forward and backward toward target in field space
@@ -194,13 +297,13 @@ private double GetYPoseAdjust(double Ypose, double min_PoseY_command) {
     
     //if (Math.abs(fwdReverse_error) > minXposeErrorToCorrect ) //!AlignXController.atGoal()
     //{
-      if (fwdReverse_error < 0)
+      if (fwdReverse_error < XP_Setpoint)
       {
-              xpose_adjust = AlignXController.calculate(fwdReverse_error) - min_Fwd_command;
+              xpose_adjust = AlignXController.calculate(fwdReverse_error) + min_Fwd_command;
       }
       else
       {
-              xpose_adjust = AlignXController.calculate(fwdReverse_error) + min_Fwd_command;
+              xpose_adjust = AlignXController.calculate(fwdReverse_error) - min_Fwd_command;
       }
     //}
     //else 
@@ -208,7 +311,7 @@ private double GetYPoseAdjust(double Ypose, double min_PoseY_command) {
     //  xpose_adjust = 0;
     //}
     //if(fwdReverse_error == 0){return 0;}
-    return xpose_adjust *-1.0;
+    return xpose_adjust *xymulti;
   }
 
   //LL pose RZ is our rotation relative to the target in field space
@@ -244,9 +347,54 @@ private double GetYPoseAdjust(double Ypose, double min_PoseY_command) {
   @Override
   public void end(boolean interrupted) {super.end(interrupted);}
 
+  double Xpose_Offset = 0;
+  double Ypose_Offset = 0;
+  double RZ_Offset = 0;
+  int timesgood = 0;
+  int goodneeded = 5;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+
+    
+    if(YP_buffer != 0.00 & XP_buffer != 0.00 & RZ_buffer != 0.00) 
+    {
+        //SUBTRACT where we need to go, from where we are. this will give us the translations we need to make 
+        Xpose_Offset = XP_buffer - XP_Setpoint;
+        Ypose_Offset = YP_buffer - YP_Setpoint;
+        RZ_Offset = RZ_buffer - RZ_Setpoint;
+
+        //minXposeErrorToCorrect = .04;//.04;
+        //minYposeErrorToCorrect = .02;//.04;
+        //minRZErrorToCorrect = .2;//.04;
+        if(Math.abs(Xpose_Offset) < minXposeErrorToCorrect && 
+          Math.abs(Ypose_Offset) < minYposeErrorToCorrect  &&( 
+        Math.abs(RZ_Offset) < minRZErrorToCorrect || RZ_Offset < minRZErrorToCorrect -360 ))
+        {
+          if(timesgood > goodneeded)
+          {
+            timesgood = 0;
+            return true;
+          }
+          else
+          {
+            timesgood++;
+            return false;
+          }
+          
+        }
+    }
+    // if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
+    // {  
+    //   return false;
+    // }
+    // else if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
+    // {
+    //   return false;
+    // }
+    // else{
+    //   return true;
+    // }
+      return false;
   }
 }

@@ -146,7 +146,16 @@ public class RobotContainer {
         
         //Upper Bumper (shoulder) buttons
         LeftBumperButton.onTrue(new InstantCommand(PIDArmExtensionSubsystem::runArmExtensionStages,PIDArmExtensionSubsystem));
-        RightBumperButton.toggleOnTrue(new AlignSubstationCMD(s_Swerve, limelight3Subsystem));
+        //RightBumperButton.onTrue(new AlignPathSubstationCMD(s_Swerve, limelight3Subsystem));
+        //RightBumperButton.toggleOnTrue(new AlignSubstationCMD(s_Swerve, limelight3Subsystem));
+        RightBumperButton.whileTrue(new AlignSubstationCMD(s_Swerve, limelight3Subsystem).andThen(new ParallelCommandGroup(
+            new InstantCommand(()->{cowboyMode = CowboyMode.SUBSTATIONHUNTING;}),
+            new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.SubstationSpeed); }),
+            new InstantCommand(PIDArmExtensionSubsystem::setSetpointSubstation,PIDArmExtensionSubsystem),
+            new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
+            new InstantCommand(PIDArmLifterSubsystem::setSetpointSubstationHunt,PIDArmLifterSubsystem)
+            )));
+
         // Basic Buttons (X,Y,B,A)
         xButton.onTrue(
             new ParallelCommandGroup(

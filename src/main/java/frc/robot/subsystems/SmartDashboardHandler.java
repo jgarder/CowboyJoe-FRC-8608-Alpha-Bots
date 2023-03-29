@@ -26,8 +26,9 @@ public class SmartDashboardHandler extends SubsystemBase {
   public static final String kDropBackBumpSideAuto = "DropBackBumpSide";
   public static final String kDropBackPullUpChargeAuto = "DropBackPullUpCharge";
   public static final String kBumpSideSpin = "Bump Side Spin Move";
-  private String m_autoSelected;
+  //private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private final SendableChooser<String> m_pickupChooser = new SendableChooser<>();
 
   RobotContainer thisrobot;
   public SmartDashboardHandler(RobotContainer mainbrain) {
@@ -35,6 +36,7 @@ public class SmartDashboardHandler extends SubsystemBase {
 
     bootupPersistents();
     BuildAutonomousChooser();
+    BuildConeCubeChooser();
   }
 
   public String getChosenAutoString()
@@ -65,16 +67,28 @@ public class SmartDashboardHandler extends SubsystemBase {
   private void BuildAutonomousChooser() {
     // build Autonomous selector. 
     m_chooser.setDefaultOption("No Auto", kDefaultAuto);
-    m_chooser.setDefaultOption("Calibrate Only Yes ConeCube", kCalibrateYesAuto);
-    m_chooser.setDefaultOption("Calibrate Only NO Conecube", kCalibrateNoAuto);
-    m_chooser.setDefaultOption("calibrate/Score Only", kScoreOnlyAuto);
+    m_chooser.addOption("Calibrate Only Yes ConeCube", kCalibrateYesAuto);
+    m_chooser.addOption("Calibrate Only NO Conecube", kCalibrateNoAuto);
+    m_chooser.addOption("calibrate/Score Only", kScoreOnlyAuto);
     m_chooser.addOption("Score/Backup EZ side", kDropAndbackupEZsideAuto);
     m_chooser.addOption("Score/Backup Bump side", kDropBackBumpSideAuto);
     m_chooser.addOption("Score/Backup Over Charge station", kDropBackChargeAuto);      
     m_chooser.addOption("drive on Charging after score/backup", kDropBackPullUpChargeAuto);
     m_chooser.addOption("Bump Side Spin Move", kBumpSideSpin);
     SmartDashboard.putData("Auto choices", m_chooser);
+    SmartDashboard.setPersistent("Auto choices");
     
+}
+public String getChosenPickupString()
+{
+  return m_pickupChooser.getSelected();
+}
+private void BuildConeCubeChooser() {
+  // build Autonomous selector. 
+  m_pickupChooser.setDefaultOption("Cone", "Cone");
+  m_pickupChooser.addOption("Cube", "Cube");
+  SmartDashboard.putData("Pickup Control", m_pickupChooser);
+  SmartDashboard.setPersistent("Pickup Control");
 }
 
   @Override

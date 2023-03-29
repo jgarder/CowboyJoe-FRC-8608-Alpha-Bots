@@ -1,5 +1,31 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="156" y="78"/>
+		<property name="Text" value="PICKUP SELECTOR"/>
+	</static-widget>
+	<widget field="Pickup Control" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="159" y="88"/>
+		<property name="Use Radio Buttons" value="false"/>
+	</widget>
+	<widget field="Xpose_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="657" y="481"/>
+	</widget>
+	<widget field="Xpose" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="522" y="481"/>
+	</widget>
+	<widget field="Ypose_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="655" y="460"/>
+	</widget>
+	<widget field="Ypose_Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="493" y="461"/>
+	</widget>
+	<widget field="RZ_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="658" y="437"/>
+	</widget>
+	<widget field="RZ_Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="510" y="439"/>
+	</widget>
 	<widget field="LL Roll" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1097" y="761"/>
 		<width>82</width>
@@ -114,7 +140,7 @@
 		<width>93</width>
 	</widget>
 	<widget field="Lasso Temp" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1055" y="131"/>
+		<location x="1054" y="129"/>
 		<width>96</width>
 	</widget>
 	<widget field="Lasso Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -194,7 +220,7 @@
 		<location x="122" y="402"/>
 	</widget>
 	<widget field="ObjectDistance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="773" y="356"/>
+		<location x="764" y="356"/>
 	</widget>
 	<widget field="ArmExtension PID output" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="336" y="321"/>
@@ -264,10 +290,6 @@
 		<location x="1069" y="738"/>
 		<width>108</width>
 	</widget>
-	<widget field="distance_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="551" y="335"/>
-		<width>136</width>
-	</widget>
 	<widget field="LL Pose Z" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1085" y="695"/>
 		<width>93</width>
@@ -275,15 +297,6 @@
 	<widget field="LL Pose Y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1085" y="671"/>
 		<width>93</width>
-	</widget>
-	<widget field="rotation_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="554" y="311"/>
-		<width>133</width>
-		<height>22</height>
-	</widget>
-	<widget field="steering_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="566" y="420"/>
-		<width>108</width>
 	</widget>
 	<widget field="LimelightSkew" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1032" y="511"/>
@@ -296,18 +309,6 @@
 	<widget field="LimelightX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1048" y="467"/>
 		<width>91</width>
-	</widget>
-	<widget field="steering_adjust" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="553" y="357"/>
-		<width>134</width>
-	</widget>
-	<widget field="distance_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="565" y="399"/>
-		<width>107</width>
-	</widget>
-	<widget field="rotation_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="567" y="378"/>
-		<width>106</width>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="1178" y="562"/>
@@ -367,7 +368,16 @@
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="steering_adjust"/>
+	<hidden field="xpose"/>
+	<hidden field="xpose_adjust"/>
+	<hidden field="distance_adjust"/>
+	<hidden field="Balancer Roll"/>
+	<hidden field="xpose_PID"/>
 	<hidden field="navx Pitch"/>
 	<hidden field="Balancer Pitch"/>
-	<hidden field="Balancer Roll"/>
+	<hidden field="steering_PID"/>
+	<hidden field="rotation_adjust"/>
+	<hidden field="distance_PID"/>
+	<hidden field="rotation_PID"/>
 </xml>

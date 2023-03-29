@@ -291,13 +291,13 @@ public final class Constants {
 
     public static class AllianceAprilTags{
       public static class Red {
-        public static final int substation = 4;
+        public static final int substation = 5;
         public static final int ezSideTag = 3;
         public static final int centerTag = 2;
         public static final int bumpSideTag = 1;
       }
       public static class Blue {
-        public static final int substation = 5;
+        public static final int substation = 4;
         public static final int ezSideTag = 6;
         public static final int centerTag = 7;
         public static final int bumpSideTag = 8;
