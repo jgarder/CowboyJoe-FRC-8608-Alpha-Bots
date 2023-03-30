@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PWM.PeriodMultiplier;
+import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -72,6 +73,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //ourpwm.setSpeed(1.0);
+    m_robotContainer.ourRelay.setDirection(Direction.kReverse);
   }
 
   @Override

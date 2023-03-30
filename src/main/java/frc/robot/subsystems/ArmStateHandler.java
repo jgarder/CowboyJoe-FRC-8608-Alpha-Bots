@@ -6,6 +6,7 @@ package frc.robot.Subsystems;
 
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -95,8 +96,8 @@ public class ArmStateHandler extends SubsystemBase {
     //if the arm is veritcal and in substation mode then we need to go to the substation hunt position.
     //if the arm is veritcal and in floor mode then we need to go to the floor hunt position.
     //if the arm is veritcal and in score mode then we need to go to the score hunt position.
-    
-    
+    String ConeOrCube = SmartDashboard.getString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);
+
     
     switch (mainbrain.cowboyMode){
       case STARTUP:
@@ -113,9 +114,22 @@ public class ArmStateHandler extends SubsystemBase {
         //s_ALifter.setSetpointFloorHunt();
         break;
       case SUBSTATIONHUNTING:
+        double waittime = .80;
+        if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeConeMode))
+        {
+          waittime = 0.15;
+        }
         //if the arm is in substation hunt position  then we need to go to the substation grab position.
-        new InstantCommand(()->s_ALifter.setSetpointSubstationGrab())
-        .andThen(new WaitCommand(.80))
+        Command ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointSubstationGrab());
+        //SmartDashboard.putString("debug", ConeOrCube);
+        if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeCubeMode))
+        {
+          //SmartDashboard.putString("debug", "cube");
+          ougoingcommand = ougoingcommand.andThen(new InstantCommand(()->s_Lasso.BumpOutForCube(),s_Lasso)).andThen(new WaitCommand(waittime));
+        }
+        
+        ougoingcommand
+        .andThen(new WaitCommand(waittime)) 
         .andThen(new LassoInCmd(s_Lasso))
         .andThen(new InstantCommand(()->ArmResetting()))
         .andThen(new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);}))

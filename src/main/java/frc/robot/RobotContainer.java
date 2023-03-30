@@ -1,7 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,12 +48,14 @@ public class RobotContainer {
     public CowboyMode cowboyMode = CowboyMode.STARTUP;
     
     private final XboxController driveController = new XboxController(0);
+    private final GenericHID CoPilotController = new GenericHID(1);
 
     
 
 
     /* Subsystems */
     public PWM ourpwm;
+    public Relay ourRelay;
     public JoePowerDistributionPanel PDP= new JoePowerDistributionPanel();
     public final NavxSubsystem navx = new NavxSubsystem();
     public static Swerve s_Swerve;
@@ -62,8 +67,12 @@ public class RobotContainer {
     public final ArmStateHandler ArmStateHandler = new ArmStateHandler(PIDArmLifterSubsystem, PIDArmExtensionSubsystem, PIDLassoSubsystem,this);
     public final AutonomousCMDBuilder AutoCmdBuilder = new AutonomousCMDBuilder(this);
     public final SmartDashboardHandler mySmartDashboardHandler = new SmartDashboardHandler(this);
-    
-    /* Controller 1 Declarations and instiantiainted  */
+    /* co pilot Controller 1 Declarations and instiantiainted  */
+    private final JoystickButton leftButton = new JoystickButton(CoPilotController, 11);
+    private final JoystickButton RightButton = new JoystickButton(CoPilotController, 12);
+
+
+    /* Main Driver Controller 0 Declarations and instiantiainted  */
     private final JoystickButton aButton = new JoystickButton(driveController, XboxController.Button.kA.value);
     private final JoystickButton xButton = new JoystickButton(driveController, XboxController.Button.kX.value);
     private final JoystickButton bButton = new JoystickButton(driveController, XboxController.Button.kB.value);
@@ -104,16 +113,17 @@ public class RobotContainer {
     public RobotContainer() {
         navx.ahrs.calibrate();
         //bootup the led pwm
-        //ourpwm = new PWM(9);
+        ourpwm = new PWM(8);
+        ourRelay = new Relay(0);
+       
         
-
         //Setup DriveTrain
         s_Swerve = new Swerve(navx);
-        //ourpwm.setRaw(0);
+        ourpwm.setRaw(1000);
 
         // CONFIGURE CONTROLLER
         configureButtonBindingsDefault();
-
+        configureCopilotController();
         //on boot might as well start up the camera server
         CameraServer.startAutomaticCapture();
 
@@ -124,6 +134,12 @@ public class RobotContainer {
         return cowboyMode == CowboyMode.READYTOSTART;
     }
 
+    private void configureCopilotController(){
+        leftButton.onTrue(new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);})
+            );
+        RightButton.onTrue(new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeCubeMode);})
+        );
+    }
     private void configureButtonBindingsDefault() {
         //JoySticks Left and right
         s_Swerve.setDefaultCommand(

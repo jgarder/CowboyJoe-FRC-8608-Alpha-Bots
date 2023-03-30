@@ -2,21 +2,19 @@ package frc.robot.Commands;
 
 import frc.robot.Constants;
 import frc.robot.Subsystems.PIDLassoSubsystem;
-import frc.robot.Subsystems.SmartDashboardHandler;
 import frc.robot.Subsystems.PIDLassoSubsystem.LassoState;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class LassoInCmd extends CommandBase {
+public class LassoInConeCubeCmd extends CommandBase {
 
     //timeout incase of something horrific happening (life)
     private final long timeoutmilliseconds = 4000;
     private long startTime = 0;
     private PIDLassoSubsystem s_Lasso;      
     long end = 0;
-    public LassoInCmd(PIDLassoSubsystem Lasso) {
+    public LassoInConeCubeCmd(PIDLassoSubsystem Lasso) {
         this.s_Lasso = Lasso;
         addRequirements(s_Lasso);
     }
@@ -34,16 +32,15 @@ public class LassoInCmd extends CommandBase {
     public void initialize() {
         startTime = System.currentTimeMillis(); 
         end = startTime + timeoutmilliseconds;
-        String ConeOrCube = SmartDashboard.getString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);
-
+        
 
         double wantedsetpoint = Constants.LassoConstants.kminEncoderValue;// default
-        if (s_Lasso.ObjectInLasso() == "Cube" | ConeOrCube.equals("Cube"))
+        if (s_Lasso.ObjectInLasso() == "Cube")
             {
                 s_Lasso.lassoState = LassoState.GOCUBE;
                 wantedsetpoint = s_Lasso.setSetpointLassoCube();
             }
-            else if(s_Lasso.ObjectInLasso() == "Cone" | ConeOrCube.equals("Cone"))
+            else if(s_Lasso.ObjectInLasso() == "Cone")
             {
                 s_Lasso.lassoState = LassoState.GOCONE;
                 wantedsetpoint = s_Lasso.setSetpointLassoCone();
@@ -55,7 +52,6 @@ public class LassoInCmd extends CommandBase {
               wantedsetpoint = s_Lasso.setSetpointLassoCone();
               s_Lasso.lassoState = LassoState.GOCONE;
             }
-
     }
 
     // make this return true when this Command no longer needs to run execute()

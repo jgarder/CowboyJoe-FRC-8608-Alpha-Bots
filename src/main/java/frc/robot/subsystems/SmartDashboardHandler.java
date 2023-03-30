@@ -85,12 +85,16 @@ public String getChosenPickupString()
 {
   return m_pickupChooser.getSelected();
 }
+
+public static final String kConeCubeModeName = "Pickup Controls";
+public static final String kConeCubeModeCubeMode = "Cube";
+public static final String kConeCubeModeConeMode = "Cone";
 private void BuildConeCubeChooser() {
   // build Autonomous selector. 
-  m_pickupChooser.setDefaultOption("Cone", "Cone");
-  m_pickupChooser.addOption("Cube", "Cube");
-  SmartDashboard.putData("Pickup Control", m_pickupChooser);
-  SmartDashboard.setPersistent("Pickup Control");
+  //m_pickupChooser.setDefaultOption(kConeCubeModeConeMode, kConeCubeModeConeMode);
+  //m_pickupChooser.addOption(kConeCubeModeCubeMode, kConeCubeModeCubeMode);
+  SmartDashboard.putString(kConeCubeModeName, kConeCubeModeConeMode);
+  //SmartDashboard.setPersistent(kConeCubeModeName);
 }
 
   @Override

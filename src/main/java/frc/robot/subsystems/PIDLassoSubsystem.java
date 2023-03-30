@@ -80,10 +80,12 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   public void SetSpeed(double thisspeed) {
     lassoMotor.set(thisspeed);
   }
+  String ConeOrCube = "";//SmartDashboard.getString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);
 
   @Override
   public void periodic() {
     getEncoderData();
+    ConeOrCube = SmartDashboard.getString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);
     super.periodic();// This is a PidSubsystem, we have orridden the periodic method to get encoder data... So we need to call the super periodic method to get the PID stuff to work.
     //setMinLassoEncoderValueBasedOnColor();
     
@@ -213,6 +215,14 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     setSetpoint(position-3.0);
     enable();
   }
+  public void BumpOutForCube(){
+    //disable();
+    lassoState = LassoState.OPEN;
+    //double position = lassoMotor_encoder.getPosition();
+    //lassoMotor_encoder.setPosition(position);
+    setSetpoint(Constants.LassoConstants.kEncoderValueLoopOut+15.0);
+    enable();
+  }
 
 
   public enum LassoState{
@@ -255,25 +265,36 @@ public class PIDLassoSubsystem extends PIDSubsystem {
       case CUBEIN :
         break;
       case OPEN : // if open lasso when run lasso is ran. 
-        //detect cone or cube
-        if (ObjectInLasso() == "Cube")
-        {
-          setSetpointLassoCube();
-        }
-        else if(ObjectInLasso() == "Cone")
-        {  
-          setSetpointLassoCone();
-        }
-        else if(ObjectInLasso() == "RoomLight")
-        {
-          //nothing detected
-          //retractSlowly();
-          setSetpointLassoCone();
-        }
+        CloseLassoOnCubeCone();
         break;
 
 
     }
+  }
+
+  public void CloseLassoOnCubeCone() {
+
+      //detect cone or cube
+      if (ObjectInLasso() == "Cube" | ConeOrCube.equals("Cube"))
+      {
+        setSetpointLassoCube();
+      }
+      else if(ObjectInLasso() == "Cone" | ConeOrCube.equals("Cone"))
+      {  
+        setSetpointLassoCone();
+      }
+      else if(ObjectInLasso() == "RoomLight")
+      {
+        //nothing detected
+        //retractSlowly();
+        setSetpointLassoCone();
+      }
+      else if(ObjectInLasso() == "Unknown")
+      {
+        //nothing detected
+        //retractSlowly();
+        setSetpointLassoCone();
+      }
   }
   
   boolean Zeroed = false;
@@ -352,12 +373,12 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   }
   public double getWantedSetpoint(){
     double wantedsetpoint = Constants.LassoConstants.kminEncoderValue;// default
-    if (ObjectInLasso() == "Cube")
+    if (ObjectInLasso() == "Cube" | ConeOrCube.equals("Cube"))
         {
           lassoState = LassoState.GOCUBE;
           wantedsetpoint = Constants.LassoConstants.kminEncoderValueWithCube;//setSetpointLassoCube();
         }
-        else if(ObjectInLasso() == "Cone")
+        else if(ObjectInLasso() == "Cone" | ConeOrCube.equals("Cone"))
         {
           lassoState = LassoState.GOCONE;
           wantedsetpoint = Constants.LassoConstants.kminEncoderValueWithCone;//setSetpointLassoCone();
@@ -385,12 +406,12 @@ public class PIDLassoSubsystem extends PIDSubsystem {
   }
   public boolean isLassoIn() {
     double wantedsetpoint = Constants.LassoConstants.kminEncoderValue;// default
-    if (ObjectInLasso() == "Cube")
+    if (ObjectInLasso() == "Cube" | ConeOrCube.equals("Cube"))
         {
           lassoState = LassoState.GOCUBE;
           wantedsetpoint = setSetpointLassoCube();
         }
-        else if(ObjectInLasso() == "Cone")
+        else if(ObjectInLasso() == "Cone" | ConeOrCube.equals("Cone"))
         {
           lassoState = LassoState.GOCONE;
           wantedsetpoint = setSetpointLassoCone();
