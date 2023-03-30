@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.pathplanner.lib.server.PathPlannerServer;
 
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.PWM;
@@ -73,7 +74,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //ourpwm.setSpeed(1.0);
-    m_robotContainer.ourRelay.setDirection(Direction.kReverse);
+    //m_robotContainer.ourRelay.setDirection(Direction.kReverse);
+    
   }
 
   @Override

@@ -56,6 +56,8 @@ public class RobotContainer {
     /* Subsystems */
     public PWM ourpwm;
     public Relay ourRelay;
+    public final Relay m_relay = new Relay(3);
+    public final Relay m_relay2 = new Relay(2);
     public JoePowerDistributionPanel PDP= new JoePowerDistributionPanel();
     public final NavxSubsystem navx = new NavxSubsystem();
     public static Swerve s_Swerve;
@@ -115,7 +117,7 @@ public class RobotContainer {
         //bootup the led pwm
         ourpwm = new PWM(8);
         ourRelay = new Relay(0);
-       
+        
         
         //Setup DriveTrain
         s_Swerve = new Swerve(navx);
@@ -136,8 +138,13 @@ public class RobotContainer {
 
     private void configureCopilotController(){
         leftButton.onTrue(new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);})
+            .andThen(new InstantCommand(()->{m_relay.set(Relay.Value.kForward);}))
+            .andThen(new InstantCommand(()->{m_relay2.set(Relay.Value.kReverse);}))
             );
-        RightButton.onTrue(new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeCubeMode);})
+        RightButton.onTrue(
+            new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeCubeMode);})
+            .andThen(new InstantCommand(()->{m_relay.set(Relay.Value.kReverse);}))
+            .andThen(new InstantCommand(()->{m_relay2.set(Relay.Value.kForward);}))
         );
     }
     private void configureButtonBindingsDefault() {
