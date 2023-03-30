@@ -26,6 +26,7 @@ public class SmartDashboardHandler extends SubsystemBase {
   public static final String kDropBackBumpSideAuto = "DropBackBumpSide";
   public static final String kDropBackPullUpChargeAuto = "DropBackPullUpCharge";
   public static final String kBumpSideSpin = "Bump Side Spin Move";
+  public static final String kChargePadSpin = "Charge Pad Spin Move";
   //private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private final SendableChooser<String> m_pickupChooser = new SendableChooser<>();
@@ -75,6 +76,7 @@ public class SmartDashboardHandler extends SubsystemBase {
     m_chooser.addOption("Score/Backup Over Charge station", kDropBackChargeAuto);      
     m_chooser.addOption("drive on Charging after score/backup", kDropBackPullUpChargeAuto);
     m_chooser.addOption("Bump Side Spin Move", kBumpSideSpin);
+    //m_chooser.addOption("Charge Pad Spin Move", kChargePadSpin);
     SmartDashboard.putData("Auto choices", m_chooser);
     SmartDashboard.setPersistent("Auto choices");
     

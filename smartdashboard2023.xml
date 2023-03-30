@@ -1,5 +1,18 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="LL TargetID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1064" y="786"/>
+		<width>117</width>
+	</widget>
+	<widget field="Xpose_Offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="192"/>
+	</widget>
+	<widget field="Ypose_Offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="171"/>
+	</widget>
+	<widget field="RZ_Offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="150"/>
+	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
 		<location x="156" y="78"/>
 		<property name="Text" value="PICKUP SELECTOR"/>
@@ -368,16 +381,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="steering_adjust"/>
-	<hidden field="xpose"/>
-	<hidden field="xpose_adjust"/>
-	<hidden field="distance_adjust"/>
-	<hidden field="Balancer Roll"/>
-	<hidden field="xpose_PID"/>
-	<hidden field="navx Pitch"/>
-	<hidden field="Balancer Pitch"/>
-	<hidden field="steering_PID"/>
-	<hidden field="rotation_adjust"/>
-	<hidden field="distance_PID"/>
-	<hidden field="rotation_PID"/>
 </xml>

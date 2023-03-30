@@ -10,6 +10,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -57,9 +58,9 @@ public class AlignSubstationCMD extends CommandBase {
   private final PIDController AlignRZController = new PIDController(k_RZ_P,k_RZ_I,k_RZ_D);
 
   
-  double minXposeErrorToCorrect = .17;//.04;
+  double minXposeErrorToCorrect = .19;//.04;
   double minYposeErrorToCorrect = .08;//.04;
-  double minRZErrorToCorrect = .5;//.04;
+  double minRZErrorToCorrect = 1;//.04;
 
   double min_xpose_command = 0.00;
   double min_Ypose_command = 0.0;
@@ -94,6 +95,7 @@ public class AlignSubstationCMD extends CommandBase {
     AlignXController.reset();
     AlignPoseYController.reset();
     AlignRZController.reset();
+
 
     XP_Setpoint = 0;
     YP_Setpoint = 0;
@@ -196,13 +198,19 @@ public class AlignSubstationCMD extends CommandBase {
     double Yspeed = 1.0;//5.0 * Constants.Swerve.maxSpeed;
     double rotationspeed = 1.0;//1.0 * Constants.Swerve.maxAngularVelocity;
     
-    //if we are really far away lets keep pid from going insane. 
-    if(Math.abs(xpose_adjust) > .7){
-      Xspeed = .25;
-    }
-    if(Math.abs(xpose_adjust) > 1){
-      Yspeed = .7;
-    }
+    //if we are really far away lets keep pid from going insane.
+    double maxYvelocity = 1.00;
+    double maxXvelocity = .5;
+    double maxRZvelocity = 1.0;
+    Ypose_adjust = MathUtil.clamp(Ypose_adjust, maxYvelocity * -1.0, maxYvelocity);
+    xpose_adjust = MathUtil.clamp(xpose_adjust, maxXvelocity * -1.0, maxXvelocity);
+    RZAdjust = MathUtil.clamp(RZAdjust, maxRZvelocity * -1.0, maxRZvelocity);
+    // if(Math.abs(xpose_adjust) > .7){
+    //   Xspeed = .25;
+    // }
+    // if(Math.abs(Ypose_adjust) > 1){
+    //   Yspeed = .7;
+    // }
 
     double YposeAxis = Ypose_adjust * Yspeed;
     double XposeAxis = xpose_adjust * Xspeed;
@@ -233,28 +241,30 @@ public class AlignSubstationCMD extends CommandBase {
   }
 
 private void SetPidControlersToRedSubstation() {
-  //LL POSE X is forward and backward toward target in field space
-  AlignXController.setSetpoint(-6.661);
-  //LL POSE Y Is left to right translation in field space
-  AlignPoseYController.setSetpoint(2.06);
-  //LL pose RZ is our rotation relative to the target in field space
-  AlignRZController.setSetpoint(180);
-
-  XP_Setpoint = -6.8250;
-  YP_Setpoint = 2.00;
+  XP_Setpoint = -6.63;
+  YP_Setpoint = 2.06;
   RZ_Setpoint = 180;
+  //LL POSE X is forward and backward toward target in field space
+  AlignXController.setSetpoint(XP_Setpoint);
+  //LL POSE Y Is left to right translation in field space
+  AlignPoseYController.setSetpoint(YP_Setpoint);
+  //LL pose RZ is our rotation relative to the target in field space
+  AlignRZController.setSetpoint(RZ_Setpoint);
+
+  
 }
 private void SetPidControlersToBlueSubstation() {
-  //LL POSE X is forward and backward toward target in field space
-  AlignXController.setSetpoint(6.66);
-  //LL POSE Y Is left to right translation in field space
-  AlignPoseYController.setSetpoint(3.44);
-  //LL pose RZ is our rotation relative to the target in field space
-  AlignRZController.setSetpoint(0);
-
-  XP_Setpoint = 6.8250;
+  XP_Setpoint = 6.63;
   YP_Setpoint = 3.44;
   RZ_Setpoint = 0;
+  //LL POSE X is forward and backward toward target in field space
+  AlignXController.setSetpoint(XP_Setpoint);
+  //LL POSE Y Is left to right translation in field space
+  AlignPoseYController.setSetpoint(YP_Setpoint);
+  //LL pose RZ is our rotation relative to the target in field space
+  AlignRZController.setSetpoint(RZ_Setpoint);
+
+
 }
 private void FillBuffers()
 {
