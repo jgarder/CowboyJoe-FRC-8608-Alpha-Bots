@@ -115,12 +115,14 @@ public class ArmStateHandler extends SubsystemBase {
         break;
       case SUBSTATIONHUNTING:
         double waittime = .80;
+        Command ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointSubstationGrab());
         if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeConeMode))
         {
-          waittime = 0.15;
+          waittime = 0.5;
+          ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointSubstationGrabCone());
         }
         //if the arm is in substation hunt position  then we need to go to the substation grab position.
-        Command ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointSubstationGrab());
+        
         //SmartDashboard.putString("debug", ConeOrCube);
         if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeCubeMode))
         {

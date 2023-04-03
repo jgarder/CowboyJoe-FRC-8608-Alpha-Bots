@@ -197,6 +197,9 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
   public void setSetpointSubstationGrab() {
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueSubStationGrab);
   }
+  public void setSetpointSubstationGrabCone() {
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueSubStationGrab+2.5);
+  }
 
   public void slowWindInBeyondSoftLimit() {
     WindInBeyondSoftLimit(-.3); //Constants.ArmLifterConstants.kslowretractspeed

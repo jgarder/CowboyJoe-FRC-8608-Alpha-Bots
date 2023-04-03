@@ -220,7 +220,7 @@ public class PIDLassoSubsystem extends PIDSubsystem {
     lassoState = LassoState.OPEN;
     //double position = lassoMotor_encoder.getPosition();
     //lassoMotor_encoder.setPosition(position);
-    setSetpoint(Constants.LassoConstants.kEncoderValueLoopOut+15.0);
+    setSetpoint(Constants.LassoConstants.kmaxEncoderValue);
     enable();
   }
 
