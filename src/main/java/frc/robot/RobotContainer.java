@@ -2,7 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.XboxController.Axis;
@@ -56,6 +59,7 @@ public class RobotContainer {
     /* Subsystems */
     public PWM ourpwm;
     public Relay ourRelay;
+    public PneumaticsControlModule pControlModule;
     public final Relay m_relay = new Relay(3);
     public final Relay m_relay2 = new Relay(2);
     public JoePowerDistributionPanel PDP= new JoePowerDistributionPanel();
@@ -108,7 +112,8 @@ public class RobotContainer {
     private final int translationAxis = LeftLeftRightAxis.value;
     private final int strafeAxis = LeftForwardBackAxis.value;
     private final int rotationAxis = RightForwardBackAxis.value;
-
+    public Solenoid solenioidCube;
+    public Solenoid solenioidCone;
     
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -129,7 +134,14 @@ public class RobotContainer {
         //on boot might as well start up the camera server
         //CameraServer.startAutomaticCapture();
 
-        
+        pControlModule = new PneumaticsControlModule();
+        solenioidCube = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+        solenioidCone = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+
+        //solenioidCube.set(false);
+        //solenioidCone.set(true);
+        //exampleSolenoidPCM.set(true);
+        //exampleSolenoidPCM.set(false);
     }
 
     public boolean isReadyToStart(){
@@ -138,13 +150,13 @@ public class RobotContainer {
 
     private void configureCopilotController(){
         leftButton.onTrue(new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);})
-            .andThen(new InstantCommand(()->{m_relay2.set(Relay.Value.kForward);}))
-            .andThen(new InstantCommand(()->{m_relay.set(Relay.Value.kReverse);}))
+            .andThen(new InstantCommand(()->{solenioidCube.set(false);}))
+            .andThen(new InstantCommand(()->{solenioidCone.set(true);}))
             );
         RightButton.onTrue(
             new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeCubeMode);})
-            .andThen(new InstantCommand(()->{m_relay2.set(Relay.Value.kReverse);}))
-            .andThen(new InstantCommand(()->{m_relay.set(Relay.Value.kForward);}))
+            .andThen(new InstantCommand(()->{solenioidCube.set(true);}))
+            .andThen(new InstantCommand(()->{solenioidCone.set(false);}))
         );
     }
     private void configureButtonBindingsDefault() {

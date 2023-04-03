@@ -180,6 +180,10 @@ public class PIDArmLifterSubsystem extends PIDSubsystem {
     enable();
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueGroundPickupGRAB);
   }
+  public void setSetpointFloorGrabCone() {
+    enable();
+    setSetpoint(Constants.ArmLifterConstants.kEncoderValueGroundPickupGRAB+2.5);
+  }
   public void setSetpointScore() {
     enable();
     setSetpoint(Constants.ArmLifterConstants.kEncoderValueGoalScoring);

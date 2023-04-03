@@ -97,8 +97,8 @@ public class ArmStateHandler extends SubsystemBase {
     //if the arm is veritcal and in floor mode then we need to go to the floor hunt position.
     //if the arm is veritcal and in score mode then we need to go to the score hunt position.
     String ConeOrCube = SmartDashboard.getString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);
-
-    
+    double waittime = .80;
+    Command ougoingcommand;
     switch (mainbrain.cowboyMode){
       case STARTUP:
         new ZeroLifterCmd(s_ALifter).andThen(new InstantCommand(()->s_ALifter.setSetpointVertical())).schedule();
@@ -114,8 +114,8 @@ public class ArmStateHandler extends SubsystemBase {
         //s_ALifter.setSetpointFloorHunt();
         break;
       case SUBSTATIONHUNTING:
-        double waittime = .80;
-        Command ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointSubstationGrab());
+        
+        ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointSubstationGrab());
         if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeConeMode))
         {
           waittime = 0.5;
@@ -162,19 +162,40 @@ public class ArmStateHandler extends SubsystemBase {
         //     new LassoInCmd(s_Lasso)).schedule());
 
         break;
-      case FLOORHUNTING: 
-        
-        //if the arm is in floor hunt position  then we need to go to the floor grab position THEN Bring Lasso in.
-        if(s_Lasso.getIsLassoIn())
+      case FLOORHUNTING:
+        ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointFloorGrab());
+        if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeConeMode))
         {
-          //new WaitCommand(.5).schedule();
-          new LassoOutCmd(s_Lasso).andThen(new InstantCommand(()->s_ALifter.setSetpointFloorGrab())).andThen(new WaitCommand(.80)).andThen(new LassoInCmd(s_Lasso)).schedule();
+          waittime = 0.5;
+          ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointFloorGrabCone());
         }
-        else{
-          new InstantCommand(()->s_ALifter.setSetpointFloorGrab()).andThen(new WaitCommand(.80).andThen(new LassoInCmd(s_Lasso))).schedule();
+       
+        //SmartDashboard.putString("debug", ConeOrCube);
+        if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeCubeMode))
+        {
+          //SmartDashboard.putString("debug", "cube");
+          ougoingcommand = ougoingcommand.andThen(new InstantCommand(()->s_Lasso.BumpOutForCube(),s_Lasso)).andThen(new WaitCommand(waittime));
         }
-        mainbrain.cowboyMode = CowboyMode.FLOORGRABBING;
-        break;
+        
+        ougoingcommand
+        .andThen(new WaitCommand(waittime)) 
+        .andThen(new LassoInCmd(s_Lasso))
+        .andThen(new InstantCommand(()->ArmResetting()))
+        .andThen(new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);}))
+        .schedule();
+        mainbrain.cowboyMode = CowboyMode.READYTOSTART; 
+        ///////////////
+        //if the arm is in floor hunt position  then we need to go to the floor grab position THEN Bring Lasso in.
+        // if(s_Lasso.getIsLassoIn())
+        // {
+        //   //new WaitCommand(.5).schedule();
+        //   new LassoOutCmd(s_Lasso).andThen(new InstantCommand(()->s_ALifter.setSetpointFloorGrab())).andThen(new WaitCommand(.80)).andThen(new LassoInCmd(s_Lasso)).schedule();
+        // }
+        // else{
+        //   new InstantCommand(()->s_ALifter.setSetpointFloorGrab()).andThen(new WaitCommand(.80).andThen(new LassoInCmd(s_Lasso))).schedule();
+        // }
+        // mainbrain.cowboyMode = CowboyMode.FLOORGRABBING;
+        // break;
       case FLOORGRABBING:
         new LassoOutCmd(s_Lasso).raceWith(new WaitCommand(.1)).andThen(new InstantCommand(()->s_ALifter.setSetpointFloorHunt())).schedule();
         mainbrain.cowboyMode = CowboyMode.FLOORHUNTING;

@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.solenioidCone.set(true);
     // schedule the autonomous command
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -62,7 +63,9 @@ public class Robot extends TimedRobot {
   }
   //PWM ourpwm = new PWM(10);
   @Override
-  public void teleopInit() {
+  public void teleopInit() {        
+    //solenioidCube.set(false);
+    m_robotContainer.solenioidCone.set(true);
     //ourpwm.setRaw(255);
     //ourpwm.setPeriodMultiplier(PeriodMultiplier.k4X);
     //ourpwm.setSpeed(1.0);
