@@ -74,7 +74,8 @@ public class Swerve extends SubsystemBase {
         /* By pausing init for a second before setting module offsets, we avoid a bug with inverting motors.
          * See https://github.com/Team364/BaseFalconSwerve/issues/8 for more info.
          */
-        Timer.delay(1.0);
+        //this may be the death of me. -- 8608 programer
+        Timer.delay(5.75);//12.5 worked once lol. 
         resetModulesToAbsolute();
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
@@ -256,7 +257,9 @@ public class Swerve extends SubsystemBase {
              SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
              //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
              //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
-         }
+             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Drive TalonFX", mod.mDriveMotor.getSelectedSensorPosition());
+
+            }
     }
 
     private void limitSpeedOnChargePadOrTilt() {

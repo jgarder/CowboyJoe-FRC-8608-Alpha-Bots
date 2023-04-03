@@ -1,26 +1,35 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Pickup Control" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="171"/>
+	</widget>
+	<widget field="debug" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="150"/>
+	</widget>
+	<widget field="Pickup Controls" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="360" y="216"/>
+		<width>200</width>
+		<height>58</height>
+		<property name="Background" value="0.255.255.255"/>
+		<property name="Font Size" value="30"/>
+	</widget>
 	<widget field="LL TargetID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1064" y="786"/>
 		<width>117</width>
 	</widget>
 	<widget field="Xpose_Offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="192"/>
+		<location x="349" y="478"/>
 	</widget>
 	<widget field="Ypose_Offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="171"/>
+		<location x="336" y="455"/>
 	</widget>
 	<widget field="RZ_Offset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="150"/>
+		<location x="355" y="433"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="156" y="78"/>
+		<location x="448" y="194"/>
 		<property name="Text" value="PICKUP SELECTOR"/>
 	</static-widget>
-	<widget field="Pickup Control" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="159" y="88"/>
-		<property name="Use Radio Buttons" value="false"/>
-	</widget>
 	<widget field="Xpose_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="657" y="481"/>
 	</widget>
@@ -62,10 +71,6 @@
 		<location x="187" y="502"/>
 		<width>885</width>
 		<height>492</height>
-	</widget>
-	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="214" y="255"/>
-		<width>253</width>
 	</widget>
 	<widget field="Extension OT" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="843" y="157"/>

@@ -127,7 +127,7 @@ public class RobotContainer {
         configureButtonBindingsDefault();
         configureCopilotController();
         //on boot might as well start up the camera server
-        CameraServer.startAutomaticCapture();
+        //CameraServer.startAutomaticCapture();
 
         
     }
@@ -138,13 +138,13 @@ public class RobotContainer {
 
     private void configureCopilotController(){
         leftButton.onTrue(new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);})
-            .andThen(new InstantCommand(()->{m_relay.set(Relay.Value.kForward);}))
-            .andThen(new InstantCommand(()->{m_relay2.set(Relay.Value.kReverse);}))
+            .andThen(new InstantCommand(()->{m_relay2.set(Relay.Value.kForward);}))
+            .andThen(new InstantCommand(()->{m_relay.set(Relay.Value.kReverse);}))
             );
         RightButton.onTrue(
             new InstantCommand(()->{SmartDashboard.putString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeCubeMode);})
-            .andThen(new InstantCommand(()->{m_relay.set(Relay.Value.kReverse);}))
-            .andThen(new InstantCommand(()->{m_relay2.set(Relay.Value.kForward);}))
+            .andThen(new InstantCommand(()->{m_relay2.set(Relay.Value.kReverse);}))
+            .andThen(new InstantCommand(()->{m_relay.set(Relay.Value.kForward);}))
         );
     }
     private void configureButtonBindingsDefault() {

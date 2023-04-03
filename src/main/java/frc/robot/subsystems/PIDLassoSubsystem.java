@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PIDLassoSubsystem extends PIDSubsystem {
 
-  static double kP = 0.050;
+  static double kP = 0.060;
   static double kI = 0.0;
   static double kD = 0.0;
     

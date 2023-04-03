@@ -78,7 +78,7 @@ public class SmartDashboardHandler extends SubsystemBase {
     m_chooser.addOption("Bump Side Spin Move", kBumpSideSpin);
     //m_chooser.addOption("Charge Pad Spin Move", kChargePadSpin);
     SmartDashboard.putData("Auto choices", m_chooser);
-    SmartDashboard.setPersistent("Auto choices");
+    //SmartDashboard.setPersistent("Auto choices");
     
 }
 public String getChosenPickupString()

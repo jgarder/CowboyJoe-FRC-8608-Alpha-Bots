@@ -37,6 +37,7 @@ public class AutonomousCMDBuilder {
                 return ZeroLassoStartupCmd
                 .andThen(ZeroLifterCmd)
                 .andThen(DropHighestrun)
+                .andThen(new InstantCommand(()->Thisbrain.s_Swerve.resetModulesToAbsolute()))
                 .andThen(new ParallelCommandGroup(ResetAfterScore,DropBackPullUpChargeCMD()))
                 .andThen(new SequentialCommandGroup(
                     new PidBalanceCmd(Thisbrain.s_Swerve, Thisbrain.navx), 
@@ -135,9 +136,10 @@ public class AutonomousCMDBuilder {
 
     private Command GetZeroLifterCmd() {
         Command ZeroLifterCmd = new ParallelCommandGroup(
-                //new InstantCommand(()->RobotContainer.s_Swerve.resetModulesToAbsolute(),RobotContainer.s_Swerve),
                     new InstantCommand(()->{Thisbrain.cowboyMode = CowboyMode.READYTOSTART;}),
                     new FastZeroLifterCmd(Thisbrain.PIDArmLifterSubsystem)
+                    //new InstantCommand(()->RobotContainer.s_Swerve.resetModulesToAbsolute(),RobotContainer.s_Swerve)
+
                     //new ZeroExtensionCmd(Thisbrain.PIDArmExtensionSubsystem)
                     )
                ;
