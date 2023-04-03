@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PWM.PeriodMultiplier;
 import edu.wpi.first.wpilibj.Relay.Direction;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Subsystems.SmartDashboardHandler;
 
 public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
@@ -37,7 +39,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_robotContainer.solenioidCone.set(true);
+    setlights();
     // schedule the autonomous command
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -65,7 +67,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {        
     //solenioidCube.set(false);
-    m_robotContainer.solenioidCone.set(true);
+    setlights();
     //ourpwm.setRaw(255);
     //ourpwm.setPeriodMultiplier(PeriodMultiplier.k4X);
     //ourpwm.setSpeed(1.0);
@@ -74,6 +76,20 @@ public class Robot extends TimedRobot {
     }
   }
 
+  public void setlights(){
+   String ConeOrCube = SmartDashboard.getString(SmartDashboardHandler.kConeCubeModeName, SmartDashboardHandler.kConeCubeModeConeMode);
+
+    if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeConeMode))
+    {
+      m_robotContainer.solenioidCone.set(true);
+      m_robotContainer.solenioidCube.set(false);
+    }
+    else
+    {
+      m_robotContainer.solenioidCone.set(false);
+      m_robotContainer.solenioidCube.set(true);
+    }
+  }
   @Override
   public void teleopPeriodic() {
     //ourpwm.setSpeed(1.0);
