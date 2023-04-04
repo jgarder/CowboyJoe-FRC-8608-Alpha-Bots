@@ -208,7 +208,7 @@ public final class Constants {
         // public static final double driveKA = (0.27 / 12);
 
         /* Swerve Profiling Values */
-        public static final double DRIVE_POS_ERROR_CONTROLLER_P = 1.4;//0.1;
+        public static final double DRIVE_POS_ERROR_CONTROLLER_P = 1.0;//0.1;
         public static final double DRIVE_AUTO_ROTATE_CONTROLLER_P = 1.0;//0.1;
         public static final double DRIVE_MAX_ANGULAR_ACCEL = 4;
         public static final double DRIVE_MAX_ANGULAR_VELOCITY = 4;

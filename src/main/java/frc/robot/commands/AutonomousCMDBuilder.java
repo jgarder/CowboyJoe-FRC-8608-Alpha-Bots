@@ -59,6 +59,7 @@ public class AutonomousCMDBuilder {
                     new InstantCommand(m_RobotContainer.PIDArmLifterSubsystem::setSetpointFloorHunt,m_RobotContainer.PIDArmLifterSubsystem)
                     )).andThen(new WaitCommand(.9))
                     .andThen(new InstantCommand(m_RobotContainer.ArmStateHandler::runArmState,m_RobotContainer.ArmStateHandler))
+                    .andThen(EZSideDropBackReturnAutoCMD()).andThen(GetDropHighestRungRoutine()).andThen(ResetRoutine())
                     ;
 
             case SmartDashboardHandler.kDropBackBumpSideAuto:// Bump side Auto
@@ -90,6 +91,12 @@ public class AutonomousCMDBuilder {
     public static Command EZSideDropBackAutoCMD() {
         //"backupforwardchargepad","clockwisesquare","straightsquare","spintest","DropAndbackupEZside"
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropCubeAndbackupEZside",1.3,2);
+        return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
+        //return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
+    }
+    public static Command EZSideDropBackReturnAutoCMD() {
+        //"backupforwardchargepad","clockwisesquare","straightsquare","spintest","DropAndbackupEZside"
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropCubeAndbackupEZsideReturn",1.3,2);
         return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
         //return new DriveFollowPath("clockwisesquare",1,1);//.andThen(new DriveFollowPath("translate right",2,2));
     }

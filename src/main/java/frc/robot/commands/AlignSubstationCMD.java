@@ -104,6 +104,8 @@ public class AlignSubstationCMD extends CommandBase {
     AlignPoseYController.reset();
     AlignRZController.reset();
 
+    WeSeeourSubstationTag = false;
+    WeSeeourCommunityTag = false;
 
     XP_Setpoint = 0;
     YP_Setpoint = 0;
@@ -135,6 +137,10 @@ public class AlignSubstationCMD extends CommandBase {
   int loopsoffbeforestopping = 50;
   //get the target number
   int targetID = -1;
+
+  boolean WeSeeourSubstationTag = false;
+  boolean WeSeeourCommunityTag = false;
+
   @Override
   public void execute() {
     if(this.limelight3Subsystem == null)   
@@ -149,29 +155,22 @@ public class AlignSubstationCMD extends CommandBase {
    //get the target number
    targetID = limelight3Subsystem.getTargetID();
    //get if the closest target is for our team(ignore others obviously)
-   boolean WeSeeourSubstationTag = false;
-   boolean WeSeeourCommunityTag = false;
+   
    double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
 
    if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
    {  
-    if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
-    {  
+     
       xymulti = -1.0;
       SetPidControlersToRedSubstation();
-    }
-    SetPidControlersToRedSubstation();
     //flip flag sayign we see a substation
     WeSeeourSubstationTag = true;
    }
    if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
    {
-    if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
-    {
+    
       xymulti = 1.0;
       SetPidControlersToBlueSubstation();
-    }
-    SetPidControlersToBlueSubstation();
     //flip flag sayign we see a substation
     WeSeeourSubstationTag = true;
    }
@@ -317,7 +316,7 @@ private void SetPidControlersToBlueSubstation() {
   AlignRZController.setSetpoint(RZ_Setpoint);
 }
 private void SetPidControlersToRedCommunity() {
-  XP_Setpoint = 6.16;
+  XP_Setpoint = 6.10;
   YP_Setpoint = -.5;
   RZ_Setpoint = 0;
   //LL POSE X is forward and backward toward target in field space
@@ -330,7 +329,7 @@ private void SetPidControlersToRedCommunity() {
   
 }
 private void SetPidControlersToBlueCommunity() {
-  XP_Setpoint = -6.16;
+  XP_Setpoint = -6.10;
   YP_Setpoint = .5;
   RZ_Setpoint = 180;
   //LL POSE X is forward and backward toward target in field space
@@ -442,7 +441,7 @@ private double GetYPoseAdjust(double Ypose, double min_PoseY_command) {
   @Override
   public boolean isFinished() {
 
-    if(RobotContainer.cowboyMode == CowboyMode.SCOREHUNTING){
+    if(RobotContainer.cowboyMode == CowboyMode.SCOREHUNTING | WeSeeourCommunityTag){
       return false;
     }
     if(YP_buffer != 0.00 & XP_buffer != 0.00 & RZ_buffer != 0.00) 
