@@ -4,6 +4,8 @@
 
 package frc.robot.Commands;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.IFollower;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -22,6 +24,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.CowboyMode;
 //import frc.robot.Constants;
 import frc.robot.Subsystems.*;
 
@@ -75,9 +79,13 @@ public class AlignSubstationCMD extends CommandBase {
   double XP_Setpoint = 0;
   double YP_Setpoint = 0;
   double RZ_Setpoint = 0;
-  public AlignSubstationCMD(Swerve Thiss_Swerve, Limelight3Subsystem ThisLimelight) {
+
+  private DoubleSupplier strafeSup;
+
+  public AlignSubstationCMD(Swerve Thiss_Swerve, Limelight3Subsystem ThisLimelight, DoubleSupplier strafeSup) {
     s_Swerve = Thiss_Swerve;
     limelight3Subsystem = ThisLimelight;
+    this.strafeSup = strafeSup;
     addRequirements(s_Swerve,limelight3Subsystem); 
 
   }
@@ -105,16 +113,8 @@ public class AlignSubstationCMD extends CommandBase {
     //get the target number
     int targetID = limelight3Subsystem.getTargetID();
 
-    if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
-    {  
-      xymulti = -1.0;
-      SetPidControlersToRedSubstation();
-    }
-    if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
-    {
-      xymulti = 1.0;
-      SetPidControlersToBlueSubstation();
-    }
+    
+
 
     XP_buffer = 0;
     YP_buffer = 0;
@@ -150,30 +150,79 @@ public class AlignSubstationCMD extends CommandBase {
    targetID = limelight3Subsystem.getTargetID();
    //get if the closest target is for our team(ignore others obviously)
    boolean WeSeeourSubstationTag = false;
+   boolean WeSeeourCommunityTag = false;
+   double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
+
    if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
    {  
+    if ( (CurrentAlliance == Alliance.Red) && targetID == Constants.AllianceAprilTags.Red.substation)
+    {  
+      xymulti = -1.0;
+      SetPidControlersToRedSubstation();
+    }
     SetPidControlersToRedSubstation();
     //flip flag sayign we see a substation
     WeSeeourSubstationTag = true;
    }
    if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
    {
+    if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
+    {
+      xymulti = 1.0;
+      SetPidControlersToBlueSubstation();
+    }
     SetPidControlersToBlueSubstation();
     //flip flag sayign we see a substation
     WeSeeourSubstationTag = true;
    }
-   if(!WeSeeourSubstationTag){
+   if ( (CurrentAlliance == Alliance.Red) && (
+    targetID == Constants.AllianceAprilTags.Red.bumpSideTag | 
+    targetID == Constants.AllianceAprilTags.Red.centerTag | 
+    targetID == Constants.AllianceAprilTags.Red.ezSideTag) )
+   {
+    SetPidControlersToRedCommunity();
+    //flip flag sayign we see a substation
+    
+    xymulti = 1.0;
+    WeSeeourSubstationTag = true;
+    WeSeeourCommunityTag = true;
+   }
+   if ( (CurrentAlliance == Alliance.Blue) && (
+    targetID == Constants.AllianceAprilTags.Blue.bumpSideTag | 
+    targetID == Constants.AllianceAprilTags.Blue.centerTag | 
+    targetID == Constants.AllianceAprilTags.Blue.ezSideTag) )
+   {
+    xymulti = -1.0;
+    SetPidControlersToBlueCommunity();
+    //flip flag sayign we see a substation
+    
+
+    WeSeeourSubstationTag = true;
+    WeSeeourCommunityTag = true;
+   }
+   if(!WeSeeourSubstationTag & !WeSeeourCommunityTag){
       debounceloops++;
        //if substation is at X area size then switch our speed to substation movde
        //when we are at X area set bool to true.
        if(debounceloops >= loopsoffbeforestopping)
        {
+        if(RobotContainer.cowboyMode != CowboyMode.SCOREHUNTING){
           s_Swerve.drive(
             new Translation2d(0,0), 
             0  , 
             !robotCentric, 
           true
         ); 
+        }
+        else{
+          s_Swerve.drive(
+            new Translation2d(0,strafeVal), 
+            0  , 
+            !robotCentric, 
+          true
+        ); 
+        }
+          
        }
       
     return;
@@ -192,6 +241,9 @@ public class AlignSubstationCMD extends CommandBase {
     double Ypose_adjust =  GetYPoseAdjust(YP_buffer, min_Ypose_command );
 
 
+    if(WeSeeourCommunityTag){
+      Ypose_adjust = strafeVal;
+    }
 
     
     double Xspeed = 1.0;//5.0 * Constants.Swerve.maxSpeed;
@@ -241,7 +293,7 @@ public class AlignSubstationCMD extends CommandBase {
   }
 
 private void SetPidControlersToRedSubstation() {
-  XP_Setpoint = -6.63;
+  XP_Setpoint = -6.59;//-6.63;
   YP_Setpoint = 2.06;
   RZ_Setpoint = 180;
   //LL POSE X is forward and backward toward target in field space
@@ -254,7 +306,7 @@ private void SetPidControlersToRedSubstation() {
   
 }
 private void SetPidControlersToBlueSubstation() {
-  XP_Setpoint = 6.63;
+  XP_Setpoint = 6.59;//6.63;
   YP_Setpoint = 3.44;
   RZ_Setpoint = 0;
   //LL POSE X is forward and backward toward target in field space
@@ -263,8 +315,32 @@ private void SetPidControlersToBlueSubstation() {
   AlignPoseYController.setSetpoint(YP_Setpoint);
   //LL pose RZ is our rotation relative to the target in field space
   AlignRZController.setSetpoint(RZ_Setpoint);
+}
+private void SetPidControlersToRedCommunity() {
+  XP_Setpoint = 6.16;
+  YP_Setpoint = -.5;
+  RZ_Setpoint = 0;
+  //LL POSE X is forward and backward toward target in field space
+  AlignXController.setSetpoint(XP_Setpoint);
+  //LL POSE Y Is left to right translation in field space
+  AlignPoseYController.setSetpoint(YP_Setpoint);
+  //LL pose RZ is our rotation relative to the target in field space
+  AlignRZController.setSetpoint(RZ_Setpoint);
 
+  
+}
+private void SetPidControlersToBlueCommunity() {
+  XP_Setpoint = -6.16;
+  YP_Setpoint = .5;
+  RZ_Setpoint = 180;
+  //LL POSE X is forward and backward toward target in field space
+  AlignXController.setSetpoint(XP_Setpoint);
+  //LL POSE Y Is left to right translation in field space
+  AlignPoseYController.setSetpoint(YP_Setpoint);
+  //LL pose RZ is our rotation relative to the target in field space
+  AlignRZController.setSetpoint(RZ_Setpoint);
 
+  
 }
 private void FillBuffers()
 {
@@ -366,7 +442,9 @@ private double GetYPoseAdjust(double Ypose, double min_PoseY_command) {
   @Override
   public boolean isFinished() {
 
-    
+    if(RobotContainer.cowboyMode == CowboyMode.SCOREHUNTING){
+      return false;
+    }
     if(YP_buffer != 0.00 & XP_buffer != 0.00 & RZ_buffer != 0.00) 
     {
         //SUBTRACT where we need to go, from where we are. this will give us the translations we need to make 

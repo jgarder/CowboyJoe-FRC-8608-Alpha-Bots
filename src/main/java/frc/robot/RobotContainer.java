@@ -48,7 +48,7 @@ public class RobotContainer {
 
 
     }
-    public CowboyMode cowboyMode = CowboyMode.STARTUP;
+    public static CowboyMode cowboyMode = CowboyMode.STARTUP;
     
     private final XboxController driveController = new XboxController(0);
     private final GenericHID CoPilotController = new GenericHID(1);
@@ -183,7 +183,7 @@ public class RobotContainer {
         LeftBumperButton.onTrue(new InstantCommand(PIDArmExtensionSubsystem::runArmExtensionStages,PIDArmExtensionSubsystem));
         //RightBumperButton.onTrue(new AlignPathSubstationCMD(s_Swerve, limelight3Subsystem));
         //RightBumperButton.toggleOnTrue(new AlignSubstationCMD(s_Swerve, limelight3Subsystem));
-        RightBumperButton.whileTrue(new AlignSubstationCMD(s_Swerve, limelight3Subsystem).andThen(new ParallelCommandGroup(
+        RightBumperButton.whileTrue(new AlignSubstationCMD(s_Swerve, limelight3Subsystem,() -> -driveController.getRawAxis(strafeAxis)).andThen(new ParallelCommandGroup(
             new InstantCommand(()->{cowboyMode = CowboyMode.SUBSTATIONHUNTING;}),
             new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.SubstationSpeed); }),
             new InstantCommand(PIDArmExtensionSubsystem::setSetpointSubstation,PIDArmExtensionSubsystem),
