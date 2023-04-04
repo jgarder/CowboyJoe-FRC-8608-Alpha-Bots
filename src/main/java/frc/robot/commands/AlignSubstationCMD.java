@@ -37,7 +37,7 @@ public class AlignSubstationCMD extends CommandBase {
   Swerve s_Swerve;
 
   //LL POSE X is forward and backward toward target in field space
-  double k_PoseX_P = 1.00;
+  double k_PoseX_P = 1.20;
   double k_PoseX_I = 0.02;
   double k_PoseX_D = 0.0020;
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(3, 2);
@@ -199,9 +199,9 @@ public class AlignSubstationCMD extends CommandBase {
     double rotationspeed = 1.0;//1.0 * Constants.Swerve.maxAngularVelocity;
     
     //if we are really far away lets keep pid from going insane.
-    double maxYvelocity = 1.00;
+    double maxYvelocity = .5;//1.00;
     double maxXvelocity = .5;
-    double maxRZvelocity = 1.0;
+    double maxRZvelocity = .5;//1.0;
     Ypose_adjust = MathUtil.clamp(Ypose_adjust, maxYvelocity * -1.0, maxYvelocity);
     xpose_adjust = MathUtil.clamp(xpose_adjust, maxXvelocity * -1.0, maxXvelocity);
     RZAdjust = MathUtil.clamp(RZAdjust, maxRZvelocity * -1.0, maxRZvelocity);
