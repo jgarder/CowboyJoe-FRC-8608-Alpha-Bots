@@ -132,7 +132,7 @@ public class RobotContainer {
         configureButtonBindingsDefault();
         configureCopilotController();
         //on boot might as well start up the camera server
-        //CameraServer.startAutomaticCapture();
+        CameraServer.startAutomaticCapture();
 
         pControlModule = new PneumaticsControlModule();
         solenioidCube = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
