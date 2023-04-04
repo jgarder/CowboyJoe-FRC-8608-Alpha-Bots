@@ -208,13 +208,16 @@ public final class Constants {
         // public static final double driveKA = (0.27 / 12);
 
         /* Swerve Profiling Values */
-        public static final double DRIVE_POS_ERROR_CONTROLLER_P = 0.1;
-        public static final double DRIVE_AUTO_ROTATE_CONTROLLER_P = 0.1;
+        public static final double DRIVE_POS_ERROR_CONTROLLER_P = 1.4;//0.1;
+        public static final double DRIVE_AUTO_ROTATE_CONTROLLER_P = 1.0;//0.1;
         public static final double DRIVE_MAX_ANGULAR_ACCEL = 4;
         public static final double DRIVE_MAX_ANGULAR_VELOCITY = 4;
-        public static final double SWERVE_MAX_VELOCITY_METERS = 4;
+        public static final double SWERVE_MAX_VELOCITY_METERS = 6;//4;
+
+        ///
+        public static final double TeleopSpeedMulti = 1.0;//tele op speed multiplier;
         /** Meters per Second */
-        public static final double maxSpeed = 1;//.1;//.5;//4.5; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 4;//.1;//.5;//4.5; //TODO: This must be tuned to specific robot
         /** Radians per Second */
         public static final double maxAngularVelocity = 2;//2;//10.0; //TODO: This must be tuned to specific robot
 

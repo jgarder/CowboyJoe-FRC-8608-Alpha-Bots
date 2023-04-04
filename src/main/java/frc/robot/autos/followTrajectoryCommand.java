@@ -45,7 +45,7 @@ public class followTrajectoryCommand extends CommandBase {
         PIDController xController = new PIDController(Constants.Swerve.DRIVE_POS_ERROR_CONTROLLER_P, 0, 0);
         PIDController yController = new PIDController(Constants.Swerve.DRIVE_POS_ERROR_CONTROLLER_P, 0, 0);
         ProfiledPIDController thetaController = new ProfiledPIDController(
-            Constants.Swerve.DRIVE_AUTO_ROTATE_CONTROLLER_P, 0, 0,
+            Constants.Swerve.DRIVE_AUTO_ROTATE_CONTROLLER_P, 0.01, 0,
                 new TrapezoidProfile.Constraints(Constants.Swerve.DRIVE_MAX_ANGULAR_VELOCITY,
                 Constants.Swerve.DRIVE_MAX_ANGULAR_ACCEL));
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
