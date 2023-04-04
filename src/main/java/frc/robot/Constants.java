@@ -71,7 +71,7 @@ public final class Constants {
         public static final double kEncoderValueVertical = 16.0; //p this is when the arm is veritcal at the 90 degree angle
 
         public static final double kEncoderValueGroundPickupHUNT = 74.4;//p  //Arm IN, right above cube and cone
-        public static final double kEncoderValueGroundPickupGRAB = 86.4;//p  //Arm IN , drop for cone and cube pickup
+        public static final double kEncoderValueGroundPickupGRAB = 83.4;//p  //Arm IN , drop for cone and cube pickup
 
         public static final double kEncoderValueSubStationHunt = 46;//p  //just a lil lower then scoreing (higher angle)
         public static final double kEncoderValueSubStationGrab = kEncoderValueSubStationHunt + 10;  //substation lasso height

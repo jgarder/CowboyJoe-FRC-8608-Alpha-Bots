@@ -163,21 +163,21 @@ public class ArmStateHandler extends SubsystemBase {
 
         break;
       case FLOORHUNTING:
-        ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointFloorGrab());
+      Command ougoingcommand2 = new InstantCommand(()->s_ALifter.setSetpointFloorGrab());
         if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeConeMode))
         {
           waittime = 0.5;
-          ougoingcommand = new InstantCommand(()->s_ALifter.setSetpointFloorGrabCone());
+          ougoingcommand2 = new InstantCommand(()->s_ALifter.setSetpointFloorGrabCone());
         }
        
         //SmartDashboard.putString("debug", ConeOrCube);
         if(ConeOrCube.equals(SmartDashboardHandler.kConeCubeModeCubeMode))
         {
           //SmartDashboard.putString("debug", "cube");
-          ougoingcommand = ougoingcommand.andThen(new InstantCommand(()->s_Lasso.BumpOutForCube(),s_Lasso)).andThen(new WaitCommand(waittime));
+          ougoingcommand2 = ougoingcommand2.andThen(new InstantCommand(()->s_Lasso.BumpOutForCube(),s_Lasso)).andThen(new WaitCommand(waittime));
         }
         
-        ougoingcommand
+        ougoingcommand2
         .andThen(new WaitCommand(waittime)) 
         .andThen(new LassoInCmd(s_Lasso))
         .andThen(new InstantCommand(()->ArmResetting()))
@@ -195,7 +195,7 @@ public class ArmStateHandler extends SubsystemBase {
         //   new InstantCommand(()->s_ALifter.setSetpointFloorGrab()).andThen(new WaitCommand(.80).andThen(new LassoInCmd(s_Lasso))).schedule();
         // }
         // mainbrain.cowboyMode = CowboyMode.FLOORGRABBING;
-        // break;
+        break;
       case FLOORGRABBING:
         new LassoOutCmd(s_Lasso).raceWith(new WaitCommand(.1)).andThen(new InstantCommand(()->s_ALifter.setSetpointFloorHunt())).schedule();
         mainbrain.cowboyMode = CowboyMode.FLOORHUNTING;
