@@ -51,20 +51,17 @@ public class AutonomousCMDBuilder {
             case SmartDashboardHandler.kDropAndbackupEZsideAuto://EZ side auto
                 return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun)
                 .andThen(new ParallelCommandGroup(ResetAfterScore,EZSideDropBackAutoCMD()))
-                .andThen(new ParallelCommandGroup(
-                    new InstantCommand(()->{m_RobotContainer.cowboyMode = CowboyMode.FLOORHUNTING;}),
-                    new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.FloorHuntSpeed); }),
-                    new InstantCommand(m_RobotContainer.PIDArmExtensionSubsystem::setSetpointIn,m_RobotContainer.PIDArmExtensionSubsystem),
-                    new InstantCommand(m_RobotContainer.PIDLassoSubsystem::setSetpointLassoOut,m_RobotContainer.PIDLassoSubsystem),
-                    new InstantCommand(m_RobotContainer.PIDArmLifterSubsystem::setSetpointFloorHunt,m_RobotContainer.PIDArmLifterSubsystem)
-                    )).andThen(new WaitCommand(1.4))
-                    .andThen(new InstantCommand(m_RobotContainer.ArmStateHandler::runArmState,m_RobotContainer.ArmStateHandler))
+                .andThen(GotoFloorHunt()).andThen(new WaitCommand(1.4))
+                .andThen(new InstantCommand(m_RobotContainer.ArmStateHandler::runArmState,m_RobotContainer.ArmStateHandler))
                     //.andThen(EZSideDropBackReturnAutoCMD()).andThen(GetDropHighestRungRoutine()).andThen(ResetRoutine())
-                    ;
+                ;
 
             case SmartDashboardHandler.kDropBackBumpSideAuto:// Bump side Auto
                 return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun)
-                .andThen(new ParallelCommandGroup(ResetAfterScore,BumpSideDropBackAutoCMD()));
+                .andThen(new ParallelCommandGroup(ResetAfterScore,BumpSideDropBackAutoCMD()))
+                .andThen(GotoFloorHunt()).andThen(new WaitCommand(1.4))
+                .andThen(new InstantCommand(m_RobotContainer.ArmStateHandler::runArmState,m_RobotContainer.ArmStateHandler))
+                ;
                
                
             case SmartDashboardHandler.kBumpSideSpin:
@@ -87,6 +84,15 @@ public class AutonomousCMDBuilder {
                 return new WaitCommand(10);
         }
     }
+    public ParallelCommandGroup GotoFloorHunt() {
+               return new ParallelCommandGroup(
+                new InstantCommand(()->{m_RobotContainer.cowboyMode = CowboyMode.FLOORHUNTING;}),
+                new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.FloorHuntSpeed); }),
+                new InstantCommand(m_RobotContainer.PIDArmExtensionSubsystem::setSetpointIn,m_RobotContainer.PIDArmExtensionSubsystem),
+                new InstantCommand(m_RobotContainer.PIDLassoSubsystem::setSetpointLassoOut,m_RobotContainer.PIDLassoSubsystem),
+                new InstantCommand(m_RobotContainer.PIDArmLifterSubsystem::setSetpointFloorHunt,m_RobotContainer.PIDArmLifterSubsystem)
+                );     
+            }
     
     public static Command EZSideDropBackAutoCMD() {
         //"backupforwardchargepad","clockwisesquare","straightsquare","spintest","DropAndbackupEZside"
@@ -102,7 +108,7 @@ public class AutonomousCMDBuilder {
     }
 
     private static Command BumpSideDropBackAutoCMD() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropBackBumpSide",1,2);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropBackBumpSide",1.3,2);
         return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
     }
     private static Command DropBackChargeAutoCMD() {

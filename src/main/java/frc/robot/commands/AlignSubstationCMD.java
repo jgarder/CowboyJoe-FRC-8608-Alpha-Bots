@@ -55,7 +55,7 @@ public class AlignSubstationCMD extends CommandBase {
   private final PIDController AlignPoseYController = new PIDController(k_PoseY_P,k_PoseY_I,k_PoseY_D);
   
   //LL pose RZ is our rotation relative to the target in field space
-  double k_RZ_P = .03;//0.025;
+  double k_RZ_P = .04;//0.025;
   double k_RZ_I = 0.00;
   double k_RZ_D = 0.00;
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =   new TrapezoidProfile.Constraints(8, 8);
@@ -260,7 +260,7 @@ public class AlignSubstationCMD extends CommandBase {
     //if we are really far away lets keep pid from going insane.
     double maxYvelocity = .5;//1.00;
     double maxXvelocity = .5;
-    double maxRZvelocity = .5;//1.0;
+    double maxRZvelocity = .4;//1.0;
     Ypose_adjust = MathUtil.clamp(Ypose_adjust, maxYvelocity * -1.0, maxYvelocity);
     xpose_adjust = MathUtil.clamp(xpose_adjust, maxXvelocity * -1.0, maxXvelocity);
     RZAdjust = MathUtil.clamp(RZAdjust, maxRZvelocity * -1.0, maxRZvelocity);
