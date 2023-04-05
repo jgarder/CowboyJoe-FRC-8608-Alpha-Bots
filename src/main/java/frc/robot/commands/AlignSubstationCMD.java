@@ -148,6 +148,8 @@ public class AlignSubstationCMD extends CommandBase {
       System.out.println("LIMELIGHT IS DEAD");
       return;
     }
+    boolean WeSeeourSubstationTagThisTime = false;
+  boolean WeSeeourCommunityTagThisTime = false;
    //make sure we are in april tag pipeline before checking
    //
    //get if we have any targets
@@ -165,6 +167,7 @@ public class AlignSubstationCMD extends CommandBase {
       SetPidControlersToRedSubstation();
     //flip flag sayign we see a substation
     WeSeeourSubstationTag = true;
+    WeSeeourSubstationTagThisTime = true;
    }
    if ( (CurrentAlliance == Alliance.Blue) && targetID == Constants.AllianceAprilTags.Blue.substation)
    {
@@ -173,6 +176,7 @@ public class AlignSubstationCMD extends CommandBase {
       SetPidControlersToBlueSubstation();
     //flip flag sayign we see a substation
     WeSeeourSubstationTag = true;
+    WeSeeourSubstationTagThisTime = true;
    }
    if ( (CurrentAlliance == Alliance.Red) && (
     targetID == Constants.AllianceAprilTags.Red.bumpSideTag | 
@@ -184,7 +188,9 @@ public class AlignSubstationCMD extends CommandBase {
     
     xymulti = 1.0;
     WeSeeourSubstationTag = true;
+    WeSeeourSubstationTagThisTime = true;
     WeSeeourCommunityTag = true;
+    WeSeeourCommunityTagThisTime = true;
    }
    if ( (CurrentAlliance == Alliance.Blue) && (
     targetID == Constants.AllianceAprilTags.Blue.bumpSideTag | 
@@ -197,9 +203,11 @@ public class AlignSubstationCMD extends CommandBase {
     
 
     WeSeeourSubstationTag = true;
+    WeSeeourSubstationTagThisTime = true;
     WeSeeourCommunityTag = true;
+    WeSeeourCommunityTagThisTime = true;
    }
-   if(!WeSeeourSubstationTag & !WeSeeourCommunityTag){
+   if(!WeSeeourCommunityTagThisTime & !WeSeeourSubstationTagThisTime){
       debounceloops++;
        //if substation is at X area size then switch our speed to substation movde
        //when we are at X area set bool to true.
