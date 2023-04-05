@@ -1,5 +1,21 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Mod 3 Drive TalonFX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="334" y="206"/>
+		<width>144</width>
+	</widget>
+	<widget field="Mod 2 Drive TalonFX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="181" y="206"/>
+		<width>146</width>
+	</widget>
+	<widget field="Mod 1 Drive TalonFX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="336" y="184"/>
+		<width>144</width>
+	</widget>
+	<widget field="Mod 0 Drive TalonFX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="184" y="185"/>
+		<width>143</width>
+	</widget>
 	<widget field="Pickup Control" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="171"/>
 	</widget>
@@ -7,7 +23,7 @@
 		<location x="0" y="150"/>
 	</widget>
 	<widget field="Pickup Controls" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="360" y="216"/>
+		<location x="474" y="229"/>
 		<width>200</width>
 		<height>58</height>
 		<property name="Background" value="0.255.255.255"/>
@@ -27,7 +43,7 @@
 		<location x="355" y="433"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="448" y="194"/>
+		<location x="570" y="209"/>
 		<property name="Text" value="PICKUP SELECTOR"/>
 	</static-widget>
 	<widget field="Xpose_PID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
