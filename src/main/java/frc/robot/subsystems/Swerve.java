@@ -264,7 +264,7 @@ public class Swerve extends SubsystemBase {
 
     private void limitSpeedOnChargePadOrTilt() {
         //if tilted slow vehicle in teleop
-        if(Math.abs(ahrs.fliproll()) >= autoBalance.onChargeStationDegree)
+        if(Math.abs(ahrs.getTilt2()) >= autoBalance.onChargeStationDegree)
         {
             gottilted = true;
             debounceCount = 0;

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.XboxController.Axis;
@@ -22,6 +23,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.*;
 import frc.robot.Constants.XboxControllerMap;
 import frc.robot.Subsystems.*;
+
+//import java.util.Timer;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Translation2d;
 
@@ -115,7 +119,7 @@ public class RobotContainer {
     public Solenoid solenioidCube;
     public Solenoid solenioidCone;
     
-
+    public final Timer reseedTimer = new Timer();
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         navx.ahrs.calibrate();
@@ -142,6 +146,7 @@ public class RobotContainer {
         //solenioidCone.set(true);
         //exampleSolenoidPCM.set(true);
         //exampleSolenoidPCM.set(false);
+        reseedTimer.start();
     }
 
     public boolean isReadyToStart(){
@@ -256,6 +261,13 @@ public class RobotContainer {
         //return command from command builder. 
         return AutoCmdBuilder.GetAutoCommand(SelectedAuto);
         
+    }
+  
+    public void disabledPeriodic() {
+        if(reseedTimer.advanceIfElapsed(1.0))
+        {
+            s_Swerve.resetModulesToAbsolute();
+        }
     }
 
 

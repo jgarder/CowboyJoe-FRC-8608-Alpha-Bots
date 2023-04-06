@@ -77,10 +77,10 @@ public class SwerveModule {
     public Rotation2d getCanCoder(){
         return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition());
     }
-
+    int CAN_TIMEOUT_MS = 250;
     public void resetToAbsolute(){
         double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset.getDegrees(), Constants.Swerve.angleGearRatio);
-        mAngleMotor.setSelectedSensorPosition(absolutePosition);
+        mAngleMotor.setSelectedSensorPosition(absolutePosition,0,CAN_TIMEOUT_MS);
     }
 
     private void configAngleEncoder(){        
