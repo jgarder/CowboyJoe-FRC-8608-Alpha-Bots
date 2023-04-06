@@ -4,14 +4,16 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
+import edu.wpi.first.wpilibj.Timer;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
 import frc.lib.util.SwerveModuleConstants;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 
 public class SwerveModule {
@@ -78,21 +80,38 @@ public class SwerveModule {
         return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition());
     }
     int CAN_TIMEOUT_MS = 250;
-    public void resetToAbsolute(){
+    public ErrorCode resetToAbsolute(){
+        int failed = 0;
         double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset.getDegrees(), Constants.Swerve.angleGearRatio);
-        mAngleMotor.setSelectedSensorPosition(absolutePosition,0,CAN_TIMEOUT_MS);
+        ErrorCode PassorFail = mAngleMotor.setSelectedSensorPosition(absolutePosition,0,CAN_TIMEOUT_MS);
+        if(PassorFail != ErrorCode.OK & (failed < 10))
+        {
+            absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset.getDegrees(), Constants.Swerve.angleGearRatio);
+            System.out.println("setSelectedSensorPosition FAILED");
+            PassorFail = mAngleMotor.setSelectedSensorPosition(absolutePosition,0,CAN_TIMEOUT_MS);
+            failed++;
+            Timer.delay(.25);
+        }
+        else
+        {
+            System.out.println("Swerve Module "+ moduleNumber + "is setup");
+        }
+       return PassorFail;
     }
 
-    private void configAngleEncoder(){        
+    private void configAngleEncoder(){     
+
+ 
         //angleEncoder.configFactoryDefault();
-        angleEncoder.configAllSettings(Robot.ctreConfigs.swerveCanCoderConfig);
+        //angleEncoder.configAllSettings(Robot.ctreConfigs.swerveCanCoderConfig);
     }
 
     private void configAngleMotor(){
-        mAngleMotor.configFactoryDefault();
-        mAngleMotor.configAllSettings(Robot.ctreConfigs.swerveAngleFXConfig);
+        TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
+        //mAngleMotor.configFactoryDefault();
+        //mAngleMotor.configAllSettings(Robot.ctreConfigs.swerveAngleFXConfig);
         mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
-        mAngleMotor.setNeutralMode(Constants.Swerve.angleNeutralMode);
+        //mAngleMotor.setNeutralMode(Constants.Swerve.angleNeutralMode);
         resetToAbsolute();
     }
 

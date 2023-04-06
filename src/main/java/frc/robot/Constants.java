@@ -103,7 +103,7 @@ public final class Constants {
 
         public static final int kArmExtensionSlewRate = 10;
 
-        public static final double kHighestGoalEncoderValue = 205;
+        public static final double kHighestGoalEncoderValue = 215;
         public static final double kMidestGoalEncoderValue = 42;
         public static final double kLowestGoalEncoderValue = 0;
 

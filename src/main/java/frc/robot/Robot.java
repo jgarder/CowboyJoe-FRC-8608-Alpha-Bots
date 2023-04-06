@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     setlights();
+    RobotContainer.s_Swerve.resetModulesToAbsolute();
     // schedule the autonomous command
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

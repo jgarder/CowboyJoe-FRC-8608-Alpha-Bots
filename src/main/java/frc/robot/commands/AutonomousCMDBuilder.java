@@ -38,7 +38,7 @@ public class AutonomousCMDBuilder {
                 return ZeroLassoStartupCmd
                 .andThen(ZeroLifterCmd)
                 .andThen(DropHighestrun)
-                .andThen(new InstantCommand(()->m_RobotContainer.s_Swerve.resetModulesToAbsolute()))
+                .andThen(new InstantCommand(()->m_RobotContainer.s_Swerve.resetModulesToAbsolute(),m_RobotContainer.s_Swerve))
                 .andThen(new ParallelCommandGroup(ResetAfterScore,DropBackPullUpChargeCMD()))
                 .andThen(new SequentialCommandGroup(
                     new PidBalanceCmd(m_RobotContainer.s_Swerve, m_RobotContainer.navx), 
@@ -66,7 +66,7 @@ public class AutonomousCMDBuilder {
                
             case SmartDashboardHandler.kBumpSideSpin:
                 return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(DropHighestrun)
-                .andThen(new ParallelCommandGroup(ResetAfterScore,BumpSideDropSlideRotateCMD()));
+                .andThen(new ParallelCommandGroup(ResetAfterScore,BumpSideDropBackAutoCMD()));
                 //.and then hunt mode and then lasso in, and then reset arm, and then run BumpSide Return rotate cmd. AND THEN Drop Highest. 
             //case SmartDashboardHandler.kChargePadSpin:
                 //return ZeroLassoStartupCmd.andThen(ZeroLifterCmd).andThen(new ParallelCommandGroup(ResetAfterScore,ChargepadSpinmoveCMD()));
@@ -119,10 +119,10 @@ public class AutonomousCMDBuilder {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropBackPullUpCharge",1,2);
         return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
     }
-    private static Command BumpSideDropSlideRotateCMD() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("spinmove",.5,2);
-        return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
-    }
+    // private static Command BumpSideDropSlideRotateCMD() {
+    //     PathPlannerTrajectory trajectory = PathPlanner.loadPath("DropBackBumpSide",1.3,2);
+    //     return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
+    // }
     // private static Command ChargepadSpinmoveCMD() {
     //     PathPlannerTrajectory trajectory = PathPlanner.loadPath("chargepadspinmove",.5,2);
     //     return RobotContainer.s_Swerve.followTrajectoryCommand(trajectory, true);//ALWAYS RESETS ODOMETRY RN
@@ -163,8 +163,8 @@ public class AutonomousCMDBuilder {
     private Command GetZeroLifterCmd() {
         Command ZeroLifterCmd = new ParallelCommandGroup(
                     new InstantCommand(()->{m_RobotContainer.cowboyMode = CowboyMode.READYTOSTART;}),
-                    new FastZeroLifterCmd(m_RobotContainer.PIDArmLifterSubsystem)
-                    //new InstantCommand(()->RobotContainer.s_Swerve.resetModulesToAbsolute(),RobotContainer.s_Swerve)
+                    new FastZeroLifterCmd(m_RobotContainer.PIDArmLifterSubsystem),
+                    new InstantCommand(()->RobotContainer.s_Swerve.resetModulesToAbsolute(),RobotContainer.s_Swerve)
 
                     //new ZeroExtensionCmd(Thisbrain.PIDArmExtensionSubsystem)
                     )
