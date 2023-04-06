@@ -251,7 +251,7 @@ public class RobotContainer {
         RobotContainer.s_Swerve.resetModulesToAbsolute();
         //now get which autonomous is selected?
         String SelectedAuto = mySmartDashboardHandler.getChosenAutoString();
-        System.out.println("Auto selected: " + SelectedAuto);
+        //System.out.println("Auto selected: " + SelectedAuto);
 
         //return command from command builder. 
         return AutoCmdBuilder.GetAutoCommand(SelectedAuto);

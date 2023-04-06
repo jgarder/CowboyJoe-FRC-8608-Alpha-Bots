@@ -92,9 +92,9 @@ public class followTrajectoryCommand extends CommandBase {
 
         Pose2d currentPose = RobotContainer.s_Swerve.getPose();
         String tString = " [" + Math.round(timer.get() * 100) / 100.0 + "]";
-        System.out.println(pathName + tString + " x error: " + (desiredState.poseMeters.getX() - currentPose.getX()));
-        System.out.println(pathName + tString + " y error: " + (desiredState.poseMeters.getY() - currentPose.getY()));
-        System.out.println(pathName + tString + " r error: " + (desiredState.holonomicRotation.getDegrees() - currentPose.getRotation().getDegrees()));
+        //System.out.println(pathName + tString + " x error: " + (desiredState.poseMeters.getX() - currentPose.getX()));
+        //System.out.println(pathName + tString + " y error: " + (desiredState.poseMeters.getY() - currentPose.getY()));
+        //System.out.println(pathName + tString + " r error: " + (desiredState.holonomicRotation.getDegrees() - currentPose.getRotation().getDegrees()));
 
         RobotContainer.s_Swerve.drive(targetSpeeds);
     }

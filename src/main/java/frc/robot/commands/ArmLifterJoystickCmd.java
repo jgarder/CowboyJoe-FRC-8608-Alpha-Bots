@@ -31,7 +31,7 @@ public class ArmLifterJoystickCmd extends CommandBase {
     //if we are already vertical then we dont need to fold back further.
     //this check will also only fire when the joystick is attempting a negatieve value
      if(PIDArmLifterSubsystem.isLiftArmVerticalOrCloser() && joystickAxis <=0) {
-        System.out.println("Arm vertical");
+        //System.out.println("Arm vertical");
          return;
      }
      if(PIDArmLifterSubsystem.getSuppliersaysLassoisOpen()){
