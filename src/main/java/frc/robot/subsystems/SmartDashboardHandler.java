@@ -45,11 +45,21 @@ public class SmartDashboardHandler extends SubsystemBase {
     return m_chooser.getSelected();
   }
 
+  public static final String SpeedMultiplierName = "Jow Speed Multiplier";
+  public static final String RotationMultiplierName = "Jow Rotation Multiplier";
+
+
   public static final double defaultspeed = .25;
   public static final double FloorHuntSpeed = .25;
   public static final double ScoreSpeed = .5;
   public static final double SubstationSpeed = .5;
   public static final double CompetitionSpeed = 1.0;
+
+  public static final double SpinCompetitionSpeed = .5;
+  public static final double SpinSubstationSpeed = .25;
+  public static final double SpinScoreSpeed = .25;
+  public static final double SpinFloorHuntSpeed = .25;
+
 
   private void bootupPersistents() {
 

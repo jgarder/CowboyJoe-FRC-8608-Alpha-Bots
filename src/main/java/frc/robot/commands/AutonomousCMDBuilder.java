@@ -88,6 +88,7 @@ public class AutonomousCMDBuilder {
                return new ParallelCommandGroup(
                 new InstantCommand(()->{m_RobotContainer.cowboyMode = CowboyMode.FLOORHUNTING;}),
                 new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.FloorHuntSpeed); }),
+                new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinFloorHuntSpeed); }),
                 new InstantCommand(m_RobotContainer.PIDArmExtensionSubsystem::setSetpointIn,m_RobotContainer.PIDArmExtensionSubsystem),
                 new InstantCommand(m_RobotContainer.PIDLassoSubsystem::setSetpointLassoOut,m_RobotContainer.PIDLassoSubsystem),
                 new InstantCommand(m_RobotContainer.PIDArmLifterSubsystem::setSetpointFloorHunt,m_RobotContainer.PIDArmLifterSubsystem)

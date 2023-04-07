@@ -269,10 +269,13 @@ public class Swerve extends SubsystemBase {
             gottilted = true;
             debounceCount = 0;
             SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.FloorHuntSpeed);
+            SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinFloorHuntSpeed);
+
         }
         else{
             if (debounceCount > autoBalance.secondsToTicks(debounceTime) && gottilted) {
                 SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);
+                SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinCompetitionSpeed);
                 gottilted = false;
             }
         }

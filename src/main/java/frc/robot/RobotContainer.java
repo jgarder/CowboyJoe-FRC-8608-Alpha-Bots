@@ -180,7 +180,8 @@ public class RobotContainer {
         //Back Triggers
         LeftTrigger.onTrue(new ParallelCommandGroup(
             new InstantCommand(ArmStateHandler::resetArmState,ArmStateHandler),
-            new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);})
+            new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);}),
+            new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinCompetitionSpeed); })
             ));
         RightTrigger.onTrue(new InstantCommand(ArmStateHandler::runArmState,ArmStateHandler));
         
@@ -191,6 +192,7 @@ public class RobotContainer {
         RightBumperButton.whileTrue(new AlignSubstationCMD(s_Swerve, limelight3Subsystem,() -> -driveController.getRawAxis(strafeAxis)).andThen(new ParallelCommandGroup(
             new InstantCommand(()->{cowboyMode = CowboyMode.SUBSTATIONHUNTING;}),
             new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.SubstationSpeed); }),
+            new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinSubstationSpeed); }),
             new InstantCommand(PIDArmExtensionSubsystem::setSetpointSubstation,PIDArmExtensionSubsystem),
             new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
             new InstantCommand(PIDArmLifterSubsystem::setSetpointSubstationHunt,PIDArmLifterSubsystem)
@@ -201,6 +203,7 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new InstantCommand(()->{cowboyMode = CowboyMode.SCOREHUNTING; }),
                 new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.ScoreSpeed); }),
+                new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinScoreSpeed); }),
                 new InstantCommand(PIDArmExtensionSubsystem::setSetpointMidScore,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointScore,PIDArmLifterSubsystem)
                 ));
@@ -208,6 +211,7 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new InstantCommand(()->{cowboyMode = CowboyMode.SUBSTATIONHUNTING;}),
                 new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.SubstationSpeed); }),
+                new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinSubstationSpeed); }),
                 new InstantCommand(PIDArmExtensionSubsystem::setSetpointSubstation,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointSubstationHunt,PIDArmLifterSubsystem)
@@ -216,6 +220,7 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new InstantCommand(()->{cowboyMode = CowboyMode.FLOORHUNTING;}),
                 new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.FloorHuntSpeed); }),
+                new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinFloorHuntSpeed); }),
                 new InstantCommand(PIDArmExtensionSubsystem::setSetpointIn,PIDArmExtensionSubsystem),
                 new InstantCommand(PIDLassoSubsystem::setSetpointLassoOut,PIDLassoSubsystem),
                 new InstantCommand(PIDArmLifterSubsystem::setSetpointFloorHunt,PIDArmLifterSubsystem)

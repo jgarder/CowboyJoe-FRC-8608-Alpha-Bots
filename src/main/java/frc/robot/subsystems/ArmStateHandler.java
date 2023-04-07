@@ -135,6 +135,7 @@ public class ArmStateHandler extends SubsystemBase {
         .andThen(new LassoInCmd(s_Lasso))
         .andThen(new InstantCommand(()->ArmResetting()))
         .andThen(new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);}))
+        .andThen(new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinCompetitionSpeed);}))
         .schedule();
         mainbrain.cowboyMode = CowboyMode.READYTOSTART;
         break;
@@ -153,6 +154,7 @@ public class ArmStateHandler extends SubsystemBase {
         .andThen(new LassoInCmd(s_Lasso)))
         .andThen(new ZeroLassoCmd(s_Lasso))
         .andThen(new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);}))
+        .andThen(new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinCompetitionSpeed);}))
         .schedule();
         mainbrain.cowboyMode = CowboyMode.READYTOSTART;
         // new SequentialCommandGroup(
@@ -182,6 +184,7 @@ public class ArmStateHandler extends SubsystemBase {
         .andThen(new LassoInCmd(s_Lasso))
         .andThen(new InstantCommand(()->ArmResetting()))
         .andThen(new InstantCommand(()->{SmartDashboard.putNumber("Jow Speed Multiplier", SmartDashboardHandler.CompetitionSpeed);}))
+        .andThen(new InstantCommand(()->{SmartDashboard.putNumber(SmartDashboardHandler.RotationMultiplierName, SmartDashboardHandler.SpinCompetitionSpeed);}))
         .schedule();
         mainbrain.cowboyMode = CowboyMode.READYTOSTART; 
         ///////////////
